@@ -429,7 +429,12 @@
   .ct-menu .ct-item.active::before{content:'✓';font-size:10px;margin-right:-2px}
   .ct-menu .ct-item:not(.active)::before{content:'';width:8px}
   /* object tree — right-docked panel (pushes the chart left, TradingView-style) */
-  .ot-dock{width:264px;flex-shrink:0;display:flex;flex-direction:column;min-height:0;background:var(--bg-1);border-left:1px solid var(--border);font-size:12px;z-index:6}
+  .ot-dock{width:264px;flex-shrink:0;display:flex;flex-direction:column;min-height:0;background:var(--bg-1);border-left:1px solid var(--border);font-size:12px;z-index:6;position:relative}
+  /* drag-to-resize handle on the panel's left edge (TradingView-style) */
+  .ot-dock .ot-resizer{position:absolute;left:-3px;top:0;bottom:0;width:7px;cursor:ew-resize;z-index:7}
+  .ot-dock .ot-resizer::after{content:'';position:absolute;left:2px;top:0;bottom:0;width:1px;background:transparent;transition:background .12s ease}
+  .ot-dock .ot-resizer:hover::after,.ot-dock .ot-resizer.dragging::after{background:var(--teal-2)}
+  body.ot-resizing{cursor:ew-resize;user-select:none}
   .ot-dock .ot-head{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
   .ot-dock .ot-title{font-weight:600;color:var(--text);font-size:12.5px}
   .ot-dock .ot-x{background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:17px;line-height:1;padding:0 2px}
@@ -458,6 +463,21 @@
   #otCtx .otc-item:hover{background:var(--bg-2);color:var(--text)}
   #otCtx .otc-item.danger:hover{color:#ff6b81}
   #otCtx .otc-sep{height:1px;background:var(--border);margin:4px 0}
+  /* drawing style-template dropdown (floating toolbar) */
+  #dtTplMenu{position:fixed;display:none;z-index:2400;min-width:185px;background:var(--bg-1);border:1px solid var(--border-2);border-radius:6px;box-shadow:0 12px 34px rgba(0,0,0,.6);padding:4px 0;font-size:12px}
+  #dtTplMenu.open{display:block}
+  #dtTplMenu .otc-item{padding:6px 12px;color:var(--text-2);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap}
+  #dtTplMenu .otc-item:hover{background:var(--bg-2);color:var(--text)}
+  #dtTplMenu .otc-sep{height:1px;background:var(--border);margin:4px 0}
+  #dtTplMenu .tpl-nm{margin-right:auto;overflow:hidden;text-overflow:ellipsis;max-width:170px}
+  #dtTplMenu .tpl-x{color:var(--text-dim);padding:0 3px;border-radius:3px;flex:0 0 auto}
+  #dtTplMenu .tpl-x:hover{color:var(--teal-2)}
+  #dtTplMenu .tpl-x[data-tpl-del]:hover{color:#ff6b81}
+  #dtTplMenu .tpl-input-row{display:flex;gap:6px;padding:8px 10px;align-items:center}
+  #dtTplMenu .tpl-input-row input{flex:1;background:var(--bg-2);border:1px solid var(--border-2);border-radius:4px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:5px 7px;outline:none;min-width:130px}
+  #dtTplMenu .tpl-input-row input:focus{border-color:var(--teal-2)}
+  #dtTplMenu .tpl-ok{background:var(--teal-bg);border:1px solid var(--teal-2);color:var(--teal-2);border-radius:4px;font-size:11px;padding:5px 10px;cursor:pointer;font-family:'Chakra Petch',sans-serif;font-weight:600;flex:0 0 auto}
+  #dtTplMenu .tpl-ok:hover{background:var(--teal-2);color:#04201f}
   .ot-rename{flex:1;min-width:0;background:var(--bg-3);border:1px solid var(--teal-2);color:var(--text);font:inherit;font-size:12px;padding:1px 4px;border-radius:3px;outline:none}
   .ot-row.off .ot-ti,.ot-row.off .ot-name{opacity:.4}
   .ot-ti{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex-shrink:0;color:var(--silver)}
@@ -478,18 +498,27 @@
   .ot-dock .ot-folder .ot-chevwrap.col{transform:rotate(-90deg)}
   .chart-wrap{flex:1;position:relative;display:flex;min-height:0}
   /* left tool column — same bg-1 as timeframe row */
-  .chart-side-tools{width:36px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--border);padding:6px 0;overflow-y:auto;flex-shrink:0;background:var(--bg-1)}
+  .chart-side-tools{width:40px;display:flex;flex-direction:column;align-items:center;gap:4px;border-right:1px solid var(--border);padding:7px 0;overflow-y:auto;flex-shrink:0;background:var(--bg-1)}
   /* tool icons (+ / = T etc) — Silver for visibility */
-  .side-icon{width:36px;height:30px;display:flex;align-items:center;justify-content:center;color:var(--silver);cursor:pointer;font-size:14px;flex-shrink:0;transition:background .1s,color .1s;position:relative}
-  .side-icon svg{width:18px;height:18px;display:block}
+  .side-icon{width:30px;height:30px;display:flex;align-items:center;justify-content:center;color:var(--silver);cursor:pointer;font-size:14px;flex-shrink:0;transition:background .13s ease,color .13s ease,box-shadow .13s ease;position:relative;border-radius:7px}
+  .side-icon svg{width:18px;height:18px;display:block;transition:transform .13s ease}
   .side-icon:hover{color:var(--teal-2);background:var(--bg-2)}
+  .side-icon:hover svg{transform:scale(1.06)}
+  .side-icon:active svg{transform:scale(.94)}
   /* grouped tool column (TradingView style) */
-  .tool-group{position:relative;width:36px;flex-shrink:0}
-  .tool-caret{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:pointer;z-index:2}
-  .tool-caret::after{content:'';position:absolute;right:2px;bottom:2px;width:0;height:0;border-left:6px solid transparent;border-bottom:6px solid var(--text-dim)}
-  .tool-group:hover .tool-caret::after{border-bottom-color:var(--teal-2)}
-  .tool-caret:hover::after{border-bottom-color:var(--teal-2)}
-  .tool-sep-h{height:1px;background:var(--border);margin:4px 6px;flex-shrink:0}
+  .tool-group{position:relative;width:30px;flex-shrink:0}
+  .tool-group .side-icon{width:30px}
+  .tool-caret{position:absolute;right:-3px;bottom:0;width:14px;height:14px;cursor:pointer;z-index:2}
+  .tool-caret::after{content:'';position:absolute;right:1px;bottom:2px;width:0;height:0;border-left:5.5px solid transparent;border-bottom:5.5px solid var(--silver);opacity:.7;transition:opacity .13s ease,border-bottom-color .13s ease}
+  .tool-group:hover .tool-caret::after{border-bottom-color:var(--teal-2);opacity:1}
+  .tool-caret:hover::after{border-bottom-color:var(--teal-2);opacity:1}
+  .tool-group .side-icon.active~.tool-caret::after{border-bottom-color:var(--teal-2);opacity:.85}
+  /* boundary divider (favorites↔tools, tools↔utilities) — stronger */
+  .tool-sep-h{width:24px;height:1px;background:var(--border-2);margin:5px 0;flex-shrink:0}
+  /* mini divider (between utility sub-clusters) — lighter */
+  .tool-sep-mini{width:16px;height:1px;background:var(--border);opacity:.6;margin:3px 0;flex-shrink:0}
+  /* push-bottom — docks the object-tree opener to the very bottom of the column */
+  .tool-sep-mini.push-bottom{margin-top:auto}
   .tool-flyout{position:fixed;z-index:1200;background:var(--bg-1);border:1px solid var(--border-2);border-radius:6px;box-shadow:0 8px 28px rgba(0,0,0,0.55);padding:5px;display:none;min-width:200px}
   .tool-flyout.open{display:block}
   .tool-flyout .tf-item{display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:4px;cursor:pointer;color:var(--text-2);font-size:12px;white-space:nowrap}
@@ -499,6 +528,8 @@
   .tool-flyout .tf-item .tf-star{margin-left:auto;color:var(--text-dim2);font-size:13px;padding:0 2px;border-radius:3px}
   .tool-flyout .tf-item .tf-star:hover{color:#ffb700}
   .tool-flyout .tf-item .tf-star.on{color:#ffb700}
+  .tool-flyout .tf-section{padding:6px 9px 3px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim2)}
+  .tool-flyout .tf-sep{height:1px;background:var(--border);margin:4px 6px}
   /* in-chart text drawing editor */
   /* in-place drawing text editor — contenteditable span (NO native input chrome on any platform):
      fully transparent, only the caret blinks where the shape's text renders */
@@ -869,7 +900,8 @@
   .ind-row .ind-color{width:12px;height:12px;border-radius:50%;flex-shrink:0}
 
   /* V2: drawing tool active indication */
-  .side-icon.active{color:var(--teal-2);background:var(--bg-2);box-shadow:inset 2px 0 0 0 var(--teal-2)}
+  .side-icon.active{color:var(--teal-2);background:linear-gradient(90deg,rgba(21,224,216,.17),rgba(21,224,216,.03));box-shadow:inset 2.5px 0 0 0 var(--teal-2)}
+  .side-icon.active:hover{background:linear-gradient(90deg,rgba(21,224,216,.24),rgba(21,224,216,.06))}
   body.drawing{cursor:crosshair!important}
   body.drawing .chart-slot{cursor:crosshair!important}
 
@@ -1459,6 +1491,7 @@
     <div class="lev-modal-body">
       <div class="is-body" id="dsBody"></div>
       <div class="is-foot">
+        <button class="ds-cancel" data-ds-tplbtn style="margin-right:auto" title="Style templates">Template ▾</button>
         <button class="ds-cancel" data-ds-cancel>Cancel</button>
         <button class="modal-confirm" data-ds-close>Ok</button>
       </div>
@@ -1860,6 +1893,7 @@ function moduleHTML(modId) {
         <button class="tb-btn" data-tb="indicators">ƒ Indicators</button>
         <button class="tb-btn" data-tb="undo" title="Undo last drawing">↶</button>
         <button class="tb-btn" data-tb="redo" title="Redo">↷</button>
+        <button class="tb-btn" data-tb="snapshot" title="Save chart image (PNG)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
         <button class="tb-btn" data-tb="equalize" title="Equalize oscillator panes">⇳</button>
         <span class="tb-right">
           <button class="tb-btn" data-tb="layouts">☁ default ▾</button>
@@ -8450,15 +8484,16 @@ const DRAW_PALETTE = ['#15e0d8','#00e599','#ff2c64','#ffcc33','#e9edee','#9aa3a6
 function dashForStyle(s) { return s === 'dashed' ? [6,4] : s === 'dotted' ? [1,4] : []; }   // dotted: tiny dash + round cap = round dots
 
 /* ===== left tool column — data-driven groups (TradingView style) ===== */
-function _svg(inner) { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`; }
+function _svg(inner) { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`; }
 const TOOL_ICONS = {
   crosshair:'<circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line>',
   trend:'<line x1="4" y1="20" x2="20" y2="4"></line><circle cx="4" cy="20" r="1.5"></circle><circle cx="20" cy="4" r="1.5"></circle>',
-  ray:'<line x1="4" y1="20" x2="20" y2="4"></line><circle cx="4" cy="20" r="1.8"></circle><polyline points="15 5 20 4 19 9"></polyline>',
-  extended:'<line x1="2" y1="22" x2="22" y2="2"></line><circle cx="8" cy="16" r="1.6"></circle><circle cx="16" cy="8" r="1.6"></circle>',
+  ray:'<line x1="4" y1="20" x2="20" y2="4"></line><circle cx="4" cy="20" r="1.5"></circle><polyline points="15 5 20 4 19 9"></polyline>',
+  extended:'<line x1="3" y1="21" x2="21" y2="3"></line><circle cx="8.5" cy="15.5" r="1.5"></circle><circle cx="15.5" cy="8.5" r="1.5"></circle>',
   hline:'<line x1="3" y1="12" x2="21" y2="12"></line><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle>',
-  hray:'<line x1="4" y1="12" x2="21" y2="12"></line><circle cx="5" cy="12" r="1.8"></circle><polyline points="17 9 21 12 17 15"></polyline>',
+  hray:'<line x1="4" y1="12" x2="21" y2="12"></line><circle cx="5" cy="12" r="1.5"></circle><polyline points="17 9 21 12 17 15"></polyline>',
   vline:'<line x1="12" y1="3" x2="12" y2="21"></line><circle cx="12" cy="6" r="1.5"></circle><circle cx="12" cy="18" r="1.5"></circle>',
+  crossline:'<line x1="3" y1="12" x2="21" y2="12"></line><line x1="12" y1="3" x2="12" y2="21"></line><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"></circle>',
   fib:'<line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="11" x2="21" y2="11"></line><line x1="3" y1="16" x2="21" y2="16"></line><line x1="3" y1="20" x2="21" y2="20"></line>',
   rect:'<rect x="4" y="6" width="16" height="12" rx="1"></rect>',
   ellipse:'<ellipse cx="12" cy="12" rx="9" ry="6"></ellipse>',
@@ -8467,10 +8502,15 @@ const TOOL_ICONS = {
   magnet:'<path d="M6 15V8a6 6 0 0 1 12 0v7"></path><path d="M6 8h4v7a2 2 0 0 1-4 0z"></path><path d="M14 8h4v7a2 2 0 0 1-4 0z"></path>',
   erase:'<polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-2 14H7L5 6"></path>',
   channel:'<line x1="3" y1="15" x2="19" y2="3"></line><line x1="5" y1="21" x2="21" y2="9"></line>',
+  disjoint:'<line x1="3" y1="13" x2="20" y2="3"></line><line x1="4" y1="21" x2="21" y2="14"></line><circle cx="3" cy="13" r="1.4"></circle><circle cx="20" cy="3" r="1.4"></circle><circle cx="4" cy="21" r="1.4"></circle><circle cx="21" cy="14" r="1.4"></circle>',
+  flattb:'<line x1="3" y1="14" x2="21" y2="5"></line><line x1="3" y1="20" x2="21" y2="20"></line><circle cx="3" cy="14" r="1.4"></circle><circle cx="21" cy="5" r="1.4"></circle><circle cx="3" cy="20" r="1.4"></circle>',
+  regtrend:'<line x1="3" y1="17" x2="21" y2="7"></line><line x1="3" y1="11" x2="21" y2="1"></line><line x1="3" y1="23" x2="21" y2="13"></line>',
   fibext:'<line x1="3" y1="17" x2="21" y2="17"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="7" x2="21" y2="7"></line><polyline points="8 7 8 3 16 3"></polyline>',
   fibchannel:'<line x1="3" y1="16" x2="18" y2="4"></line><line x1="6" y1="20" x2="21" y2="8"></line><line x1="4.5" y1="18" x2="19.5" y2="6"></line>',
   fibtime:'<line x1="4" y1="4" x2="4" y2="20"></line><line x1="8" y1="4" x2="8" y2="20"></line><line x1="14" y1="4" x2="14" y2="20"></line><line x1="21" y1="4" x2="21" y2="20"></line>',
-  vwap:'<path d="M3 17l4-7 4 4 3-8 4 7 3-3"></path><circle cx="3" cy="17" r="1.8"></circle>',
+  gannfan:'<line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="21" x2="21" y2="14"></line><line x1="3" y1="21" x2="21" y2="6"></line><line x1="3" y1="21" x2="13" y2="3"></line><line x1="3" y1="21" x2="6" y2="3"></line>',
+  gannbox:'<rect x="3" y="4" width="18" height="16" rx="1"></rect><line x1="9" y1="4" x2="9" y2="20"></line><line x1="15" y1="4" x2="15" y2="20"></line><line x1="3" y1="9.5" x2="21" y2="9.5"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="3" y1="4" x2="21" y2="20"></line>',
+  vwap:'<path d="M3 17l4-7 4 4 3-8 4 7 3-3"></path><circle cx="3" cy="17" r="1.5"></circle>',
   long:'<rect x="4" y="4" width="16" height="16" rx="1"></rect><line x1="4" y1="13" x2="20" y2="13"></line><polyline points="9 10 12 7 15 10"></polyline>',
   short:'<rect x="4" y="4" width="16" height="16" rx="1"></rect><line x1="4" y1="11" x2="20" y2="11"></line><polyline points="9 14 12 17 15 14"></polyline>',
   measure:'<rect x="3" y="8" width="18" height="8" rx="1"></rect><line x1="7" y1="8" x2="7" y2="12"></line><line x1="11" y1="8" x2="11" y2="13"></line><line x1="15" y1="8" x2="15" y2="12"></line>',
@@ -8478,8 +8518,8 @@ const TOOL_ICONS = {
   staymode:'<path d="M5 19l8.5-8.5 3 3L8 22H5z"></path><path d="M14.5 6.5l2-2 3 3-2 2z"></path><rect x="3" y="20" width="18" height="1.5" rx=".5"></rect>',
   lockall:'<rect x="5" y="11" width="14" height="9" rx="1.5"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path>',
   hideall:'<path d="M9.9 4.5A9 9 0 0 1 21 12a9 9 0 0 1-1.8 2.5M6.3 6.3A9 9 0 0 0 3 12a9 9 0 0 0 9 6 8.8 8.8 0 0 0 3.6-.8"></path><line x1="3" y1="3" x2="21" y2="21"></line>',
-  objtree:'<circle cx="4" cy="6" r="1.2"></circle><circle cx="4" cy="12" r="1.2"></circle><circle cx="4" cy="18" r="1.2"></circle><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line>',
-  infoline:'<line x1="3" y1="20" x2="14" y2="9"></line><circle cx="3" cy="20" r="1.4"></circle><rect x="13" y="3" width="8" height="6" rx="1"></rect>',
+  objtree:'<path d="M12 3 L21 8 L12 13 L3 8 Z"></path><path d="M3 12 L12 17 L21 12"></path><path d="M3 16 L12 21 L21 16"></path>',
+  infoline:'<line x1="3" y1="20" x2="14" y2="9"></line><circle cx="3" cy="20" r="1.5"></circle><rect x="13" y="3" width="8" height="6" rx="1"></rect>',
   trendangle:'<line x1="4" y1="20" x2="21" y2="20"></line><line x1="4" y1="20" x2="19" y2="7"></line><path d="M13 20a9 9 0 0 0-1.6-5"></path>',
   circle:'<circle cx="12" cy="12" r="8"></circle>',
   triangle:'<path d="M12 4 L20 19 L4 19 Z"></path>',
@@ -8487,7 +8527,7 @@ const TOOL_ICONS = {
   arrowup:'<line x1="12" y1="21" x2="12" y2="5"></line><polyline points="6 11 12 5 18 11"></polyline>',
   arrowdown:'<line x1="12" y1="3" x2="12" y2="19"></line><polyline points="6 13 12 19 18 13"></polyline>',
   highlighter:'<path d="M4 19l3 1 10-10-4-4L3 16z"></path><line x1="14" y1="5" x2="18" y2="9"></line><line x1="3" y1="21" x2="9" y2="21"></line>',
-  polyline:'<polyline points="3 17 9 8 13 13 21 4"></polyline><circle cx="3" cy="17" r="1.4"></circle><circle cx="9" cy="8" r="1.4"></circle><circle cx="13" cy="13" r="1.4"></circle><circle cx="21" cy="4" r="1.4"></circle>',
+  polyline:'<polyline points="3 17 9 8 13 13 21 4"></polyline><circle cx="3" cy="17" r="1.5"></circle><circle cx="9" cy="8" r="1.5"></circle><circle cx="13" cy="13" r="1.5"></circle><circle cx="21" cy="4" r="1.5"></circle>',
   dot:'<circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"></circle><line x1="12" y1="3" x2="12" y2="7"></line><line x1="12" y1="17" x2="12" y2="21"></line><line x1="3" y1="12" x2="7" y2="12"></line><line x1="17" y1="12" x2="21" y2="12"></line>',
   arrowcur:'<path d="M5 3 L5 18 L9 14 L12 20 L14 19 L11 13 L17 13 Z" fill="currentColor" stroke="none"></path>',
   note:'<rect x="4" y="3" width="16" height="18" rx="2"></rect><line x1="8" y1="8" x2="16" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="16" x2="13" y2="16"></line>',
@@ -8498,66 +8538,111 @@ const TOOL_ICONS = {
   comment:'<path d="M4 4 H20 V15 H10 L5 20 V15 H4 Z"></path>',
   pin:'<path d="M12 21 C12 21 5 13.5 5 9 a7 7 0 0 1 14 0 C19 13.5 12 21 12 21 Z"></path><circle cx="12" cy="9" r="2.4"></circle>',
   pricenote:'<rect x="4" y="3" width="16" height="18" rx="2"></rect><line x1="12" y1="6.5" x2="12" y2="17.5"></line><path d="M14.5 9 a3 1.6 0 0 0 -3 -1.4 a2.4 1.6 0 0 0 0 3.2 a2.4 1.6 0 0 1 0 3.2 a3 1.6 0 0 1 -3 -1.4"></path>',
+  pitchfork:'<line x1="9" y1="7" x2="13" y2="19"></line><line x1="2" y1="18" x2="21" y2="8.5"></line><line x1="9" y1="7" x2="21" y2="1"></line><line x1="13" y1="19" x2="21" y2="15"></line><circle cx="2" cy="18" r="1.3"></circle>',
+  schiff:'<line x1="9" y1="7" x2="13" y2="19"></line><line x1="2" y1="14" x2="21" y2="8.5"></line><line x1="9" y1="7" x2="21" y2="2"></line><line x1="13" y1="19" x2="21" y2="15"></line><circle cx="2" cy="14" r="1.3"></circle><circle cx="2" cy="19" r="1.1" fill="currentColor" stroke="none"></circle>',
+  mschiff:'<line x1="9" y1="7" x2="13" y2="19"></line><line x1="4.5" y1="15.5" x2="21" y2="8.5"></line><line x1="9" y1="7" x2="21" y2="2.5"></line><line x1="13" y1="19" x2="21" y2="14.5"></line><circle cx="4.5" cy="15.5" r="1.3"></circle><line x1="1.5" y1="19.5" x2="4.5" y2="15.5"></line>',
+  inside:'<line x1="15" y1="7" x2="11" y2="19"></line><line x1="22" y1="18" x2="3" y2="8.5"></line><line x1="15" y1="7" x2="3" y2="1"></line><line x1="11" y1="19" x2="3" y2="15"></line><circle cx="22" cy="18" r="1.3"></circle>',
+  xabcd:'<polyline points="2 19 7 5 12 15 17 4 22 17"></polyline><circle cx="2" cy="19" r="1.3"></circle><circle cx="7" cy="5" r="1.3"></circle><circle cx="12" cy="15" r="1.3"></circle><circle cx="17" cy="4" r="1.3"></circle><circle cx="22" cy="17" r="1.3"></circle>',
+  abcd:'<polyline points="3 17 9 4 14 14 21 3"></polyline><circle cx="3" cy="17" r="1.3"></circle><circle cx="9" cy="4" r="1.3"></circle><circle cx="14" cy="14" r="1.3"></circle><circle cx="21" cy="3" r="1.3"></circle>',
+  hns:'<polyline points="2 19 5 12 8 17 12 5 16 17 19 12 22 19"></polyline>',
 };
-const DRAW_GROUPS = [
-  { id:'cursor', items:[ {id:'crosshair', name:'Cross', icon:'crosshair'}, {id:'dot', name:'Dot', icon:'dot'}, {id:'curarrow', name:'Arrow', icon:'arrowcur'} ] },
-  { id:'lines', items:[
-      {id:'trend',    name:'Trend Line',      icon:'trend'},
-      {id:'ray',      name:'Ray',             icon:'ray'},
-      {id:'infoline', name:'Info Line',       icon:'infoline'},
-      {id:'extended', name:'Extended Line',   icon:'extended'},
-      {id:'trendangle', name:'Trend Angle',   icon:'trendangle'},
-      {id:'hline',    name:'Horizontal Line', icon:'hline'},
-      {id:'hray',     name:'Horizontal Ray',  icon:'hray'},
-      {id:'vline',    name:'Vertical Line',   icon:'vline'},
-      {id:'channel',  name:'Parallel Channel', icon:'channel'},
-      {id:'polyline', name:'Polyline',        icon:'polyline'},
-  ]},
-  { id:'fib', items:[
-      {id:'fib',        name:'Fib Retracement', icon:'fib'},
-      {id:'fibext',     name:'Fib Extension',   icon:'fibext'},
-      {id:'fibchannel', name:'Fib Channel',     icon:'fibchannel'},
-      {id:'fibtime',    name:'Fib Time Zone',   icon:'fibtime'},
-  ]},
-  { id:'shapes', items:[
-      {id:'rect',    name:'Rectangle', icon:'rect'},
-      {id:'rotrect', name:'Rotated Rectangle', icon:'rotrect'},
-      {id:'ellipse', name:'Ellipse',   icon:'ellipse'},
-      {id:'circle',  name:'Circle',    icon:'circle'},
-      {id:'triangle',name:'Triangle',  icon:'triangle'},
-      {id:'arrow',   name:'Arrow',     icon:'arrow'},
-      {id:'arrowup', name:'Arrow Mark Up',   icon:'arrowup'},
-      {id:'arrowdown',name:'Arrow Mark Down', icon:'arrowdown'},
-      {id:'brush',   name:'Brush',     icon:'brush'},
-      {id:'highlighter', name:'Highlighter', icon:'highlighter'},
-  ]},
-  { id:'position', items:[
-      {id:'long',  name:'Long Position',  icon:'long'},
-      {id:'short', name:'Short Position', icon:'short'},
-  ]},
-  { id:'measure', items:[
-      {id:'measure', name:'Measure (Price/Date Range)', icon:'measure'},
-      {id:'vwap',    name:'Anchored VWAP',              icon:'vwap'},
-  ]},
-  { id:'text', items:[
-      {id:'text',       name:'Text',        icon:'text'},
-      {id:'note',       name:'Note',        icon:'note'},
-      {id:'pricenote',  name:'Price Note',  icon:'pricenote'},
-      {id:'pin',        name:'Pin',         icon:'pin'},
-      {id:'callout',    name:'Callout',     icon:'callout'},
-      {id:'comment',    name:'Comment',     icon:'comment'},
-      {id:'pricelabel', name:'Price Label', icon:'pricelabel'},
-      {id:'signpost',   name:'Signpost',    icon:'signpost'},
-      {id:'flag',       name:'Flag',        icon:'flag'},
-  ] },
-];
-/* 1-point text-anchored annotation tools (place → inline text editor), callout is 2-point */
-const TEXT_TOOLS = ['text','pin','signpost','flag','comment'];   // 1-click place + editor (note/callout are 2-point; price label/note are price-only, no editor)
-const ANNO_TOOLS = ['note','pricenote','pin','callout','pricelabel','signpost','flag','comment'];
-/* points required to finish each tool (0 = cursor, -1 = freehand drag) */
-const TOOL_PTS = { crosshair:0, trend:2, ray:2, extended:2, hline:1, hray:1, vline:1, fib:2, rect:2, ellipse:2, arrow:2, text:1, channel:3, long:2, short:2, measure:2, brush:-1, fibext:3, fibchannel:3, fibtime:2, vwap:1, infoline:2, trendangle:2, circle:2, triangle:3, rotrect:3, arrowup:1, arrowdown:1, highlighter:-1, polyline:-3, note:1, callout:2, pricelabel:1, signpost:1, flag:1, comment:1, pin:1, pricenote:1 };
-/* line extension mode per line tool */
-const LINE_MODE = { trend:'segment', ray:'ray', extended:'both', infoline:'segment', trendangle:'segment' };
+/* ════════════════════════════════════════════════════════════════════════════
+   TOOL REGISTRY — the single source of truth for every drawing tool.
+   Adding a tool = add ONE card here (+ its icon in TOOL_ICONS, + its branches
+   in _paintDraw / drawHitTest). Everything else — left-toolbar groups, click
+   count, floating-toolbar controls, settings tabs, line presets, text/anno
+   membership, creation defaults — derives automatically from these cards.
+
+   Card fields:
+     group        left-toolbar group (cursor|lines|fib|shapes|position|measure|text)
+     name         display name
+     icon         key into TOOL_ICONS
+     pts          clicks to finish: 0=cursor · -1=freehand drag · -3=variable
+                  vertices (dblclick/Enter ends) · N=clicks. Omit on non-drawing cursors.
+     dt           floating-toolbar controls (omit → color/width/style fallback)
+     tabs         settings-modal tabs (style|text|levels|coords|risk);
+                  'vis' auto-appended; omit → [style, coords]
+     lineMode     extension preset for straight-line tools (segment|ray|both)
+     textEditor   true → opens the in-place text editor right after placing
+     anno         true → rendered by the text-annotation painter (_paintAnno)
+     defaults     extra props stamped on newly created objects
+     defaultWidth overrides drawDefaults.width at creation
+   ════════════════════════════════════════════════════════════════════════════ */
+const TOOL_REGISTRY = {
+  /* ── cursors ── */
+  crosshair: { group:'cursor', name:'Cross', icon:'crosshair', pts:0 },
+  dot:       { group:'cursor', name:'Dot',   icon:'dot' },
+  curarrow:  { group:'cursor', name:'Arrow', icon:'arrowcur' },
+  /* ── lines ── */
+  trend:      { group:'lines', section:'Lines', name:'Trend Line',       icon:'trend',      pts:2,  dt:['color','width','style'], tabs:['style','text','coords'], lineMode:'segment' },
+  ray:        { group:'lines', section:'Lines', name:'Ray',              icon:'ray',        pts:2,  dt:['color','width','style'], tabs:['style','text','coords'], lineMode:'ray' },
+  infoline:   { group:'lines', section:'Lines', name:'Info Line',        icon:'infoline',   pts:2,  dt:['color','width','style'], tabs:['style','text','coords'], lineMode:'segment' },
+  extended:   { group:'lines', section:'Lines', name:'Extended Line',    icon:'extended',   pts:2,  dt:['color','width','style'], tabs:['style','text','coords'], lineMode:'both' },
+  trendangle: { group:'lines', section:'Lines', name:'Trend Angle',      icon:'trendangle', pts:2,  dt:['color','width','style'], tabs:['style','text','coords'], lineMode:'segment' },
+  hline:      { group:'lines', section:'Lines', name:'Horizontal Line',  icon:'hline',      pts:1,  dt:['color','width','style'], tabs:['style','text','coords'] },
+  hray:       { group:'lines', section:'Lines', name:'Horizontal Ray',   icon:'hray',       pts:1,  dt:['color','width','style'], tabs:['style','text','coords'] },
+  vline:      { group:'lines', section:'Lines', name:'Vertical Line',    icon:'vline',      pts:1,  dt:['color','width','style'], tabs:['style','text','coords'] },
+  crossline:  { group:'lines', section:'Lines', name:'Cross Line',       icon:'crossline',  pts:1,  dt:['color','width','style'], tabs:['style','coords'] },
+  channel:    { group:'lines', section:'Channels', name:'Parallel Channel', icon:'channel', pts:3,  dt:['color','fill','width','style'], tabs:['style','levels','text','coords'] },
+  regtrend:   { group:'lines', section:'Channels', name:'Regression Trend', icon:'regtrend', pts:2,  dt:['color','fill','width','style'], tabs:['style','coords'], defaults:{ devMult:2, showR:true } },
+  flattb:     { group:'lines', section:'Channels', name:'Flat Top/Bottom',  icon:'flattb',   pts:3,  dt:['color','fill','width','style'], tabs:['style','text','coords'] },
+  disjoint:   { group:'lines', section:'Channels', name:'Disjoint Channel', icon:'disjoint', pts:3,  dt:['color','fill','width','style'], tabs:['style','text','coords'] },
+  /* ── fibonacci ── */
+  fib:        { group:'fib', section:'Fibonacci', name:'Fib Retracement', icon:'fib',        pts:2, dt:['width','style'], tabs:['style','levels','coords'] },
+  fibext:     { group:'fib', section:'Fibonacci', name:'Fib Extension',   icon:'fibext',     pts:3, dt:['width','style'], tabs:['style','levels','coords'], defaults:{ extend:'none' } },
+  fibchannel: { group:'fib', section:'Fibonacci', name:'Fib Channel',     icon:'fibchannel', pts:3, dt:['width','style'], tabs:['style','levels','coords'] },
+  fibtime:    { group:'fib', section:'Fibonacci', name:'Fib Time Zone',   icon:'fibtime',    pts:2, dt:['color','width','style'], tabs:['style','levels','coords'] },
+  gannfan:    { group:'fib', section:'Gann', name:'Gann Fan', icon:'gannfan', pts:2, dt:['color','width','style'], tabs:['style','coords'] },
+  gannbox:    { group:'fib', section:'Gann', name:'Gann Box', icon:'gannbox', pts:2, dt:['color','width','style'], tabs:['style','coords'] },
+  pitchfork:  { group:'lines', section:'Pitchforks', name:'Pitchfork',                icon:'pitchfork', pts:3, dt:['color','width','style'], tabs:['style','levels','coords'] },   // TV keeps pitchforks in the Trend group
+  schiff:     { group:'lines', section:'Pitchforks', name:'Schiff Pitchfork',         icon:'schiff',    pts:3, dt:['color','width','style'], tabs:['style','levels','coords'] },
+  mschiff:    { group:'lines', section:'Pitchforks', name:'Modified Schiff Pitchfork', icon:'mschiff',  pts:3, dt:['color','width','style'], tabs:['style','levels','coords'] },
+  inside:     { group:'lines', section:'Pitchforks', name:'Inside Pitchfork',          icon:'inside',   pts:3, dt:['color','width','style'], tabs:['style','levels','coords'] },
+  /* ── patterns ── */
+  xabcd: { group:'patterns', name:'XABCD Pattern',     icon:'xabcd', pts:5, dt:['color','fill','width'], tabs:['style','coords'] },
+  abcd:  { group:'patterns', name:'ABCD Pattern',      icon:'abcd',  pts:4, dt:['color','fill','width'], tabs:['style','coords'] },
+  hns:   { group:'patterns', name:'Head & Shoulders',  icon:'hns',   pts:7, dt:['color','fill','width'], tabs:['style','coords'] },
+  /* ── shapes ── */
+  rect:        { group:'shapes', name:'Rectangle',         icon:'rect',        pts:2,  dt:['color','fill','width','style'], tabs:['style','text','coords'] },
+  rotrect:     { group:'shapes', name:'Rotated Rectangle', icon:'rotrect',     pts:3,  dt:['color','fill','width','style'], tabs:['style','text','coords'] },
+  polyline:    { group:'shapes', name:'Path',              icon:'polyline',    pts:-3, dt:['color','width','style'] },   // arrow-ended multi-segment = TV "Path"
+  ellipse:     { group:'shapes', name:'Ellipse',           icon:'ellipse',     pts:2,  dt:['color','fill','width','style'], tabs:['style','text','coords'] },
+  circle:      { group:'shapes', name:'Circle',            icon:'circle',      pts:2,  dt:['color','fill','width','style'], tabs:['style','text','coords'] },
+  triangle:    { group:'shapes', name:'Triangle',          icon:'triangle',    pts:3,  dt:['color','fill','width','style'], tabs:['style','text','coords'] },
+  arrow:       { group:'shapes', name:'Arrow',             icon:'arrow',       pts:2,  dt:['color','width','style'], tabs:['style','text','coords'] },
+  arrowup:     { group:'shapes', name:'Arrow Mark Up',     icon:'arrowup',     pts:1,  dt:['color','width'], tabs:['style','text','coords'] },
+  arrowdown:   { group:'shapes', name:'Arrow Mark Down',   icon:'arrowdown',   pts:1,  dt:['color','width'], tabs:['style','text','coords'] },
+  brush:       { group:'shapes', name:'Brush',             icon:'brush',       pts:-1, dt:['color','width'], tabs:['style'] },
+  highlighter: { group:'shapes', name:'Highlighter',       icon:'highlighter', pts:-1, dt:['color','width'], tabs:['style'], defaultWidth:12 },
+  /* ── forecasting & measurement (TV group #5) ── */
+  long:    { group:'fm', name:'Long Position',  icon:'long',  pts:2, dt:[], tabs:['style','risk','coords'] },
+  short:   { group:'fm', name:'Short Position', icon:'short', pts:2, dt:[], tabs:['style','risk','coords'] },
+  vwap:    { group:'fm', name:'Anchored VWAP',  icon:'vwap',  pts:1, dt:['color','width','style'], tabs:['style'], defaults:{ showBands:true, bandFillOn:true, bandCount:2 } },
+  measure: { group:'fm', name:'Measure (Price/Date Range)', icon:'measure', pts:2, dt:[], tabs:['style'] },
+  /* ── text & annotations ── */
+  text:       { group:'text', name:'Text',        icon:'text',       pts:1, dt:['color','font','bold','italic'], tabs:['text','coords'], textEditor:true },
+  note:       { group:'text', name:'Note',        icon:'note',       pts:1, dt:['color','width'], tabs:['style','text','coords'], anno:true },
+  pricenote:  { group:'text', name:'Price Note',  icon:'pricenote',  pts:1, dt:['color','width'], tabs:['style','text','coords'], anno:true },
+  pin:        { group:'text', name:'Pin',         icon:'pin',        pts:1, dt:['color','width'], tabs:['style','text','coords'], anno:true, textEditor:true },
+  callout:    { group:'text', name:'Callout',     icon:'callout',    pts:2, dt:['color','width'], tabs:['style','text','coords'], anno:true },
+  comment:    { group:'text', name:'Comment',     icon:'comment',    pts:1, dt:['color','width'], tabs:['style','text','coords'], anno:true, textEditor:true },
+  pricelabel: { group:'text', name:'Price Label', icon:'pricelabel', pts:1, dt:['color','width'], tabs:['style','text','coords'], anno:true },
+  signpost:   { group:'text', name:'Signpost',    icon:'signpost',   pts:1, dt:['color','width'], tabs:['style','text','coords'], anno:true, textEditor:true },
+  flag:       { group:'text', name:'Flag',        icon:'flag',       pts:1, dt:['color','width'], tabs:['style','text','coords'], anno:true, textEditor:true },
+};
+/* ─── derived registries — auto-generated from the cards above, DO NOT hand-edit ─── */
+const DRAW_GROUP_ORDER = ['cursor','lines','fib','patterns','fm','shapes','text'];   // TradingView Supercharts order
+const DRAW_GROUPS = DRAW_GROUP_ORDER.map(gid => ({ id: gid, items: [] }));
+const TOOL_PTS = {}, LINE_MODE = {}, DT_SCHEMA = {}, TEXT_TOOLS = [], ANNO_TOOLS = [];
+Object.entries(TOOL_REGISTRY).forEach(([id, t]) => {
+  const g = DRAW_GROUPS.find(x => x.id === t.group);
+  if (g) g.items.push({ id, name: t.name, icon: t.icon, section: t.section || '' });
+  if (t.pts !== undefined) TOOL_PTS[id] = t.pts;
+  if (t.lineMode) LINE_MODE[id] = t.lineMode;
+  if (t.dt) DT_SCHEMA[id] = t.dt;
+  if (t.textEditor) TEXT_TOOLS.push(id);
+  if (t.anno) ANNO_TOOLS.push(id);
+});
 /* representative (last-used) tool per group */
 const groupLastTool = {};
 DRAW_GROUPS.forEach(g => { groupLastTool[g.id] = g.items[0].id; });
@@ -8595,12 +8680,20 @@ function buildSideTools(panelEl) {
       ${multi ? `<div class="tool-caret" data-flyout="${g.id}"></div>` : ''}
     </div>`;
   });
+  // boundary: drawing tools ↔ utilities
   html += `<div class="tool-sep-h"></div>`;
+  // cluster 1 — drawing-mode behavior
   html += `<div class="side-icon${magnetMode ? ' active' : ''}" data-tool="magnet" title="Magnet — snap to OHLC (open/high/low/close)">${_svg(TOOL_ICONS.magnet)}</div>`;
   html += `<div class="side-icon${stayDrawMode ? ' active' : ''}" data-tool="staymode" title="Stay in drawing mode — keep the tool active after drawing">${_svg(TOOL_ICONS.staymode)}</div>`;
+  html += `<div class="tool-sep-mini"></div>`;
+  // cluster 2 — protection / visibility
   html += `<div class="side-icon${drawLockAll ? ' active' : ''}" data-tool="lockall" title="Lock all drawings — prevent select/move">${_svg(TOOL_ICONS.lockall)}</div>`;
   html += `<div class="side-icon${drawHideAll ? ' active' : ''}" data-tool="hideall" title="Hide all drawings">${_svg(TOOL_ICONS.hideall)}</div>`;
+  html += `<div class="tool-sep-mini"></div>`;
+  // cluster 3 — manage
   html += `<div class="side-icon" data-tool="erase" title="Erase all drawings">${_svg(TOOL_ICONS.erase)}</div>`;
+  // bottom-docked: object tree (panel opener — distinct from the drawing-action buttons)
+  html += `<div class="tool-sep-mini push-bottom"></div>`;
   html += `<div class="side-icon${(typeof _otInst!=='undefined'&&_otInst) ? ' active' : ''}" data-tool="objtree" title="Object tree — list of indicators & drawings">${_svg(TOOL_ICONS.objtree)}</div>`;
   host.innerHTML = html;
 }
@@ -8615,9 +8708,24 @@ function openToolFlyout(groupId, caretEl, panelEl) {
   const g = DRAW_GROUPS.find(x => x.id === groupId); if (!g) return;
   const fly = document.getElementById('toolFlyout'); if (!fly) return;
   _flyoutPanelEl = panelEl;
-  fly.innerHTML = g.items.map(it =>
-    `<div class="tf-item${activeTool === it.id ? ' active' : ''}" data-tool="${it.id}">${_svg(TOOL_ICONS[it.icon])}<span>${it.name}</span><span class="tf-star${toolFavorites.includes(it.id) ? ' on' : ''}" data-fav-tool="${it.id}" title="Favorite">★</span></div>`
-  ).join('');
+  const tfItem = it => `<div class="tf-item${activeTool === it.id ? ' active' : ''}" data-tool="${it.id}">${_svg(TOOL_ICONS[it.icon])}<span>${it.name}</span><span class="tf-star${toolFavorites.includes(it.id) ? ' on' : ''}" data-fav-tool="${it.id}" title="Favorite">★</span></div>`;
+  const sections = [...new Set(g.items.map(it => it.section).filter(Boolean))];
+  if (sections.length >= 2) {
+    // render section headers + dividers (TradingView-style grouped flyout)
+    let html = '', cur = null, first = true;
+    g.items.forEach(it => {
+      const sec = it.section || '';
+      if (sec !== cur) {
+        cur = sec;
+        if (sec) html += `${first ? '' : '<div class="tf-sep"></div>'}<div class="tf-section">${sec}</div>`;
+        first = false;
+      }
+      html += tfItem(it);
+    });
+    fly.innerHTML = html;
+  } else {
+    fly.innerHTML = g.items.map(tfItem).join('');
+  }
   fly.classList.add('open');
   const r = caretEl.getBoundingClientRect();
   fly.style.left = Math.round(r.right + 6) + 'px';
@@ -8805,6 +8913,16 @@ function _clipSegToRect(x1, y1, x2, y2, W, H) {
   }
   return [x1+t0*dx, y1+t0*dy, x1+t1*dx, y1+t1*dy];
 }
+/* intersection of an INFINITE line (through px,py with direction dx,dy) and a SEGMENT a→b.
+   Returns [x,y] or null when parallel / the hit falls outside the segment. */
+function _lineSegX(px, py, dx, dy, ax, ay, bx, by) {
+  const sx = bx - ax, sy = by - ay;
+  const den = sx * dy - sy * dx;
+  if (Math.abs(den) < 1e-9) return null;
+  const u = (dx * (ay - py) - dy * (ax - px)) / den;
+  if (u < 0 || u > 1) return null;
+  return [ax + sx * u, ay + sy * u];
+}
 /* label X + alignment for horizontal fib level lines — keeps the level/price text INSIDE the plot
    even when the line is extended to the chart edge (xEnd=W would otherwise push it off-screen). */
 function _fibLabelX(labelH, xStart, xEnd, W) {
@@ -8825,12 +8943,35 @@ function _eraseTextBox(ctx, txt, x, y, align, baseline, fs) {
 /* default fractional levels for a parallel channel (0 = first boundary, 1 = second) */
 const CHANNEL_LEVELS = [-0.25, 0, 0.25, 0.5, 0.75, 1, 1.25];
 const CHANNEL_COLORS = ['#9aa3a6','#15e0d8','#ff9f1c','#15e0d8','#ff9f1c','#15e0d8','#9aa3a6'];
+/* pitchfork level fractions (symmetric about the median; 1 = the two prongs) */
+const PITCHFORK_LEVELS = [0.25, 0.382, 0.5, 0.618, 0.75, 1, 1.5, 2];
+const PITCHFORK_COLORS = ['#9aa3a6','#7E57C2','#ff9f1c','#26a69a','#9aa3a6','#15e0d8','#9aa3a6','#9aa3a6'];
+const PITCHFORK_TYPES = ['pitchfork','schiff','mschiff','inside'];
+/* Gann fan angles as [timeMul, priceMul] — direction = (timeMul·dx, priceMul·dy); 1×1 is the P0→P1 diagonal */
+const GANN_FAN_RATIOS = [[1,8],[1,4],[1,3],[1,2],[1,1],[2,1],[3,1],[4,1],[8,1]];
+const GANN_FAN_LABELS = ['1/8','1/4','1/3','1/2','1/1','2/1','3/1','4/1','8/1'];
+const GANN_FAN_COLORS = ['#ff9f1c','#26a69a','#66bb6a','#2dd4bf','#15e0d8','#3b82f6','#9b7bff','#ec407a','#f23645'];   // TradingView defaults
+/* Gann box — ratios for price (horizontal) & time (vertical) grids; each axis has its OWN level set */
+const GANN_BOX_LEVELS = [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1];
+const GANN_BOX_COLORS = ['#9aa3a6','#ff9f1c','#22d3ee','#4caf50','#26a69a','#3b82f6','#9aa3a6'];   // TradingView defaults
+function _gbLevels(d, which) {
+  const key = (which==='time') ? 'timeLevels' : 'priceLevels';
+  if (!Array.isArray(d[key]) || d[key].length !== GANN_BOX_LEVELS.length)
+    d[key] = GANN_BOX_LEVELS.map((v,i)=>({ v, on:true, color: GANN_BOX_COLORS[i % GANN_BOX_COLORS.length] }));
+  return d[key];
+}
+/* pattern tools: vertex letters per type ('' = unlabeled vertex) */
+const PATTERN_TYPES = ['xabcd','abcd','hns'];
+const PATTERN_LABELS = { xabcd:['X','A','B','C','D'], abcd:['A','B','C','D'], hns:['','Left Shoulder','','Head','','Right Shoulder',''] };
 /* effective fib levels for a drawing: [{v, on, color, style}] — custom (d.levels) or defaults */
 function _fibLevels(d) {
   if (Array.isArray(d.levels) && d.levels.length) return d.levels;
   if (d.type === 'fibext') return FIB_EXT_LEVELS.map((v,i) => ({ v, on:true, color: FIBX_COLORS[i % FIBX_COLORS.length] }));
   if (d.type === 'channel') return CHANNEL_LEVELS.map((v,i) => ({ v, on:(v===0||v===0.5||v===1), color: CHANNEL_COLORS[i % CHANNEL_COLORS.length], style:(v===0||v===1)?'solid':'dashed' }));
   if (d.type === 'fibtime') return FIB_TIME_SEQ.map((v) => ({ v, on:true, color: d.color || '#15e0d8' }));   // sequence multipliers
+  if (PITCHFORK_TYPES.includes(d.type)) return PITCHFORK_LEVELS.map((v,i) => ({ v, on:(v===1 || v===0.5), color: PITCHFORK_COLORS[i % PITCHFORK_COLORS.length], style:(v===1)?'solid':'dashed' }));
+  if (d.type === 'gannfan') return GANN_FAN_RATIOS.map((r,i) => ({ v:i, on:true, color: GANN_FAN_COLORS[i], style:'solid' }));   // one level per fan angle (v = angle index)
+  if (d.type === 'gannbox') return GANN_BOX_LEVELS.map((v,i) => ({ v, on:true, color: GANN_BOX_COLORS[i % GANN_BOX_COLORS.length], style:'solid' }));
   return FIB_LEVELS.map((v,i) => ({ v, on:true, color: FIB_COLORS[i % FIB_COLORS.length] }));
 }
 /* bounding box for a drawing's text label: [lx,ty,rx,by, outside] (outside=line-type) */
@@ -8853,9 +8994,12 @@ function _labelBox(ts, cs, d, W, H) {
   if (t==='arrowup'||t==='arrowdown'){ const x=xc(ts,d.points[0]), y=cs.priceToCoordinate(d.points[0].price); return (x==null||y==null)?null:[x,y,x,y,true]; }
   if (t==='channel'){ const x1=xc(ts,d.points[0]), y1=cs.priceToCoordinate(d.points[0].price), x2=xc(ts,d.points[1]), y2=cs.priceToCoordinate(d.points[1].price);
     if ([x1,y1,x2,y2].some(v=>v==null)) return null; return [Math.min(x1,x2),Math.min(y1,y2),Math.max(x1,x2),Math.max(y1,y2),true]; }
+  if (t==='disjoint'||t==='flattb'){ const P=d.points.map(p=>[xc(ts,p),cs.priceToCoordinate(p.price)]); if (P.some(p=>p[0]==null||p[1]==null)) return null;
+    const xs=P.map(p=>p[0]), ys=P.map(p=>p[1]); return [Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys),true]; }
   if (t==='hline'){ const y=cs.priceToCoordinate(d.points[0].price); return y==null?null:[0,y,W,y,true]; }
   if (t==='hray'){ const x=xc(ts,d.points[0]), y=cs.priceToCoordinate(d.points[0].price); return (x==null||y==null)?null:[x,y,W,y,true]; }
   if (t==='vline'){ const x=xc(ts,d.points[0]); return x==null?null:[x,6,x,H-6,false]; }   // inset + inside so Top/Bottom labels stay on-screen
+  if (t==='crossline'){ const x=xc(ts,d.points[0]), y=cs.priceToCoordinate(d.points[0].price); return (x==null||y==null)?null:[x,y,x,y,true]; }
   return null;
 }
 /* draw a text label for a line/shape, positioned by labelH (left/center/right) + labelV (top/middle/bottom) */
@@ -8864,7 +9008,7 @@ function _drawLabel(ctx, d, lx, ty, rx, by, outside) {
   const g = 5;
   ctx.save(); ctx.setLineDash([]);
   ctx.fillStyle = d.textColor || d.color || '#e9edee';
-  ctx.font = `${Math.max(8, d.fontSize||12)}px IBM Plex Mono`;
+  ctx.font = `${d.italic?'italic ':''}${d.bold?'bold ':''}${Math.max(8, d.fontSize||12)}px IBM Plex Mono`;
   const Hh = d.labelH || 'center', Vv = d.labelV || 'middle';
   const vertical = Math.abs(rx-lx) < 2;
   let X, align, onLine=false;
@@ -8915,7 +9059,7 @@ function _drawLineLabel(ctx, d, x1, y1, x2, y2) {
   const fs = Math.max(8, d.fontSize||12);
   ctx.save(); ctx.setLineDash([]);
   ctx.translate(px, py); ctx.rotate(ang);
-  ctx.font = `${fs}px IBM Plex Mono`;
+  ctx.font = `${d.italic?'italic ':''}${d.bold?'bold ':''}${fs}px IBM Plex Mono`;
   const align = (Hh==='left') ? 'left' : (Hh==='right') ? 'right' : 'center';
   ctx.textAlign = align;
   const base = (Vv==='top') ? 'bottom' : (Vv==='bottom') ? 'top' : 'middle';
@@ -8981,6 +9125,28 @@ function _drawLineStats(ctx, lines, x1, y1, x2, y2, pos, color, W, H) {
   ctx.restore();
 }
 /* shape fill style from d.fill/d.fillColor (null = no fill) */
+/* linear regression over bar closes in the [P0,P1] index range — cached on the object (recompute only when range/bars change) */
+function _regChannel(inst, d) {
+  const bars = inst.bars || []; if (bars.length < 2 || !d.points || d.points.length < 2) return null;
+  const ts = inst.chart.timeScale();
+  const lgOf = p => (p.logical!=null) ? p.logical : ts.coordinateToLogical(ts.timeToCoordinate(p.time));
+  let lo = Math.round(lgOf(d.points[0])), hi = Math.round(lgOf(d.points[1]));
+  if (lo==null||hi==null||!Number.isFinite(lo)||!Number.isFinite(hi)) return null;
+  if (lo > hi) { const t=lo; lo=hi; hi=t; }
+  lo = Math.max(0, lo); hi = Math.min(bars.length-1, hi);
+  if (hi - lo < 1) return null;
+  const key = lo+'_'+hi+'_'+bars.length+'_'+(bars[hi]?bars[hi].time:0);
+  if (d._regCache && d._regCache.key === key) return d._regCache;
+  let n=0, sx=0, sy=0, sxx=0, sxy=0, syy=0;
+  for (let i=lo;i<=hi;i++){ const y=bars[i].close; const x=i; n++; sx+=x; sy+=y; sxx+=x*x; sxy+=x*y; syy+=y*y; }
+  const denom = (n*sxx - sx*sx) || 1e-9;
+  const b = (n*sxy - sx*sy)/denom, a = (sy - b*sx)/n;
+  let ss=0; for (let i=lo;i<=hi;i++){ const e=bars[i].close-(a+b*i); ss+=e*e; }
+  const sd = Math.sqrt(ss/n);
+  const r = (n*sxy - sx*sy) / (Math.sqrt((n*sxx-sx*sx)*(n*syy-sy*sy)) || 1e-9);
+  const res = { key, lo, hi, a, b, sd, r };
+  d._regCache = res; return res;
+}
 function _shapeFill(d, defAlpha) {
   if (d.fill === false) return null;
   const hasFill = typeof d.fillColor === 'string' && !!d.fillColor;
@@ -9148,7 +9314,8 @@ function _paintDraw(ctx, inst, d, W, H, selected, preview) {
     const x2=xc(ts, d.points[1]), y2=cs.priceToCoordinate(d.points[1].price);
     if (x1!=null&&y1!=null&&x2!=null&&y2!=null) {
       const [ex1,ey1,ex2,ey2] = _extLine(x1,y1,x2,y2, d.extend || LINE_MODE[d.type], W);
-      ctx.beginPath(); ctx.moveTo(ex1,ey1); ctx.lineTo(ex2,ey2); ctx.stroke();
+      const _lc = _clipSegToRect(ex1,ey1,ex2,ey2,W,H) || [ex1,ey1,ex2,ey2];   // stroke only the visible span (dashed + huge coords = lag)
+      ctx.beginPath(); ctx.moveTo(_lc[0],_lc[1]); ctx.lineTo(_lc[2],_lc[3]); ctx.stroke();
       if ((d.type === 'infoline' || d.type === 'trendangle') && !preview && (selected || d.alwaysStats !== false)) {
         const lines = (d.type === 'trendangle')
           ? ['∠ ' + (Math.atan2(-(y2-y1),(x2-x1))*180/Math.PI).toFixed(2) + '°']
@@ -9277,12 +9444,330 @@ function _paintDraw(ctx, inst, d, W, H, selected, preview) {
         const v = L.v;
         const sx=l1ax+(l2ax-l1ax)*v, sy=l1ay+(l2ay-l1ay)*v;
         const ex=l1bx+(l2bx-l1bx)*v, ey=l1by+(l2by-l1by)*v;
+        const cl=_clipSegToRect(sx,sy,ex,ey,W,H); if (!cl) return;   // visible span only (extended+dashed perf)
         ctx.save();
         ctx.strokeStyle = L.color || color; ctx.lineWidth = baseW; ctx.setLineDash(dashForStyle(L.style || d.style || 'solid'));
-        ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(ex,ey); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cl[0],cl[1]); ctx.lineTo(cl[2],cl[3]); ctx.stroke();
         ctx.restore();
       });
       if (selected) { _drawHandle(ctx,x0,y0); _drawHandle(ctx,x1,y1); _drawHandle(ctx,x2,y2); }
+    }
+  } else if (d.type === 'regtrend') {
+    if (preview) {
+      // placement UX (before 2nd click): a vertical line at the anchor x, a vertical line at the cursor x, and a connector between the two points
+      const x0=xc(ts,d.points[0]), y0=cs.priceToCoordinate(d.points[0].price);
+      const p1=d.points[1], x1=p1?xc(ts,p1):null, y1=p1?cs.priceToCoordinate(p1.price):null;
+      ctx.setLineDash(dashForStyle(d.style||'solid'));
+      if (x0!=null) { ctx.beginPath(); ctx.moveTo(x0,0); ctx.lineTo(x0,H); ctx.stroke(); }
+      if (x1!=null) { ctx.beginPath(); ctx.moveTo(x1,0); ctx.lineTo(x1,H); ctx.stroke(); }
+      if (x0!=null&&x1!=null&&y0!=null&&y1!=null) { ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke(); }
+    } else {
+      // finalized: linear regression line over bar closes in [P0,P1] + std-dev bands; fill blue above / red below the median
+      const reg = _regChannel(inst, d);
+      if (reg) {
+        const xL=lcoord(ts,reg.lo), xH=lcoord(ts,reg.hi);
+        const mult=(d.devMult!=null)?d.devMult:2;
+        const medL=reg.a+reg.b*reg.lo, medH=reg.a+reg.b*reg.hi;
+        const yML=cs.priceToCoordinate(medL), yMH=cs.priceToCoordinate(medH);
+        const yUL=cs.priceToCoordinate(medL+mult*reg.sd), yUH=cs.priceToCoordinate(medH+mult*reg.sd);
+        const yLL=cs.priceToCoordinate(medL-mult*reg.sd), yLH=cs.priceToCoordinate(medH-mult*reg.sd);
+        if ([xL,xH,yML,yMH,yUL,yUH,yLL,yLH].every(v=>v!=null)) {
+          if (d.fill!==false) {
+            ctx.setLineDash([]);
+            ctx.fillStyle='rgba(38,128,235,0.13)';  // upper half — blue
+            ctx.beginPath(); ctx.moveTo(xL,yUL); ctx.lineTo(xH,yUH); ctx.lineTo(xH,yMH); ctx.lineTo(xL,yML); ctx.closePath(); ctx.fill();
+            ctx.fillStyle='rgba(242,54,69,0.13)';   // lower half — red
+            ctx.beginPath(); ctx.moveTo(xL,yML); ctx.lineTo(xH,yMH); ctx.lineTo(xH,yLH); ctx.lineTo(xL,yLL); ctx.closePath(); ctx.fill();
+          }
+          ctx.setLineDash(dashForStyle('dashed'));
+          ctx.beginPath(); ctx.moveTo(xL,yUL); ctx.lineTo(xH,yUH); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(xL,yLL); ctx.lineTo(xH,yLH); ctx.stroke();
+          ctx.setLineDash(dashForStyle(d.style||'solid'));
+          ctx.beginPath(); ctx.moveTo(xL,yML); ctx.lineTo(xH,yMH); ctx.stroke();
+          if (d.showR!==false) { ctx.setLineDash([]); ctx.fillStyle=color; ctx.font='10px IBM Plex Mono'; ctx.textBaseline='bottom'; ctx.textAlign='left'; ctx.fillText('R '+reg.r.toFixed(2), xL+4, Math.min(yUL,yUH)-2); }
+          if (selected) { _drawHandle(ctx,xL,yML); _drawHandle(ctx,xH,yMH); }
+        }
+      } else if (d.points.length>=2) {   // not enough bars: plain segment between the two clicks
+        const x1=xc(ts,d.points[0]),y1=cs.priceToCoordinate(d.points[0].price),x2=xc(ts,d.points[1]),y2=cs.priceToCoordinate(d.points[1].price);
+        if (x1!=null&&x2!=null&&y1!=null&&y2!=null) { ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); }
+      }
+    }
+  } else if (d.type === 'flattb') {
+    // Flat Top/Bottom: a sloped line (P0–P1) + a HORIZONTAL line at P2's price over the same x-range, filled between
+    const P=d.points.map(p=>[xc(ts,p), cs.priceToCoordinate(p.price)]);
+    const ok=(i)=>P[i]&&P[i][0]!=null&&P[i][1]!=null;
+    if (ok(0)&&ok(1)&&ok(2)) {
+      const em = d.extend==='both'?'both':d.extend==='right'?'right':d.extend==='left'?'left':'segment';
+      const [a1x,a1y,b1x,b1y]=_extLine(P[0][0],P[0][1],P[1][0],P[1][1], em, W);
+      const fy=P[2][1];   // flat line is horizontal at P2's y, spanning line 1's x-range
+      const [a2x,a2y,b2x,b2y]=_extLine(P[0][0],fy,P[1][0],fy, em, W);
+      const cfs=_shapeFill(d, preview?0.05:0.08);
+      if (cfs) { ctx.fillStyle=cfs; ctx.beginPath(); ctx.moveTo(a1x,a1y); ctx.lineTo(b1x,b1y); ctx.lineTo(b2x,b2y); ctx.lineTo(a2x,a2y); ctx.closePath(); ctx.fill(); }
+      [[a1x,a1y,b1x,b1y],[a2x,a2y,b2x,b2y]].forEach(s=>{ const cl=_clipSegToRect(s[0],s[1],s[2],s[3],W,H); if (cl) { ctx.beginPath(); ctx.moveTo(cl[0],cl[1]); ctx.lineTo(cl[2],cl[3]); ctx.stroke(); } });
+      if (selected) { _drawHandle(ctx,P[0][0],P[0][1]); _drawHandle(ctx,P[1][0],P[1][1]); _drawHandle(ctx,P[2][0],P[2][1]); }
+    } else if (ok(0)&&ok(1)) {   // placing: line 1 fixed; 3rd (cursor) point previews the flat line + fill
+      const [x0,y0]=P[0],[x1,y1]=P[1];
+      if (ok(2)) {
+        const fy=P[2][1];
+        const cfs=_shapeFill(d, 0.05);
+        if (cfs) { ctx.fillStyle=cfs; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.lineTo(x1,fy); ctx.lineTo(x0,fy); ctx.closePath(); ctx.fill(); }
+        ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x0,fy); ctx.lineTo(x1,fy); ctx.stroke();
+      } else {
+        ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+      }
+    }
+  } else if (d.type === 'disjoint') {
+    // Disjoint Channel: two INDEPENDENT line segments (P0–P1 and P2–P3), filled between, not constrained parallel
+    const P=d.points.map(p=>[xc(ts,p), cs.priceToCoordinate(p.price)]);
+    const ok=(i)=>P[i]&&P[i][0]!=null&&P[i][1]!=null;
+    if (ok(0)&&ok(1)&&ok(2)&&ok(3)) {
+      const em = d.extend==='both'?'both':d.extend==='right'?'right':d.extend==='left'?'left':'segment';
+      const [a1x,a1y,b1x,b1y]=_extLine(P[0][0],P[0][1],P[1][0],P[1][1], em, W);
+      const [a2x,a2y,b2x,b2y]=_extLine(P[2][0],P[2][1],P[3][0],P[3][1], em, W);
+      const cfs=_shapeFill(d, preview?0.05:0.08);
+      if (cfs) { ctx.fillStyle=cfs; ctx.beginPath(); ctx.moveTo(a1x,a1y); ctx.lineTo(b1x,b1y); ctx.lineTo(b2x,b2y); ctx.lineTo(a2x,a2y); ctx.closePath(); ctx.fill(); }
+      [[a1x,a1y,b1x,b1y],[a2x,a2y,b2x,b2y]].forEach(s=>{ const cl=_clipSegToRect(s[0],s[1],s[2],s[3],W,H); if (cl) { ctx.beginPath(); ctx.moveTo(cl[0],cl[1]); ctx.lineTo(cl[2],cl[3]); ctx.stroke(); } });
+      if (selected) P.forEach(p=>_drawHandle(ctx,p[0],p[1]));
+    } else if (ok(0)&&ok(1)) {   // placing: line 1 fixed; once a 3rd (cursor) point exists, preview the mirrored opposite line
+      const [x0,y0]=P[0],[x1,y1]=P[1];
+      if (ok(2)) {
+        const [x2,y2]=P[2], dxp=x1-x0, slopeNeg = dxp!==0 ? -(y1-y0)/dxp : 0;   // opposite line mirrors line 1's slope
+        const oy0=y2+slopeNeg*(x0-x2), oy1=y2+slopeNeg*(x1-x2);
+        const cfs=_shapeFill(d, 0.05);   // preview fill between line 1 and the mirrored opposite line
+        if (cfs) { ctx.fillStyle=cfs; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.lineTo(x1,oy1); ctx.lineTo(x0,oy0); ctx.closePath(); ctx.fill(); }
+        ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x0,oy0); ctx.lineTo(x1,oy1); ctx.stroke();
+      } else {
+        ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+      }
+    }
+  } else if (d.type === 'gannfan') {
+    // Gann Fan: rays from P0 at Gann angles, each angle its own colour/style/on; background wedge fill + mid-line labels
+    const x0=xc(ts,d.points[0]), y0=cs.priceToCoordinate(d.points[0].price);
+    const x1=xc(ts,d.points[1]), y1=cs.priceToCoordinate(d.points[1].price);
+    if (x0!=null&&y0!=null&&x1!=null&&y1!=null) {
+      const bdx=x1-x0, bdy=y1-y0, lv=_fibLevels(d);
+      const far=GANN_FAN_RATIOS.map(r=>_extLine(x0,y0,x0+r[0]*bdx,y0+r[1]*bdy,'ray',W));   // [ax,ay,bx,by]; bx,by = far end at viewport
+      ctx.save();
+      if (!preview && d.gannBg!==false) {   // wedge fill between consecutive visible rays
+        const a=(d.gannBgOpacity!=null?d.gannBgOpacity:8)/100; ctx.setLineDash([]);
+        for (let k=0;k<GANN_FAN_RATIOS.length-1;k++){
+          if (lv[k] && lv[k].on===false) continue; if (lv[k+1] && lv[k+1].on===false) continue;
+          const rgb=hexToRgb(parseColorStr((lv[k+1]&&lv[k+1].color)||color).hex); if(!rgb||rgb.some(isNaN)) continue;
+          ctx.fillStyle=`rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`;
+          ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(far[k][2],far[k][3]); ctx.lineTo(far[k+1][2],far[k+1][3]); ctx.closePath(); ctx.fill();
+        }
+      }
+      GANN_FAN_RATIOS.forEach((r,i)=>{
+        if (lv[i] && lv[i].on===false) return;
+        const cl=_clipSegToRect(far[i][0],far[i][1],far[i][2],far[i][3],W,H); if(!cl) return;
+        const one=(r[0]===1&&r[1]===1), lc=(lv[i]&&lv[i].color)||color;
+        ctx.globalAlpha=preview?0.9:1; ctx.lineWidth=one?baseW+0.5:baseW; ctx.strokeStyle=lc; ctx.setLineDash(dashForStyle((lv[i]&&lv[i].style)||d.style||'solid'));
+        ctx.beginPath(); ctx.moveTo(cl[0],cl[1]); ctx.lineTo(cl[2],cl[3]); ctx.stroke();
+        if (d.showLabels!==false && !preview) {   // ratio label at the MIDPOINT of the visible segment (TradingView places it mid-line)
+          ctx.globalAlpha=1; ctx.setLineDash([]); ctx.fillStyle=lc; ctx.font='10px IBM Plex Mono'; ctx.textBaseline='bottom'; ctx.textAlign='center';
+          ctx.fillText(GANN_FAN_LABELS[i], (cl[0]+cl[2])/2, (cl[1]+cl[3])/2-2);
+        }
+      });
+      ctx.restore();
+      if (selected) { _drawHandle(ctx,x0,y0); _drawHandle(ctx,x1,y1); }
+    }
+  } else if (d.type === 'gannbox') {
+    // Gann Box: independent price (horizontal) & time (vertical) Gann-ratio grids over a 2-corner box,
+    // per-axis background bands, labels on all four edges. No diagonals unless "Angles" is enabled.
+    const x0=xc(ts,d.points[0]), y0=cs.priceToCoordinate(d.points[0].price);
+    const x1=xc(ts,d.points[1]), y1=cs.priceToCoordinate(d.points[1].price);
+    if (x0!=null&&y0!=null&&x1!=null&&y1!=null) {
+      const rev=!!d.reverse, pos=v=>rev?(1-v):v;
+      const pl=_gbLevels(d,'price'), tl=_gbLevels(d,'time');
+      const lx=Math.min(x0,x1), rx=Math.max(x0,x1), ty=Math.min(y0,y1), by=Math.max(y0,y1); const fs=Math.max(8, d.fontSize||10);
+      ctx.save();
+      if (!preview && d.priceBg!==false) {   // horizontal bands between consecutive price levels
+        const a=(d.priceBgOpacity!=null?d.priceBgOpacity:8)/100; ctx.setLineDash([]);
+        const on=pl.filter(L=>L.on!==false).slice().sort((p,q)=>p.v-q.v);
+        for (let k=0;k<on.length-1;k++){ const ya=y0+(y1-y0)*pos(on[k].v), yb=y0+(y1-y0)*pos(on[k+1].v); const rgb=hexToRgb(parseColorStr(on[k].color||color).hex); if(!rgb||rgb.some(isNaN))continue; ctx.fillStyle=`rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`; ctx.fillRect(lx,Math.min(ya,yb),rx-lx,Math.abs(yb-ya)); }
+      }
+      if (!preview && d.timeBg!==false) {   // vertical bands between consecutive time levels
+        const a=(d.timeBgOpacity!=null?d.timeBgOpacity:8)/100; ctx.setLineDash([]);
+        const on=tl.filter(L=>L.on!==false).slice().sort((p,q)=>p.v-q.v);
+        for (let k=0;k<on.length-1;k++){ const xa=x0+(x1-x0)*pos(on[k].v), xb=x0+(x1-x0)*pos(on[k+1].v); const rgb=hexToRgb(parseColorStr(on[k].color||color).hex); if(!rgb||rgb.some(isNaN))continue; ctx.fillStyle=`rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`; ctx.fillRect(Math.min(xa,xb),ty,Math.abs(xb-xa),by-ty); }
+      }
+      ctx.font=fs+'px IBM Plex Mono';
+      pl.forEach(L=>{ if(L.on===false)return; const y=y0+(y1-y0)*pos(L.v); ctx.strokeStyle=L.color||color; ctx.lineWidth=baseW; ctx.setLineDash(dashForStyle(d.style||'solid'));
+        ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke();
+        if(!preview){ ctx.setLineDash([]); ctx.fillStyle=L.color||color; ctx.textBaseline='middle'; const t=(+L.v.toFixed(3))+'';
+          if(d.leftLabels!==false){ ctx.textAlign='right'; ctx.fillText(t, lx-4, y); }
+          if(d.rightLabels!==false){ ctx.textAlign='left'; ctx.fillText(t, rx+4, y); } }
+      });
+      tl.forEach(L=>{ if(L.on===false)return; const x=x0+(x1-x0)*pos(L.v); ctx.strokeStyle=L.color||color; ctx.lineWidth=baseW; ctx.setLineDash(dashForStyle(d.style||'solid'));
+        ctx.beginPath(); ctx.moveTo(x,y0); ctx.lineTo(x,y1); ctx.stroke();
+        if(!preview){ ctx.setLineDash([]); ctx.fillStyle=L.color||color; ctx.textAlign='center'; const t=(+L.v.toFixed(3))+'';
+          if(d.topLabels!==false){ ctx.textBaseline='bottom'; ctx.fillText(t, x, ty-2); }
+          if(d.bottomLabels!==false){ ctx.textBaseline='top'; ctx.fillText(t, x, by+2); } }
+      });
+      if (d.angles){ ctx.strokeStyle=d.anglesColor||color; ctx.lineWidth=baseW; ctx.setLineDash(dash);
+        ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.moveTo(x0,y1); ctx.lineTo(x1,y0); ctx.stroke(); }
+      ctx.restore();
+      if (selected){ _drawHandle(ctx,x0,y0); _drawHandle(ctx,x1,y1); }
+    }
+  } else if (PITCHFORK_TYPES.includes(d.type)) {
+    // Andrews / Schiff / Modified-Schiff pitchfork: median ray from the (possibly shifted) origin
+    // through the P1–P2 midpoint, plus symmetric level rays anchored on the P1–P2 base line.
+    const P=d.points.map(p=>[xc(ts,p), cs.priceToCoordinate(p.price)]);
+    if (P.length>=2 && P[0][0]!=null&&P[0][1]!=null&&P[1][0]!=null&&P[1][1]!=null) {
+      if (P.length<3 || P[2][0]==null || P[2][1]==null) {           // 2-point preview: plain segment
+        ctx.beginPath(); ctx.moveTo(P[0][0],P[0][1]); ctx.lineTo(P[1][0],P[1][1]); ctx.stroke();
+      } else {
+        const [p0,p1,p2]=P, M=[(p1[0]+p2[0])/2,(p1[1]+p2[1])/2];
+        let O=p0, dx, dy, baseC=M, hoff=[p1[0]-M[0], p1[1]-M[1]], insideFar=null;   // baseC = prong-base centre, hoff = half the base span
+        if (d.type==='schiff')  O=[p0[0], (p0[1]+p1[1])/2];            // Schiff: shifted VERTICALLY by half the P0–P1 price distance (TV)
+        if (d.type==='mschiff') O=[(p0[0]+p1[0])/2,(p0[1]+p1[1])/2];   // Modified Schiff: midpoint of the P0–P1 segment (TV)
+        if (d.type==='inside') {
+          // Inside: standard prongs (median@M, tines through P1/P2) but the SLOPE is set so the FAR tine
+          // (through P2, opposite the first line's P1 end) passes through the MIDDLE of the first line.
+          // That far tine extends left to connect there; the median starts at the base (M) — never poking left of it.
+          const mf=[(p0[0]+p1[0])/2,(p0[1]+p1[1])/2];
+          O=[M[0],M[1]];                       // median starts at the base centre (no left overhang)
+          dx=p2[0]-mf[0]; dy=p2[1]-mf[1];      // slope: the P2 tine runs through mid(P0,P1)
+          insideFar=[mf,[p2[0],p2[1]]];         // far-tine left extension: first-line midpoint → P2
+        } else {
+          dx=M[0]-O[0]; dy=M[1]-O[1];
+        }
+        if (Math.hypot(dx,dy) < 0.5) { ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke(); }
+        else {
+          // handle: P1–P2 base + (for Schiff variants) a SOLID connector from P0 to the trident's
+          // LEFT END (P1) — TradingView style; the Modified-Schiff median sprouts from its midpoint
+          ctx.save(); ctx.setLineDash([]); ctx.strokeStyle=color; ctx.lineWidth=baseW;
+          ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]);
+          if (d.type!=='pitchfork') { ctx.moveTo(p0[0],p0[1]); ctx.lineTo(p1[0],p1[1]); }
+          ctx.stroke(); ctx.restore();
+          // fill the bands between consecutive prong lines (default ON) — each band uses its outer level's colour
+          if (!preview && d.pfFill!==false) {
+            const a=(d.pfFillOpacity!=null?d.pfFillOpacity:10)/100;
+            const bounds=[{m:0,color:d.color||color}];
+            _fibLevels(d).forEach(L=>{ if (L.on===false) return; bounds.push({m:L.v,color:L.color||color}); bounds.push({m:-L.v,color:L.color||color}); });
+            bounds.sort((x,y)=>x.m-y.m);
+            ctx.save(); ctx.setLineDash([]);
+            for (let k=0;k<bounds.length-1;k++){
+              const o1=bounds[k].m, o2=bounds[k+1].m;
+              const e1=_extLine(baseC[0]+hoff[0]*o1, baseC[1]+hoff[1]*o1, baseC[0]+hoff[0]*o1+dx, baseC[1]+hoff[1]*o1+dy, 'ray', W);
+              const e2=_extLine(baseC[0]+hoff[0]*o2, baseC[1]+hoff[1]*o2, baseC[0]+hoff[0]*o2+dx, baseC[1]+hoff[1]*o2+dy, 'ray', W);
+              const col=(Math.abs(o2)>=Math.abs(o1)?bounds[k+1].color:bounds[k].color);
+              const rgb=hexToRgb(parseColorStr(col).hex); if(!rgb||rgb.some(isNaN)) continue;
+              ctx.fillStyle=`rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`;
+              ctx.beginPath(); ctx.moveTo(e1[0],e1[1]); ctx.lineTo(e1[2],e1[3]); ctx.lineTo(e2[2],e2[3]); ctx.lineTo(e2[0],e2[1]); ctx.closePath(); ctx.fill();
+            }
+            ctx.restore();
+          }
+          // clip each ray to the visible plot BEFORE stroking — dashing a multi-million-px line
+          // (raw _extLine output) recomputes the dash pattern over its whole length every frame → lag
+          const ray=(sx,sy)=>{ const [a,b,c2,e2]=_extLine(sx,sy,sx+dx,sy+dy,'ray',W); const cl=_clipSegToRect(a,b,c2,e2,W,H); if(!cl) return; ctx.beginPath(); ctx.moveTo(cl[0],cl[1]); ctx.lineTo(cl[2],cl[3]); ctx.stroke(); };
+          ctx.strokeStyle=color; ctx.lineWidth=baseW; ctx.setLineDash(dash);
+          ray(O[0],O[1]);                                            // median
+          _fibLevels(d).forEach(L=>{ if (L.on===false) return; const v=L.v;
+            ctx.strokeStyle=L.color||color; ctx.lineWidth=baseW; ctx.setLineDash(dashForStyle(L.style||d.style));
+            ray(baseC[0]+hoff[0]*v, baseC[1]+hoff[1]*v); ray(baseC[0]-hoff[0]*v, baseC[1]-hoff[1]*v);   // symmetric pair (v=1 → the prongs)
+          });
+          if (insideFar) {   // Inside: extend the far (P2) tine left to the first-line midpoint
+            ctx.strokeStyle=color; ctx.lineWidth=baseW; ctx.setLineDash(dash);
+            ctx.beginPath(); ctx.moveTo(insideFar[0][0],insideFar[0][1]); ctx.lineTo(insideFar[1][0],insideFar[1][1]); ctx.stroke();
+          }
+        }
+        if (selected) { _drawHandle(ctx,p0[0],p0[1]); _drawHandle(ctx,p1[0],p1[1]); _drawHandle(ctx,p2[0],p2[1]); }
+      }
+    }
+  } else if (PATTERN_TYPES.includes(d.type)) {
+    // harmonic / chart patterns: zigzag through the vertices + letter labels + ratio readouts
+    const P=d.points.map(p=>[xc(ts,p), cs.priceToCoordinate(p.price)]);
+    const V=P.filter(q=>q[0]!=null&&q[1]!=null);
+    if (V.length>=2) {
+      // H&S neckline endpoints (intersections with the outer legs) — shared by fill + neckline
+      let hnsNL=null, hnsNR=null, hnsDir=null;
+      if (d.type==='hns' && V.length>=5) {
+        const a=V[2], b=V[4]; hnsDir=[b[0]-a[0], b[1]-a[1]];
+        hnsNL=_lineSegX(a[0],a[1],hnsDir[0],hnsDir[1], V[0][0],V[0][1],V[1][0],V[1][1]);
+        hnsNR=(V.length>=7)?_lineSegX(a[0],a[1],hnsDir[0],hnsDir[1], V[5][0],V[5][1],V[6][0],V[6][1]):null;
+      }
+      const fs2=_shapeFill(d, 0.10);
+      const tri=(i,j,k)=>{ ctx.beginPath(); ctx.moveTo(V[i][0],V[i][1]); ctx.lineTo(V[j][0],V[j][1]); ctx.lineTo(V[k][0],V[k][1]); ctx.closePath(); ctx.fill(); };
+      if (fs2) {
+        ctx.fillStyle=fs2;
+        if (d.type==='xabcd') {                                       // XAB + BCD triangles
+          if (V.length>=3) tri(0,1,2);
+          if (V.length>=5) tri(2,3,4);
+        } else if (d.type==='abcd') {                                  // ABC + BCD triangles
+          if (V.length>=3) tri(0,1,2);
+          if (V.length>=4) tri(1,2,3);
+        } else if (d.type==='hns') {
+          // TV behaviour: each lobe fills independently against the neckline —
+          // head always (its troughs sit ON the neckline); a shoulder only while the
+          // neckline actually meets that side's outer leg (no closed region → that lobe unfilled)
+          if (V.length>=5) {                       // head lobe
+            ctx.beginPath(); ctx.moveTo(V[2][0],V[2][1]); ctx.lineTo(V[3][0],V[3][1]); ctx.lineTo(V[4][0],V[4][1]); ctx.closePath(); ctx.fill();
+          }
+          if (V.length>=5 && hnsNL) {              // left-shoulder lobe
+            ctx.beginPath(); ctx.moveTo(hnsNL[0],hnsNL[1]); ctx.lineTo(V[1][0],V[1][1]); ctx.lineTo(V[2][0],V[2][1]); ctx.closePath(); ctx.fill();
+          }
+          if (V.length>=7 && hnsNR) {              // right-shoulder lobe
+            ctx.beginPath(); ctx.moveTo(V[4][0],V[4][1]); ctx.lineTo(V[5][0],V[5][1]); ctx.lineTo(hnsNR[0],hnsNR[1]); ctx.closePath(); ctx.fill();
+          }
+        }
+      }
+      ctx.beginPath(); ctx.moveTo(V[0][0],V[0][1]); for(let i=1;i<V.length;i++) ctx.lineTo(V[i][0],V[i][1]); ctx.stroke();   // zigzag
+      // dashed connectors + retracement ratios (price-distance based, TV style)
+      const pr=i=>d.points[i]?d.points[i].price:null;
+      const conn=(i,j,k,l)=>{                                          // dashed i–j, ratio = |k→l| / |j? …| caller computes
+        ctx.save(); ctx.setLineDash([4,3]); ctx.lineWidth=1; ctx.globalAlpha*=0.75;
+        ctx.beginPath(); ctx.moveTo(V[i][0],V[i][1]); ctx.lineTo(V[j][0],V[j][1]); ctx.stroke(); ctx.restore();
+      };
+      const pfs = Math.max(8, d.fontSize || 10);   // letters & ratios honour the Text-size setting
+      // label CHIP: rounded pill in the pattern colour with auto-contrast text (TradingView style)
+      const chipTxt=(txt, cx2, cy2, anchor)=>{
+        ctx.save(); ctx.setLineDash([]); ctx.font=(d.bold?'bold ':'')+pfs+'px IBM Plex Mono';
+        const tw2=ctx.measureText(txt).width, hh=pfs+7, ww=tw2+10, r2=Math.min(5,hh/2);
+        const by = anchor==='above' ? cy2-hh : anchor==='below' ? cy2 : cy2-hh/2;
+        const bx = cx2-ww/2;
+        const cc = d.color||'#15e0d8';
+        ctx.fillStyle=cc; _roundRectPath(ctx,bx,by,ww,hh,r2); ctx.fill();
+        let fg2 = d.textColor;
+        if (!fg2) { const rgb=hexToRgb((parseColorStr(cc)).hex)||[21,224,216]; const lum=(0.299*rgb[0]+0.587*rgb[1]+0.114*rgb[2])/255; fg2 = lum>0.55 ? '#0b0e0f' : '#ffffff'; }
+        ctx.fillStyle=fg2; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(txt, cx2, by+hh/2+0.5);
+        ctx.restore();
+      };
+      const ratioTxt=(i,j,r)=>{ if(!isFinite(r)||r<=0) return; chipTxt(r.toFixed(3), (V[i][0]+V[j][0])/2, (V[i][1]+V[j][1])/2, 'center'); };
+      const seg=(i,j)=>Math.abs(pr(j)-pr(i));
+      if (d.type==='xabcd') {
+        if (V.length>=3){ conn(0,2); ratioTxt(0,2, seg(1,2)/seg(0,1)); }   // AB/XA at the X–B dash
+        if (V.length>=4){ conn(1,3); ratioTxt(1,3, seg(2,3)/seg(1,2)); }   // BC/AB
+        if (V.length>=5){ conn(2,4); ratioTxt(2,4, seg(3,4)/seg(2,3)); }   // CD/BC
+      } else if (d.type==='abcd') {
+        if (V.length>=3){ conn(0,2); ratioTxt(0,2, seg(1,2)/seg(0,1)); }   // BC/AB
+        if (V.length>=4){ conn(1,3); ratioTxt(1,3, seg(2,3)/seg(1,2)); }   // CD/BC
+      } else if (d.type==='hns' && V.length>=5 && hnsDir) {
+        // neckline (DOTTED): through the two troughs (pts 2 & 4). Each side stops where it meets the
+        // pattern's outer leg — and if a side meets nothing, it extends to the chart edge instead.
+        const a=V[2], b=V[4], ndx=hnsDir[0], ndy=hnsDir[1];
+        let nl = hnsNL, nr = hnsNR;
+        if (!nl || !nr) {   // unmet side → extend along the line to the visible edge
+          const F=10000, A=[a[0]-ndx*F, a[1]-ndy*F], B=[b[0]+ndx*F, b[1]+ndy*F];
+          const cl=_clipSegToRect(A[0],A[1],B[0],B[1],W,H);
+          if (cl) { if (!nl) nl=[cl[0],cl[1]]; if (!nr) nr=[cl[2],cl[3]]; }
+        }
+        if (nl && nr) {
+          ctx.save(); ctx.strokeStyle=color; ctx.lineWidth=baseW; ctx.setLineDash(dashForStyle('dotted'));
+          ctx.beginPath(); ctx.moveTo(nl[0],nl[1]); ctx.lineTo(nr[0],nr[1]); ctx.stroke(); ctx.restore();
+        }
+      }
+      // vertex letters in colour chips — peaks above the point, troughs below
+      const labels=PATTERN_LABELS[d.type]||[];
+      V.forEach((q,i)=>{ const lb=labels[i]; if(!lb) return;
+        const prev=V[i-1], next=V[i+1];
+        const isPeak = (!prev || q[1]<=prev[1]) && (!next || q[1]<=next[1]);
+        chipTxt(lb, q[0], q[1] + (isPeak?-7:7), isPeak?'above':'below');
+      });
+      if (selected) V.forEach(q=>_drawHandle(ctx,q[0],q[1]));
     }
   } else if (d.type === 'long' || d.type === 'short') {
     // 4 points: [entry-left, entry-right, target, stop]
@@ -9393,7 +9878,7 @@ function _paintDraw(ctx, inst, d, W, H, selected, preview) {
         const parts=[];
         if (showLevel==='percent') parts.push((lv*100).toFixed(1)+'%'); else if (showLevel==='value') parts.push(''+lv);
         if (showPrice) parts.push('('+price.toFixed(1)+')');
-        if (parts.length){ const txt=parts.join(' '); ctx.setLineDash([]); ctx.fillStyle=lc; ctx.font=`${fs}px IBM Plex Mono`; ctx.textAlign=lblAlign;
+        if (parts.length){ const txt=parts.join(' '); ctx.setLineDash([]); ctx.fillStyle=lc; ctx.font=`${d.bold?'bold ':''}${fs}px IBM Plex Mono`; ctx.textAlign=lblAlign;
           let ly, bl; if(labelV==='top'){bl='bottom';ly=y-3;}else if(labelV==='bottom'){bl='top';ly=y+3;}else{bl='middle';ly=y;}
           ctx.textBaseline=bl;
           if (bl==='middle') _eraseTextBox(ctx, txt, lblX, ly, lblAlign, bl, fs);
@@ -9439,13 +9924,14 @@ function _paintDraw(ctx, inst, d, W, H, selected, preview) {
       geom.forEach(({L,c})=>{
         const lc=L.color||'#15e0d8';
         ctx.strokeStyle=lc; ctx.lineWidth=baseW; ctx.setLineDash(dashForStyle(L.style || d.style));
-        ctx.beginPath(); ctx.moveTo(c[0],c[1]); ctx.lineTo(c[2],c[3]); ctx.stroke();
+        const cl=_clipSegToRect(c[0],c[1],c[2],c[3],W,H) || c;   // visible span only (extended+dashed perf)
+        ctx.beginPath(); ctx.moveTo(cl[0],cl[1]); ctx.lineTo(cl[2],cl[3]); ctx.stroke();
         const parts=[];
         if (showLevel==='percent') parts.push((L.v*100).toFixed(1)+'%');
         else if (showLevel==='value') parts.push(''+L.v);
         const ly=yAtRef(c);
         if (showPrice){ const pr=cs.coordinateToPrice(ly); if (pr!=null) parts.push('('+pr.toFixed(1)+')'); }
-        if (parts.length){ const txt=parts.join(' '); ctx.setLineDash([]); ctx.font=`${fs}px IBM Plex Mono`; ctx.textBaseline='middle'; ctx.textAlign=lblAlign; _eraseTextBox(ctx, txt, lblX, ly, lblAlign, 'middle', fs); ctx.fillStyle=lc; ctx.fillText(txt, lblX, ly); ctx.textAlign='left'; }
+        if (parts.length){ const txt=parts.join(' '); ctx.setLineDash([]); ctx.font=`${d.bold?'bold ':''}${fs}px IBM Plex Mono`; ctx.textBaseline='middle'; ctx.textAlign=lblAlign; _eraseTextBox(ctx, txt, lblX, ly, lblAlign, 'middle', fs); ctx.fillStyle=lc; ctx.fillText(txt, lblX, ly); ctx.textAlign='left'; }
       });
       if (selected){ _drawHandle(ctx,xA,yA); _drawHandle(ctx,xB,yB); _drawHandle(ctx,xC,yC); }
     }
@@ -9533,6 +10019,15 @@ function _paintDraw(ctx, inst, d, W, H, selected, preview) {
     const V=P.filter(p=>p[0]!=null&&p[1]!=null);
     if (V.length>=2) {
       ctx.beginPath(); ctx.moveTo(V[0][0],V[0][1]); for(let i=1;i<V.length;i++) ctx.lineTo(V[i][0],V[i][1]); ctx.stroke();
+      // arrowhead at the final vertex (TradingView "Path" style)
+      const a=V[V.length-2], b=V[V.length-1];
+      const ang=Math.atan2(b[1]-a[1], b[0]-a[0]), hl=16+(d.width||2)*4.5;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(b[0],b[1]); ctx.lineTo(b[0]-hl*Math.cos(ang-Math.PI/7), b[1]-hl*Math.sin(ang-Math.PI/7));
+      ctx.moveTo(b[0],b[1]); ctx.lineTo(b[0]-hl*Math.cos(ang+Math.PI/7), b[1]-hl*Math.sin(ang+Math.PI/7));
+      ctx.stroke();
+      ctx.setLineDash(dash);
     } else if (V.length===1 && preview) { ctx.beginPath(); ctx.arc(V[0][0],V[0][1],2,0,Math.PI*2); ctx.fillStyle=color; ctx.fill(); }
     if (selected) P.forEach(p=>{ if(p[0]!=null&&p[1]!=null) _drawHandle(ctx,p[0],p[1]); });
   } else if (d.type === 'text') {
@@ -9576,6 +10071,12 @@ function _paintDraw(ctx, inst, d, W, H, selected, preview) {
     if (x!=null) {
       ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
       if (selected) _drawHandle(ctx, x, H/2);
+    }
+  } else if (d.type === 'crossline') {
+    const x = xc(ts, d.points[0]), y = cs.priceToCoordinate(d.points[0].price);
+    if (x!=null && y!=null) {
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+      if (selected) _drawHandle(ctx, x, y);
     }
   } else if (d.type === 'fib') {
     const ax=xc(ts, d.points[0]), ay=cs.priceToCoordinate(d.points[0].price);
@@ -9621,7 +10122,7 @@ function _paintDraw(ctx, inst, d, W, H, selected, preview) {
           if (showLevel==='percent') parts.push((lv*100).toFixed(1)+'%');
           else if (showLevel==='value') parts.push(''+lv);
           if (showPrice) parts.push('('+priceAt(lv).toFixed(1)+')');   // price in parentheses
-          if (parts.length){ const txt=parts.join(' '); ctx.setLineDash([]); ctx.fillStyle=lc; ctx.font=`${fs}px IBM Plex Mono`;
+          if (parts.length){ const txt=parts.join(' '); ctx.setLineDash([]); ctx.fillStyle=lc; ctx.font=`${d.bold?'bold ':''}${fs}px IBM Plex Mono`;
             ctx.textAlign = lblAlign;
             let ly, bl; if (labelV==='top'){ bl='bottom'; ly=y-3; } else if (labelV==='bottom'){ bl='top'; ly=y+3; } else { bl='middle'; ly=y; }
             ctx.textBaseline=bl;
@@ -9734,6 +10235,7 @@ function redrawOverlay(inst) {
   ctx.beginPath(); ctx.rect(0, 0, W, mainH); ctx.clip();
   if (!drawHideAll) (inst._drawObjs || []).forEach(d => {
     if (d.hidden) return;
+    if (d['vis_' + inst.interval] === false) return;   // hidden on this timeframe (Visibility tab)
     if (d.groupId) { const g = (typeof _otGroupOf === 'function') ? _otGroupOf(inst, d) : null; if (g && g.hidden) return; }   // group hidden
     try { _paintDraw(ctx, inst, d, W, mainH, (d === selectedDraw && selectedInst === inst), false); } catch(e){}
   });
@@ -9826,6 +10328,45 @@ function redoDrawing(inst) {
   (inst._undoStack = inst._undoStack || []).push(a);
   _undoFinish(inst);
 }
+/* draw the DOM legend (symbol · TF · OHLC + indicator titles) onto the snapshot canvas, pixel-matched:
+   each text leaf is rendered at its on-screen position with its computed font & colour */
+function _drawLegendOnto(ctx, inst, scale) {
+  const slot = inst.panelEl?.querySelector('.chart-slot'); if (!slot) return;
+  const sr = slot.getBoundingClientRect();
+  const ov = inst.panelEl.querySelector('.ohlc-overlay'); if (!ov) return;
+  ov.querySelectorAll('*').forEach(el2 => {
+    if (el2.children.length) return;                                   // text leaves only
+    if (el2.tagName === 'BUTTON' || el2.closest('button')) return;     // skip control glyphs (eye/gear/✕)
+    const txt = (el2.textContent || '').trim(); if (!txt) return;
+    const cs2 = getComputedStyle(el2);
+    if (cs2.display === 'none' || cs2.visibility === 'hidden' || parseFloat(cs2.opacity) === 0) return;
+    const r2 = el2.getBoundingClientRect(); if (!r2.width) return;
+    ctx.font = `${cs2.fontStyle !== 'normal' ? cs2.fontStyle + ' ' : ''}${cs2.fontWeight} ${parseFloat(cs2.fontSize) * scale}px ${cs2.fontFamily}`;
+    ctx.fillStyle = cs2.color;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText(txt, (r2.left - sr.left) * scale, (r2.top - sr.top + r2.height / 2) * scale);
+  });
+}
+/* save the chart as a PNG: chart screenshot + drawing overlay + on-chart legend, composited */
+function snapshotChart(inst) {
+  if (!inst || !inst.chart) return;
+  let shot;
+  try { shot = inst.chart.takeScreenshot(); } catch(e) { toast('warn', 'Screenshot failed'); return; }
+  const cv = document.createElement('canvas');
+  cv.width = shot.width; cv.height = shot.height;
+  const ctx = cv.getContext('2d');
+  ctx.drawImage(shot, 0, 0);
+  const ov = inst._drawCanvas;
+  if (ov && ov.width > 0) { try { ctx.drawImage(ov, 0, 0, shot.width, shot.height); } catch(e){} }   // drawings layer
+  const slot = inst.panelEl?.querySelector('.chart-slot');
+  try { _drawLegendOnto(ctx, inst, shot.width / Math.max(1, slot ? slot.clientWidth : shot.width)); } catch(e){}   // legend on top
+  const sym = (typeof SYMBOL !== 'undefined' ? SYMBOL.toUpperCase().replace('USDT','-USD') : 'chart');
+  const stamp = new Date().toISOString().slice(0,19).replace('T','_').replace(/:/g,'');
+  const a = document.createElement('a');
+  a.download = `VEX_${sym}_${tfLabel(inst.interval||'')}_${stamp}.png`;
+  try { a.href = cv.toDataURL('image/png'); a.click(); toast('success', 'Chart image saved', a.download); }
+  catch(e) { toast('warn', 'Could not export image'); }
+}
 
 /* validate drawing coordinates — x may be a logical index or a time */
 function validDrawPoints(type, points) {
@@ -9839,15 +10380,19 @@ function validDrawPoints(type, points) {
   }
   if (type === 'hline') return Number.isFinite(points[0].price);
   if (type === 'vline') return okX(points[0]);
+  if (type === 'crossline') return Number.isFinite(points[0].price) && okX(points[0]);
   if (type === 'brush' || type === 'highlighter' || type === 'polyline') {
     if (points.length < 2) return false;
     return points.every(p => Number.isFinite(p.price) && okX(p));
   }
-  if (type === 'channel' || type === 'fibext' || type === 'fibchannel') {
+  if (type === 'channel' || type === 'flattb' || type === 'fibext' || type === 'fibchannel' || PITCHFORK_TYPES.includes(type)) {
     return points.length >= 3 && points.slice(0,3).every(p => Number.isFinite(p.price) && okX(p));
   }
   if (type === 'long' || type === 'short') {
     return points.length >= 4 && points.slice(0,4).every(p => Number.isFinite(p.price) && okX(p));
+  }
+  if (type === 'disjoint') {
+    return points.length >= 3 && points.slice(0,3).every(p => Number.isFinite(p.price) && okX(p));
   }
   const need = (TOOL_PTS[type] != null) ? TOOL_PTS[type] : 2;
   if (need === 1) return okX(points[0]) && Number.isFinite(points[0].price);
@@ -9874,9 +10419,33 @@ function finalizeDrawing(type, inst, points, restore = false, style = null) {
       if (Number.isFinite(pr) && Number.isFinite(lg)) points = [points[0], points[1], { price:pr, logical:lg }];
     } catch(e){}
   }
+  // regression trend: clamp both anchors to the real-bar range (regression spans data only, never the future whitespace)
+  if (type === 'regtrend' && !restore && points.length >= 2) {
+    const bars = inst.bars || [], last = bars.length - 1;
+    const ts2 = inst.chart.timeScale();
+    points = points.slice(0,2).map(p => {
+      let lg = (p.logical!=null) ? p.logical : ts2.coordinateToLogical(ts2.timeToCoordinate(p.time));
+      lg = Math.max(0, Math.min(last, Math.round(lg)));
+      const o = { logical: lg, price: p.price }; if (bars[lg]) o.time = bars[lg].time; return o;
+    });
+  }
+  // disjoint channel: the 3rd click sets the opposite line, which mirrors line 1's slope (up-right → down-right).
+  // expand 3 → 4 stored points (line 1 = P0,P1 · line 2 = mirrored endpoints over the same x-range), then disjoint to edit.
+  if (type === 'disjoint' && !restore && points.length === 3) {
+    try {
+      const ts=inst.chart.timeScale();
+      const lg=p=>(p.logical!=null)?p.logical:ts.coordinateToLogical(ts.timeToCoordinate(p.time));
+      const L0=lg(points[0]), L1=lg(points[1]), L2=lg(points[2]);
+      const pr0=points[0].price, pr1=points[1].price, pr2=points[2].price;
+      const slope1=(L1-L0)!==0 ? (pr1-pr0)/(L1-L0) : 0;     // data-space slope; negating it negates the visual slope
+      const q2={ logical:L0, price: pr2 - slope1*(L0-L2) }; // opposite line @ x0 (mirrored slope through P2)
+      const q3={ logical:L1, price: pr2 - slope1*(L1-L2) }; // opposite line @ x1
+      if (Number.isFinite(q2.price) && Number.isFinite(q3.price)) points = [points[0], points[1], q2, q3];
+    } catch(e){}
+  }
   const st = {
     color: (style && style.color) || drawDefaults.color,
-    width: (style && style.width) || (type === 'highlighter' ? HL_DEFAULT_WIDTH : drawDefaults.width),
+    width: (style && style.width) || (TOOL_REGISTRY[type] && TOOL_REGISTRY[type].defaultWidth) || drawDefaults.width,
     style: (style && style.style) || drawDefaults.style,
   };
   const cp = p => { const o = { time:p.time, price:p.price }; if (p.logical != null) o.logical = p.logical; return o; };
@@ -9885,15 +10454,15 @@ function finalizeDrawing(type, inst, points, restore = false, style = null) {
   const obj = { type, points: pts, color:st.color, width:st.width, style:st.style };
   if (hasText) obj.text = (style && style.text != null) ? style.text : '';
   // per-type creation defaults (new draws only) — e.g. VWAP shows std-dev bands + fill out of the box
-  const TYPE_DEFAULTS = { vwap: { showBands:true, bandFillOn:true, bandCount:2 }, fibext: { extend:'none' } };
-  if (!restore && TYPE_DEFAULTS[type]) Object.assign(obj, TYPE_DEFAULTS[type]);
+  const tdef = (TOOL_REGISTRY[type] && TOOL_REGISTRY[type].defaults) || null;   // per-type creation defaults (from the card)
+  if (!restore && tdef) Object.assign(obj, tdef);
   instDrawObjs(inst).push(obj);
   if (!restore) {
     if (inst.tab) {
       if (!Array.isArray(inst.tab.drawings)) inst.tab.drawings = [];
       const ser = { type, points: pts.map(cp), color:st.color, width:st.width, style:st.style };
       if (hasText) ser.text = obj.text;
-      if (TYPE_DEFAULTS[type]) Object.assign(ser, TYPE_DEFAULTS[type]);
+      if (tdef) Object.assign(ser, tdef);
       inst.tab.drawings.push(ser);
     }
     _pushUndo(inst, { op:'add', obj });
@@ -10003,6 +10572,7 @@ function drawHitTest(inst, mx, my) {
   for (let i = objs.length - 1; i >= 0; i--) {
     const d = objs[i];
     if (d.locked) continue;   // per-drawing lock → not selectable
+    if (d['vis_' + inst.interval] === false) continue;   // hidden on this timeframe → not selectable
     if (d.groupId) { const g = (typeof _otGroupOf === 'function') ? _otGroupOf(inst, d) : null; if (g && (g.locked || g.hidden)) continue; }   // group locked/hidden → not selectable
     if (d.type === 'trend' || d.type === 'ray' || d.type === 'extended' || d.type === 'infoline' || d.type === 'trendangle') {
       const x1=xc(ts, d.points[0]), y1=cs.priceToCoordinate(d.points[0].price);
@@ -10069,6 +10639,75 @@ function drawHitTest(inst, mx, my) {
           if(_segDist(mx,my,sx,sy,ex,ey)<=DRAW_HIT) return d;
         }
       }
+    } else if (d.type === 'regtrend') {
+      const reg=_regChannel(inst,d);
+      if (reg) {
+        const xL=lcoord(ts,reg.lo), xH=lcoord(ts,reg.hi);
+        const mult=(d.devMult!=null)?d.devMult:2;
+        const medL=reg.a+reg.b*reg.lo, medH=reg.a+reg.b*reg.hi;
+        for (const off of [0, mult*reg.sd, -mult*reg.sd]) {
+          const yl=cs.priceToCoordinate(medL+off), yh=cs.priceToCoordinate(medH+off);
+          if (yl!=null&&yh!=null&&_segDist(mx,my,xL,yl,xH,yh)<=DRAW_HIT) return d;
+        }
+        if (d.fill!==false) {
+          const yUL=cs.priceToCoordinate(medL+mult*reg.sd),yUH=cs.priceToCoordinate(medH+mult*reg.sd),yLL=cs.priceToCoordinate(medL-mult*reg.sd),yLH=cs.priceToCoordinate(medH-mult*reg.sd);
+          if (_ptInTri(mx,my,[xL,yUL],[xH,yUH],[xH,yLH])||_ptInTri(mx,my,[xL,yUL],[xH,yLH],[xL,yLL])) return d;
+        }
+      }
+    } else if (d.type === 'flattb') {
+      const P=d.points.map(p=>[xc(ts,p), cs.priceToCoordinate(p.price)]);
+      if (P.length>=3 && P.every(q=>q[0]!=null&&q[1]!=null)) {
+        const em=d.extend==='both'?'both':d.extend==='right'?'right':d.extend==='left'?'left':'segment';
+        const [a1x,a1y,b1x,b1y]=_extLine(P[0][0],P[0][1],P[1][0],P[1][1], em, plotW);
+        const fy=P[2][1];
+        const [a2x,a2y,b2x,b2y]=_extLine(P[0][0],fy,P[1][0],fy, em, plotW);
+        if (_segDist(mx,my,a1x,a1y,b1x,b1y)<=DRAW_HIT || _segDist(mx,my,a2x,a2y,b2x,b2y)<=DRAW_HIT) return d;
+        if (d.fill!==false && (_ptInTri(mx,my,[a1x,a1y],[b1x,b1y],[b2x,b2y]) || _ptInTri(mx,my,[a1x,a1y],[b2x,b2y],[a2x,a2y]))) return d;
+      }
+    } else if (d.type === 'disjoint') {
+      const P=d.points.map(p=>[xc(ts,p), cs.priceToCoordinate(p.price)]);
+      if (P.length>=4 && P.every(q=>q[0]!=null&&q[1]!=null)) {
+        const em=d.extend==='both'?'both':d.extend==='right'?'right':d.extend==='left'?'left':'segment';
+        const [a1x,a1y,b1x,b1y]=_extLine(P[0][0],P[0][1],P[1][0],P[1][1], em, plotW);
+        const [a2x,a2y,b2x,b2y]=_extLine(P[2][0],P[2][1],P[3][0],P[3][1], em, plotW);
+        if (_segDist(mx,my,a1x,a1y,b1x,b1y)<=DRAW_HIT || _segDist(mx,my,a2x,a2y,b2x,b2y)<=DRAW_HIT) return d;
+        if (d.fill!==false && (_ptInTri(mx,my,[a1x,a1y],[b1x,b1y],[b2x,b2y]) || _ptInTri(mx,my,[a1x,a1y],[b2x,b2y],[a2x,a2y]))) return d;
+      }
+    } else if (d.type === 'gannfan') {
+      const x0=xc(ts,d.points[0]), y0=cs.priceToCoordinate(d.points[0].price);
+      const x1=xc(ts,d.points[1]), y1=cs.priceToCoordinate(d.points[1].price);
+      if (x0!=null&&y0!=null&&x1!=null&&y1!=null) {
+        const bdx=x1-x0, bdy=y1-y0, lv=_fibLevels(d);
+        for (let i=0;i<GANN_FAN_RATIOS.length;i++){ if(lv[i]&&lv[i].on===false) continue; const r=GANN_FAN_RATIOS[i]; const [ax,ay,bx,by]=_extLine(x0,y0,x0+r[0]*bdx,y0+r[1]*bdy,'ray',plotW); if(_segDist(mx,my,ax,ay,bx,by)<=DRAW_HIT) return d; }
+      }
+    } else if (d.type === 'gannbox') {
+      const x0=xc(ts,d.points[0]), y0=cs.priceToCoordinate(d.points[0].price);
+      const x1=xc(ts,d.points[1]), y1=cs.priceToCoordinate(d.points[1].price);
+      if (x0!=null&&y0!=null&&x1!=null&&y1!=null) {
+        const rev=!!d.reverse, pos=v=>rev?(1-v):v;
+        const pl=_gbLevels(d,'price'), tl=_gbLevels(d,'time');
+        const lx=Math.min(x0,x1), rx=Math.max(x0,x1), ty=Math.min(y0,y1), by=Math.max(y0,y1);
+        if (mx>=lx-DRAW_HIT && mx<=rx+DRAW_HIT && my>=ty-DRAW_HIT && my<=by+DRAW_HIT) {
+          for (const L of pl){ if(L.on===false)continue; const y=y0+(y1-y0)*pos(L.v); if(Math.abs(my-y)<=DRAW_HIT) return d; }
+          for (const L of tl){ if(L.on===false)continue; const x=x0+(x1-x0)*pos(L.v); if(Math.abs(mx-x)<=DRAW_HIT) return d; }
+          if (d.angles && (_segDist(mx,my,x0,y0,x1,y1)<=DRAW_HIT || _segDist(mx,my,x0,y1,x1,y0)<=DRAW_HIT)) return d;
+          if ((d.priceBg!==false||d.timeBg!==false) && mx>=lx && mx<=rx && my>=ty && my<=by) return d;
+        }
+      }
+    } else if (PITCHFORK_TYPES.includes(d.type)) {
+      const P=d.points.map(p=>[xc(ts,p), cs.priceToCoordinate(p.price)]);
+      if (P.length>=3 && P.every(q=>q[0]!=null&&q[1]!=null)) {
+        const [p0,p1,p2]=P, M=[(p1[0]+p2[0])/2,(p1[1]+p2[1])/2];
+        let O=p0, dx, dy, baseC=M, hoff=[p1[0]-M[0],p1[1]-M[1]], insideFar=null; if(d.type==='schiff')O=[p0[0],(p0[1]+p1[1])/2]; if(d.type==='mschiff')O=[(p0[0]+p1[0])/2,(p0[1]+p1[1])/2];
+        if(d.type==='inside'){ const mf=[(p0[0]+p1[0])/2,(p0[1]+p1[1])/2]; O=[M[0],M[1]]; dx=p2[0]-mf[0]; dy=p2[1]-mf[1]; insideFar=[mf,[p2[0],p2[1]]]; } else { dx=M[0]-O[0]; dy=M[1]-O[1]; }
+        if (Math.hypot(dx,dy)>=0.5) {
+          const chk=(sx,sy)=>{ const [a,b,c2,e2]=_extLine(sx,sy,sx+dx,sy+dy,'ray',plotW); return _segDist(mx,my,a,b,c2,e2)<=DRAW_HIT; };
+          if (chk(O[0],O[1])) return d;                                       // median
+          for (const L of _fibLevels(d)){ if(L.on===false) continue; if (chk(baseC[0]+hoff[0]*L.v, baseC[1]+hoff[1]*L.v) || chk(baseC[0]-hoff[0]*L.v, baseC[1]-hoff[1]*L.v)) return d; }
+          if (insideFar && _segDist(mx,my,insideFar[0][0],insideFar[0][1],insideFar[1][0],insideFar[1][1])<=DRAW_HIT) return d;   // far-tine extension
+          if (_segDist(mx,my,p1[0],p1[1],p2[0],p2[1])<=DRAW_HIT) return d;    // base segment
+        }
+      }
     } else if (d.type === 'long' || d.type === 'short') {
       const x0=xc(ts, d.points[0]), x1=xc(ts, d.points[1]);
       const yE=cs.priceToCoordinate(d.points[0].price), yT=cs.priceToCoordinate(d.points[2].price), yS=cs.priceToCoordinate(d.points[3].price);
@@ -10121,7 +10760,7 @@ function drawHitTest(inst, mx, my) {
         if (prev && _segDist(mx,my,prev[0],prev[1],x,y)<=tol) return d;
         prev=[x,y];
       }
-    } else if (d.type === 'polyline') {
+    } else if (d.type === 'polyline' || PATTERN_TYPES.includes(d.type)) {
       const pts=d.points||[]; let prev=null;
       for (const p of pts) {
         const x=(p.logical!=null)?lcoord(ts,p.logical):ts.timeToCoordinate(p.time);
@@ -10146,6 +10785,9 @@ function drawHitTest(inst, mx, my) {
     } else if (d.type === 'vline') {
       const x = xc(ts, d.points[0]);
       if (x!=null && Math.abs(mx-x)<=DRAW_HIT) return d;
+    } else if (d.type === 'crossline') {
+      const x = xc(ts, d.points[0]), y = cs.priceToCoordinate(d.points[0].price);
+      if ((x!=null && Math.abs(mx-x)<=DRAW_HIT) || (y!=null && Math.abs(my-y)<=DRAW_HIT)) return d;
     } else if (d.type === 'fib') {
       const x1=xc(ts, d.points[0]), x2=xc(ts, d.points[1]);
       if (x1==null||x2==null) continue;
@@ -10183,21 +10825,7 @@ function _trashSvg() {
   return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
 }
 /* which toolbar controls each drawing type shows */
-const DT_SCHEMA = {
-  trend:['color','width','style'], ray:['color','width','style'], extended:['color','width','style'],
-  hline:['color','width','style'], hray:['color','width','style'], vline:['color','width','style'],
-  fib:['width','style'], fibext:['width','style'], fibchannel:['width','style'],
-  fibtime:['color','width','style'],
-  rect:['color','fill','width','style'], ellipse:['color','fill','width','style'], channel:['color','fill','width','style'],
-  circle:['color','fill','width','style'], triangle:['color','fill','width','style'],
-  rotrect:['color','fill','width','style'],
-  infoline:['color','width','style'], trendangle:['color','width','style'],
-  arrow:['color','width','style'], arrowup:['color','width'], arrowdown:['color','width'],
-  text:['color','font','bold','italic'],
-  note:['color','width'], callout:['color','width'], pricelabel:['color','width'], signpost:['color','width'], flag:['color','width'], comment:['color','width'], pin:['color','width'], pricenote:['color','width'],
-  brush:['color','width'], highlighter:['color','width'], polyline:['color','width','style'],
-  long:[], short:[], measure:[], vwap:['color','width','style'],
-};
+/* floating-toolbar controls per tool — derived from TOOL_REGISTRY (see the cards) */
 function dtControls(type) { return DT_SCHEMA[type] || ['color','width','style']; }
 function _gearSvg() {
   return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
@@ -10236,6 +10864,7 @@ function renderDrawToolbar(d) {
   let html = `<span class="dt-grip" data-dt-grip title="Drag to move">⋮⋮</span>`;
   html += parts.join(div);
   if (parts.length) html += div;
+  html += `<button class="dt-gear" data-dt-tpl title="Style template"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>`;
   html += `<button class="dt-gear" data-dt-gear title="Settings">${_gearSvg()}</button>`;
   html += `<button class="dt-del" data-dt-del title="Delete (Del)">${_trashSvg()}</button>`;
   return html;
@@ -10361,6 +10990,37 @@ function _otUngroup(inst, g) {
   objs.forEach((d, i) => { if (d.groupId === g.id) { delete d.groupId; if (tabD && tabD[i]) delete tabD[i].groupId; } });
   const gi = groups.indexOf(g); if (gi >= 0) groups.splice(gi, 1);
 }
+/* object-tree panel width — persisted, clamped to [OT_MIN, OT_MAX] */
+const OT_MIN_W = 200, OT_MAX_W = 520, OT_W_KEY = 'vex-objtree-width';
+function _otWidth() {
+  let w = parseInt(localStorage.getItem(OT_W_KEY) || '', 10);
+  if (!Number.isFinite(w)) w = 264;
+  return Math.max(OT_MIN_W, Math.min(OT_MAX_W, w));
+}
+function _otSetWidth(w) {
+  w = Math.max(OT_MIN_W, Math.min(OT_MAX_W, Math.round(w)));
+  try { localStorage.setItem(OT_W_KEY, String(w)); } catch(e){}
+  return w;
+}
+/* drag the left-edge handle to resize the panel (chart auto-resizes via its ResizeObserver) */
+function _otBindResizer(rsz, dock, inst) {
+  rsz.addEventListener('mousedown', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const startX = e.clientX, startW = dock.getBoundingClientRect().width;
+    rsz.classList.add('dragging'); document.body.classList.add('ot-resizing');
+    const onMove = (ev) => {
+      const w = _otSetWidth(startW + (startX - ev.clientX));   // drag left = wider
+      dock.style.width = w + 'px';
+      try { if (typeof redrawOverlay === 'function') redrawOverlay(inst); } catch(_){}
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp);
+      rsz.classList.remove('dragging'); document.body.classList.remove('ot-resizing');
+      try { if (typeof redrawOverlay === 'function') redrawOverlay(inst); } catch(_){}
+    };
+    document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
+  });
+}
 function closeObjectTree() {
   const inst = _otInst;
   if (_otDock && _otDock.parentNode) _otDock.parentNode.removeChild(_otDock);
@@ -10374,9 +11034,10 @@ function toggleObjectTree(inst) {
   if (_otDock) closeObjectTree();
   const wrap = inst.panelEl && inst.panelEl.querySelector('.chart-wrap');
   if (!wrap) return;
-  const dock = document.createElement('div'); dock.className = 'ot-dock'; wrap.appendChild(dock);
+  const dock = document.createElement('div'); dock.className = 'ot-dock'; dock.style.width = _otWidth() + 'px';
+  wrap.appendChild(dock);
   _otDock = dock; _otInst = inst;
-  renderObjectTree();
+  renderObjectTree();   // (re)attaches the resize handle after filling innerHTML
   // chart auto-resizes (its ResizeObserver on the slot); resize the drawing overlay too
   requestAnimationFrame(() => { try { if (typeof redrawOverlay === 'function') redrawOverlay(inst); } catch(e){} });
   setTimeout(() => { try { if (typeof redrawOverlay === 'function') redrawOverlay(inst); } catch(e){} }, 260);
@@ -10447,6 +11108,9 @@ function renderObjectTree() {
     + sec('ind', 'Indicators', inds.length) + (_otCollapsed.ind ? '' : indRows)
     + sec('draw', 'Drawings', draws.length) + (_otCollapsed.draw ? '' : drawRows)
     + `</div>`;
+  // re-attach the drag-to-resize handle (innerHTML above wiped it)
+  const rsz = document.createElement('div'); rsz.className = 'ot-resizer'; rsz.title = 'Drag to resize'; dock.appendChild(rsz);
+  _otBindResizer(rsz, dock, inst);
 }
 /* re-render the object tree live when objects are added/removed/changed (only if open for this inst) */
 function refreshObjectTree(inst) { if (_otDock && _otInst && (!inst || _otInst === inst)) renderObjectTree(); }
@@ -10605,7 +11269,7 @@ function handleHitTest(inst, mx, my) {
   const r = slot ? slot.getBoundingClientRect() : { width:0, height:0 };
   const W = r.width, H = r.height;
   const pts = [];
-  if (d.type === 'channel' || d.type === 'fibext' || d.type === 'fibchannel') {
+  if (d.type === 'channel' || d.type === 'flattb' || d.type === 'fibext' || d.type === 'fibchannel' || PITCHFORK_TYPES.includes(d.type)) {
     pts.push([xc(ts, d.points[0]), cs.priceToCoordinate(d.points[0].price)]);
     pts.push([xc(ts, d.points[1]), cs.priceToCoordinate(d.points[1].price)]);
     pts.push([xc(ts, d.points[2]), cs.priceToCoordinate(d.points[2].price)]);
@@ -10618,7 +11282,7 @@ function handleHitTest(inst, mx, my) {
     pts.push([cx, cs.priceToCoordinate(d.points[3].price)]);  // 3 stop (price)
   } else if (d.type === 'brush' || d.type === 'highlighter') {
     /* no endpoint handles for freehand */
-  } else if (d.type === 'polyline') {
+  } else if (d.type === 'polyline' || d.type === 'disjoint' || PATTERN_TYPES.includes(d.type)) {
     (d.points || []).forEach(p => pts.push([xc(ts, p), cs.priceToCoordinate(p.price)]));
   } else if (d.type === 'callout' || d.type === 'note' || d.type === 'pricenote') {
     pts.push([xc(ts, d.points[0]), cs.priceToCoordinate(d.points[0].price)]);   // 0 anchor
@@ -10627,6 +11291,13 @@ function handleHitTest(inst, mx, my) {
     pts.push([xc(ts, d.points[0]), cs.priceToCoordinate(d.points[0].price)]);
     pts.push([xc(ts, d.points[1]), cs.priceToCoordinate(d.points[1].price)]);
     if (d.points[2]) pts.push([xc(ts, d.points[2]), cs.priceToCoordinate(d.points[2].price)]);
+  } else if (d.type === 'regtrend') {
+    const reg=_regChannel(inst,d);   // handles sit ON the regression line at each point's x
+    d.points.slice(0,2).forEach(p=>{
+      const lg=(p.logical!=null)?p.logical:ts.coordinateToLogical(ts.timeToCoordinate(p.time));
+      const y = reg ? cs.priceToCoordinate(reg.a+reg.b*lg) : cs.priceToCoordinate(p.price);
+      pts.push([lcoord(ts,lg), y]);
+    });
   } else if (TOOL_PTS[d.type] === 2) {
     pts.push([xc(ts, d.points[0]), cs.priceToCoordinate(d.points[0].price)]);
     pts.push([xc(ts, d.points[1]), cs.priceToCoordinate(d.points[1].price)]);
@@ -10896,6 +11567,7 @@ document.getElementById('drawToolbar').addEventListener('click', (e) => {
     return;
   }
   if (e.target.closest('[data-dt-fill-off]')) { dtbDraw.fill = false; _dtbApply(); return; }
+  if (e.target.closest('[data-dt-tpl]')) { openDrawTplMenu(e.target.closest('[data-dt-tpl]')); return; }
   if (e.target.closest('[data-dt-gear]')) { openDrawSettings(dtbInst, dtbDraw); return; }
   if (e.target.closest('[data-dt-del]')) { deleteSelectedDraw(); return; }
 });
@@ -10915,19 +11587,80 @@ function _dtbApply() {
   positionDrawToolbar();
 }
 
+/* ===== drawing style templates — save a tool's style under a name, re-apply anytime (per tool type) ===== */
+const DRAW_TPL_KEY = 'vex-draw-templates';
+function _drawTpls() { try { const t = JSON.parse(localStorage.getItem(DRAW_TPL_KEY) || '{}'); return (t && typeof t === 'object') ? t : {}; } catch(_) { return {}; } }
+function _saveDrawTpls(t) { try { localStorage.setItem(DRAW_TPL_KEY, JSON.stringify(t)); } catch(_){} }
+const TPL_EXCLUDE = ['type','points','groupId','name','text','_box','_anchor','_editing'];   // identity/geometry/content stay out
+function _tplPropsOf(d) {
+  const o = {};
+  Object.keys(d).forEach(k => { if (!TPL_EXCLUDE.includes(k) && typeof d[k] !== 'function' && d[k] !== undefined) o[k] = JSON.parse(JSON.stringify(d[k])); });
+  return o;
+}
+function _escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+let _tplCtx = null;   // { inst, d, btn } — works from BOTH the floating toolbar and the settings modal
+function openDrawTplMenu(btn, inst, d, input) {
+  inst = inst || dtbInst; d = d || dtbDraw; if (!d) return;
+  _tplCtx = { inst, d, btn };
+  let m = document.getElementById('dtTplMenu'); if (!m) { m = document.createElement('div'); m.id = 'dtTplMenu'; document.body.appendChild(m); }
+  const list = _drawTpls()[d.type] || [];
+  let h = '';
+  if (input) {                                            // inline naming UI ({mode:'save'} | {mode:'ren', idx})
+    const cur = input.mode === 'ren' ? (list[input.idx] ? list[input.idx].name : '') : (toolName(d.type) + ' style');
+    h = `<div class="tpl-input-row"><input id="dtTplName" type="text" value="${_escHtml(cur)}" maxlength="40" spellcheck="false"><button class="tpl-ok" data-tpl-ok>${input.mode === 'ren' ? 'Rename' : 'Save'}</button></div>`;
+    m._inputMode = input;
+  } else {
+    m._inputMode = null;
+    if (list.length) {
+      list.forEach((t, i) => { h += `<div class="otc-item" data-tpl-apply="${i}"><span class="tpl-nm">${_escHtml(t.name)}</span><span class="tpl-x" data-tpl-ren="${i}" title="Rename">✎</span><span class="tpl-x" data-tpl-del="${i}" title="Delete">✕</span></div>`; });
+    } else {
+      h += `<div class="otc-item" style="color:var(--text-dim);cursor:default">No ${toolName(d.type)} templates yet</div>`;
+    }
+    h += `<div class="otc-sep"></div><div class="otc-item" data-tpl-save>＋ Save current as template…</div>`;
+  }
+  m.innerHTML = h;
+  const r = btn.getBoundingClientRect();
+  m.style.left = Math.min(r.left, innerWidth - 220) + 'px';
+  m.style.top = Math.min(r.bottom + 6, innerHeight - 80 - list.length * 28) + 'px';
+  m.classList.add('open');
+  if (input) {
+    const inp = m.querySelector('#dtTplName');
+    requestAnimationFrame(() => { inp.focus(); inp.select(); });
+    inp.addEventListener('keydown', ev => {
+      ev.stopPropagation();
+      if (ev.key === 'Enter') { ev.preventDefault(); _tplCommitName(); }
+      else if (ev.key === 'Escape') { ev.preventDefault(); openDrawTplMenu(btn, inst, d); }   // back to the list
+    });
+  }
+}
+function _tplCommitName() {
+  const m = document.getElementById('dtTplMenu'); if (!m || !m._inputMode || !_tplCtx) return;
+  const inp = m.querySelector('#dtTplName'); const nm = (inp && inp.value.trim()) || '';
+  if (!nm) { if (inp) inp.focus(); return; }
+  const { inst, d, btn } = _tplCtx;
+  const all = _drawTpls(); const arr = all[d.type] = all[d.type] || [];
+  if (m._inputMode.mode === 'ren') {
+    const t = arr[m._inputMode.idx]; if (t) t.name = nm;
+    _saveDrawTpls(all); toast('success', 'Template renamed', nm);
+  } else {
+    const entry = { name: nm, props: _tplPropsOf(d) };
+    const ex = arr.findIndex(x => x.name === nm);
+    if (ex >= 0) arr[ex] = entry; else arr.push(entry);
+    _saveDrawTpls(all); toast('success', 'Template saved', nm);
+  }
+  openDrawTplMenu(btn, inst, d);   // return to the list view
+}
+function closeDrawTplMenu() { const m = document.getElementById('dtTplMenu'); if (m) { m.classList.remove('open'); m._inputMode = null; } }
+
 /* ===== per-drawing settings modal (gear button) — tabbed (Style/Text/Levels/Coordinates/Visibility) ===== */
 let dsInst = null, dsDraw = null, dsTab = 'style', dsOrig = null;
+const DS_TAB_LABELS = { style:'Style', text:'Text', levels:'Levels', coords:'Coords', risk:'Risk' };
 function dsTabsFor(type) {
-  if (type === 'text') return [['text','Text'],['coords','Coords']];
-  if (ANNO_TOOLS.includes(type)) return [['style','Style'],['text','Text'],['coords','Coords']];   // note/callout/pricelabel/signpost/flag/comment
-  if (type === 'channel') return [['style','Style'],['levels','Levels'],['text','Text'],['coords','Coords']];
-  if (['fib','fibext','fibchannel','fibtime'].includes(type)) return [['style','Style'],['levels','Levels'],['coords','Coords']];
-  if (type === 'long' || type === 'short') return [['style','Style'],['risk','Risk'],['coords','Coords']];
-  if (type === 'measure' || type === 'vwap' || type === 'brush' || type === 'highlighter') return [['style','Style']];
-  // line & shape tools support an attached text label
-  if (['trend','ray','extended','hline','hray','vline','rect','ellipse','arrow','infoline','trendangle','circle','triangle','rotrect','arrowup','arrowdown'].includes(type))
-    return [['style','Style'],['text','Text'],['coords','Coords']];
-  return [['style','Style'],['coords','Coords']];
+  const card = TOOL_REGISTRY[type];
+  const ids = (card && card.tabs) ? card.tabs : ['style','coords'];   // tab set comes from the tool's card
+  const tabs = ids.map(t => [t, DS_TAB_LABELS[t] || t]);
+  tabs.push(['vis','Visibility']);   // every drawing: per-timeframe visibility (TradingView parity)
+  return tabs;
 }
 function openDrawSettings(inst, d) {
   if (!inst || !d) return;
@@ -10986,6 +11719,7 @@ function renderDsBody() {
       h += _dsRow('Level', _dsSelR('showLevel', [['off','Off'],['value','Values'],['percent','Percent']], d.showLevel||'percent'));
       h += _dsRow('Label', _dsSelH('labelH', [['left','Left'],['center','Center'],['right','Right']], d.labelH||'right') + _dsSelH('labelV', [['top','Top'],['middle','Middle'],['bottom','Bottom']], d.labelV||'middle'));
       h += _dsRow('Font size', _dsSelR('fontSize', [7,8,9,10,11,12,13,14,16,18,20].map(v=>[v,v+'px']), +(d.fontSize||11)));
+      h += _dsRow('Bold', '', _dsSw('bold', !!d.bold));
     } else if (d.type === 'long' || d.type === 'short') {
       h += _dsRow('Profit zone', _dsColorR('profitColor', d.profitColor||'#00e599'));
       h += _dsRow('Loss zone', _dsColorR('lossColor', d.lossColor||'#ff2c64'));
@@ -11016,7 +11750,39 @@ function renderDsBody() {
       h += _dsRow('Level', _dsSelR('showLevel', [['off','Off'],['value','Values'],['percent','Percent']], d.showLevel||'percent'));
       h += _dsRow('Position', _dsSelR('labelH', [['left','Left'],['center','Center'],['right','Right']], d.labelH||'right'));
       h += _dsRow('Font size', _dsSelR('fontSize', [7,8,9,10,11,12,13,14,16,18,20].map(v=>[v,v+'px']), +(d.fontSize||11)));
+      h += _dsRow('Bold', '', _dsSw('bold', !!d.bold));
       h += `<div class="ds-sec" style="color:var(--text-dim);font-size:11px">Level colors / styles → Levels tab</div>`;
+    } else if (PITCHFORK_TYPES.includes(d.type)) {
+      h += _dsRow('Median color', _dsColorR('color', d.color||'#15e0d8'));
+      h += _dsRow('Line', _dsSelH('style', STYLE_OPTS, d.style||'solid') + _dsSelH('width', WIDTH_OPTS, +(d.width||2)));
+      h += _dsRow('Fill', `<input class="ds-num right" type="number" min="0" max="100" data-ds-field="pfFillOpacity" value="${d.pfFillOpacity!=null?d.pfFillOpacity:10}">`, _dsSw('pfFill', d.pfFill!==false));
+      h += `<div class="ds-sec" style="color:var(--text-dim);font-size:11px">Level lines, colors & styles → Levels tab</div>`;
+    } else if (d.type === 'gannfan') {
+      const lv=_fibLevels(d);
+      h += `<div class="ds-levels">`;
+      lv.forEach((L,i)=>{
+        const styleSel = `<select class="ds-sel ds-lvl-style" data-ds-lvl-style="${i}">${_dsOpts(STYLE_OPTS, L.style||'solid')}</select>`;
+        h += `<div class="ds-lvl"><span class="ds-chk${L.on!==false?' on':''}" data-ds-lvl-on="${i}" title="Show"></span><span style="min-width:32px;color:var(--text-2);font-size:12px">${GANN_FAN_LABELS[i]}</span><button class="ds-color-btn" data-ds-lvl-color="${i}" style="background:${L.color||'#15e0d8'}"></button>${styleSel}</div>`;
+      });
+      h += `</div>`;
+      h += `<div class="ds-row nodiv"><span class="ds-lbl" style="justify-content:flex-start;gap:10px"><span>Use one color</span>${_dsSw('fibSingle', !!d.fibSingle)}<button class="ds-cellsw" data-ds-color="fibSingleColor" style="background:${d.fibSingleColor||d.color||'#9aa3a6'};width:30px;height:26px"></button></span><div class="ds-ctl"></div></div>`;
+      h += _dsRow('Background', `<input class="ds-num right" type="number" min="0" max="100" data-ds-field="gannBgOpacity" value="${d.gannBgOpacity!=null?d.gannBgOpacity:8}">`, _dsSw('gannBg', d.gannBg!==false));
+      h += _dsRow('Labels', '', _dsSw('showLabels', d.showLabels!==false));
+    } else if (d.type === 'gannbox') {
+      const pl=_gbLevels(d,'price'), tl=_gbLevels(d,'time');
+      const lvCell=(set,L,i)=>`<div style="display:flex;align-items:center;gap:5px"><span class="ds-chk${L.on!==false?' on':''}" data-gb-on="${set}:${i}" title="Show"></span><input class="ds-num" type="number" step="any" data-gb-v="${set}:${i}" value="${L.v}" style="flex:1;min-width:0;width:100%"><button class="ds-color-btn" data-gb-color="${set}:${i}" style="background:${L.color}"></button></div>`;
+      const grid=(set,arr)=>`<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:2px 2px 6px">`+arr.map((L,i)=>lvCell(set,L,i)).join('')+`</div>`;
+      h += `<div class="ds-sec">Price levels</div>` + grid('price',pl);
+      h += _dsRow('Left labels','',_dsSw('leftLabels',d.leftLabels!==false));
+      h += _dsRow('Right labels','',_dsSw('rightLabels',d.rightLabels!==false));
+      h += _dsRow('Background',`<input class="ds-num right" type="number" min="0" max="100" data-ds-field="priceBgOpacity" value="${d.priceBgOpacity!=null?d.priceBgOpacity:8}">`,_dsSw('priceBg',d.priceBg!==false));
+      h += `<div class="ds-sec">Time levels</div>` + grid('time',tl);
+      h += _dsRow('Top labels','',_dsSw('topLabels',d.topLabels!==false));
+      h += _dsRow('Bottom labels','',_dsSw('bottomLabels',d.bottomLabels!==false));
+      h += _dsRow('Background',`<input class="ds-num right" type="number" min="0" max="100" data-ds-field="timeBgOpacity" value="${d.timeBgOpacity!=null?d.timeBgOpacity:8}">`,_dsSw('timeBg',d.timeBg!==false));
+      h += `<div class="ds-row nodiv"><span class="ds-lbl" style="justify-content:flex-start;gap:10px"><span>Use one color</span><button class="ds-cellsw" data-ds-color="gbSingleColor" style="background:${d.gbSingleColor||d.color||'#9aa3a6'};width:30px;height:26px"></button></span><div class="ds-ctl"></div></div>`;
+      h += _dsRow('Angles', `<button class="ds-cellsw right" data-ds-color="anglesColor" style="background:${d.anglesColor||d.color||'#9aa3a6'}"></button>`, _dsSw('angles', !!d.angles));
+      h += _dsRow('Reverse','',_dsSw('reverse',!!d.reverse));
     } else if (d.type === 'arrow') {
       h += _dsRow('Color', _dsColorR('color', d.color||'#15e0d8'));
       h += _dsRow('Line', _dsSelH('style', STYLE_OPTS, d.style||'solid') + _dsSelH('width', WIDTH_OPTS, +(d.width||2)));
@@ -11046,6 +11812,13 @@ function renderDsBody() {
     } else if (d.type === 'brush') {
       h += _dsRow('Color', _dsColorR('color', d.color||'#15e0d8'));
       h += _dsRow('Line', _dsSelH('style', STYLE_OPTS, d.style||'solid') + _dsSelH('width', WIDTH_OPTS, +(d.width||2)));
+    } else if (PATTERN_TYPES.includes(d.type)) {
+      h += _dsRow('Color', _dsColorR('color', d.color||'#15e0d8'));
+      h += _dsRow('Line width', _dsSelR('width', WIDTH_OPTS, +(d.width||2)));
+      h += _dsRow('Fill', `<button class="ds-cellsw right" data-ds-color="fillColor" style="background:${d.fillColor||d.color||'#15e0d8'}"></button>`, _dsSw('fill', d.fill!==false));
+      h += _dsRow('Text color', _dsColorR('textColor', d.textColor||d.color||'#15e0d8'));
+      h += _dsRow('Text size', _dsSelR('fontSize', [8,9,10,11,12,13,14,16,18,20].map(v=>[v,v+'px']), +(d.fontSize||10)));
+      h += _dsRow('Bold', '', _dsSw('bold', !!d.bold));
     } else if (d.type === 'measure') {
       // color is auto (green up / red down); only choose what the label shows
       h += `<div class="ds-sec">Label shows</div>`;
@@ -11078,6 +11851,8 @@ function renderDsBody() {
       h += _dsRow('Text', `<input class="ds-txt full" data-ds-field="text" value="${(d.text||'').replace(/"/g,'&quot;')}" placeholder="(label)">`);
       h += _dsRow('Text color', _dsColorR('textColor', d.textColor||d.color||'#e9edee'));
       h += _dsRow('Font size', _dsSelR('fontSize', [9,10,11,12,13,14,16,18,20,24,28,32,40,48].map(v=>[v,v+'px']), +(d.fontSize||12)));
+      h += _dsRow('Bold', '', _dsSw('bold', !!d.bold));
+      h += _dsRow('Italic', '', _dsSw('italic', !!d.italic));
       h += _dsRow('Position', _dsSelH('labelH', [['left','Left'],['center','Center'],['right','Right']], d.labelH||'center') + _dsSelH('labelV', [['top','Top'],['middle','Middle'],['bottom','Bottom']], d.labelV||'middle'));
       h += _dsRow('Background', _dsColorR('textBgColor', d.textBgColor||'rgba(11,14,15,0.85)'), _dsSw('textBg', !!d.textBg));
       h += _dsRow('Border', _dsColorCell('textBorderColor', d.textBorderColor||'#2a3338') + _dsSelH('textBorderStyle', STYLE_OPTS, d.textBorderStyle||'solid'), _dsSw('textBorder', !!d.textBorder));
@@ -11119,6 +11894,12 @@ function renderDsBody() {
         h += _dsRow('#' + (i+1), pIn + bIn);
       }
     }
+  } else if (dsTab === 'vis') {
+    // per-timeframe visibility — toggle ON = drawing shows on that interval (default: all on)
+    h += `<div class="ds-sec">Show on timeframes</div>`;
+    (typeof TF_CATALOG !== 'undefined' ? TF_CATALOG : []).forEach(group => {
+      group.items.forEach(([iv, lbl]) => { h += _dsRow(lbl, '', _dsSw('vis_' + iv, d['vis_' + iv] !== false)); });
+    });
   }
   body.innerHTML = h || `<div style="padding:12px 2px;color:var(--text-dim);font-size:12px">No options.</div>`;
   _dsAutoWidth();                                       // initial estimate (synchronous)
@@ -11187,6 +11968,8 @@ function _dsCommit() {
 document.getElementById('drawSettingsModal').addEventListener('click', (e) => {
   // click on the backdrop (the chart area behind the panel) closes WITHOUT applying (revert)
   if (e.target.id === 'drawSettingsModal') { cancelDrawSettings(); return; }
+  const tplBtn = e.target.closest('[data-ds-tplbtn]');
+  if (tplBtn) { e.stopPropagation(); openDrawTplMenu(tplBtn, dsInst, dsDraw); return; }   // style templates from the settings modal too
   if (e.target.closest('[data-ds-cancel]')) { cancelDrawSettings(); return; }
   if (e.target.closest('[data-ds-close]')) { closeDrawSettings(); return; }
   const tab = e.target.closest('[data-ds-tab]');
@@ -11202,6 +11985,11 @@ document.getElementById('drawSettingsModal').addEventListener('click', (e) => {
   if (ld) { const i = +ld.dataset.dsLvlDel; const L = _dsEnsureLevels(); L.splice(i,1); _dsCommit(); renderDsBody(); return; }
   // level add
   if (e.target.closest('[data-ds-lvl-add]')) { const L = _dsEnsureLevels(); const last = L.length ? L[L.length-1].v : 0; L.push({ v: +(last + 0.5).toFixed(3), on:true, color:'#9aa3a6' }); _dsCommit(); renderDsBody(); return; }
+  // gann-box per-axis level color / on-off (data-gb-color="price:3" etc.)
+  const gbc = e.target.closest('[data-gb-color]');
+  if (gbc) { const [set,i]=gbc.dataset.gbColor.split(':'); const L=_gbLevels(dsDraw,set); openColorPickerCb(gbc, L[+i].color||'#15e0d8', (color)=>{ L[+i].color=color; gbc.style.background=color; _dsCommit(); }); return; }
+  const gbo = e.target.closest('[data-gb-on]');
+  if (gbo) { const [set,i]=gbo.dataset.gbOn.split(':'); const L=_gbLevels(dsDraw,set); L[+i].on=(L[+i].on===false); _dsCommit(); renderDsBody(); return; }
   // color buttons
   const cb = e.target.closest('[data-ds-color]');
   if (cb) {
@@ -11210,6 +11998,7 @@ document.getElementById('drawSettingsModal').addEventListener('click', (e) => {
     openColorPickerCb(cb, cur, (color) => {
       if (key === 'fillColor') { dsDraw.fillColor = color; dsDraw.fill = true; }
       else if (key === 'fibSingleColor') { dsDraw.fibSingleColor = color; dsDraw.fibSingle = true; _dsEnsureLevels().forEach(L => L.color = color); }
+      else if (key === 'gbSingleColor') { dsDraw.gbSingleColor = color; _gbLevels(dsDraw,'price').forEach(L=>L.color=color); _gbLevels(dsDraw,'time').forEach(L=>L.color=color); renderDsBody(); }
       else dsDraw[key] = color;
       cb.style.background = color;
       _dsCommit();
@@ -11232,8 +12021,9 @@ document.getElementById('drawSettingsModal').addEventListener('click', (e) => {
     else if (k === 'showTrend') dsDraw.showTrend = (dsDraw.showTrend === false);   // default true
     else if (k === 'showPrice') dsDraw.showPrice = (dsDraw.showPrice === false);   // default true
     else if (k === 'alwaysStats' || k.indexOf('stat_') === 0) dsDraw[k] = (dsDraw[k] === false);   // info-line stats (default ON)
+    else if (k.indexOf('vis_') === 0) dsDraw[k] = (dsDraw[k] === false);   // per-timeframe visibility (default ON)
     // default-ON toggles (stored false when turned off)
-    else if (['showBorder','showMid','priceLabel','mPrice','mPct','mBars'].includes(k)) dsDraw[k] = (dsDraw[k] === false);
+    else if (['showBorder','showMid','priceLabel','mPrice','mPct','mBars','pfFill','gannBg','showLabels','showPriceLv','showTimeLv','showDiag','leftLabels','rightLabels','topLabels','bottomLabels','priceBg','timeBg'].includes(k)) dsDraw[k] = (dsDraw[k] === false);
     else dsDraw[k] = !dsDraw[k];   // generic default-OFF toggle (bg/border/bands/arrowBoth/measure flags…)
     _dsCommit(); renderDsBody(); return;
   }
@@ -11244,7 +12034,7 @@ document.getElementById('drawSettingsModal').addEventListener('input', (e) => {
   if (f) {
     const k = f.dataset.dsField;
     if (k === 'fontSize') dsDraw.fontSize = parseInt(f.value, 10);
-    else if (['fibBgOpacity','fillOpacity','bandFill','textBgOpacity','zoneOpacity'].includes(k)) dsDraw[k] = Math.max(0, Math.min(100, parseInt(f.value,10)||0));
+    else if (['fibBgOpacity','fillOpacity','bandFill','textBgOpacity','zoneOpacity','pfFillOpacity','gannBgOpacity','priceBgOpacity','timeBgOpacity'].includes(k)) dsDraw[k] = Math.max(0, Math.min(100, parseInt(f.value,10)||0));
     else if (['width','trendWidth','midWidth','arrowSize','bandMult','bandCount','riskAccount','riskPct','riskLev','textBorderWidth'].includes(k)) dsDraw[k] = parseFloat(f.value);
     else dsDraw[k] = f.value;   // generic string field (selects: style/extend/labelH/source/midStyle/… and text)
     if (dsDraw.type === 'long' || dsDraw.type === 'short') _dsUpdateRisk();
@@ -11351,6 +12141,16 @@ function updatePreview(cur) {
   } else if (type === 'channel' || type === 'fibext' || type === 'fibchannel') {
     pv = (base.length >= 2) ? { type, points: [base[0], base[1], cur] }
                             : { type:'trend', points: [base[0], cur] };
+  } else if (type === 'regtrend') {
+    // regression only spans real bars — clamp the moving point to the last candle so the preview vertical
+    // stops there instead of running into the empty future whitespace.
+    const bars = drawingState.inst.bars || [], last = bars.length - 1;
+    let c = cur;
+    if (cur.logical != null && (cur.logical > last || cur.logical < 0)) {
+      const li = Math.max(0, Math.min(last, cur.logical));
+      c = { logical: li, price: cur.price }; if (bars[li]) c.time = bars[li].time;
+    }
+    pv = { type, points: [ ...base, c ] };
   } else {
     pv = { type, points: [ ...base, cur ] };
   }
@@ -11527,7 +12327,8 @@ function syncTextToTab(inst, d) {
   if (i>=0 && inst.tab && Array.isArray(inst.tab.drawings) && inst.tab.drawings[i]) inst.tab.drawings[i].text = d.text;
 }
 
-/* update preview on each crosshair move */
+/* update preview on each crosshair move (crosshairMove naturally clamps to the last candle in the empty
+   whitespace, so the preview vertical stops at the current candle instead of running into the future) */
 function chartCrosshairMoveHandler(panelEl, param) {
   if (!drawingState || drawingState.panelEl !== panelEl) return;
   if (!param || !param.point) return;
@@ -11561,6 +12362,7 @@ if (typeof _origMountChart === 'function') {
       panelEl.addEventListener('contextmenu', e => {
         if (!e.target.closest('.chart-slot')) return;
         e.preventDefault();
+        if (drawingState && drawingState.type === 'polyline') { finishPolyline(); return; }   // TV: right-click CONFIRMS an in-progress polyline
         const rect = inst.chart.chartElement().getBoundingClientRect();
         const x = e.clientX - rect.left, y = e.clientY - rect.top;
         if (!drawLockAll) {
@@ -11686,6 +12488,7 @@ document.addEventListener('click', (e) => {
     else if (a === 'settings') openChartSettings(inst);
     else if (a === 'undo') undoDrawing(inst);
     else if (a === 'redo') redoDrawing(inst);
+    else if (a === 'snapshot') snapshotChart(inst);
     else if (a === 'equalize') equalizePanes(inst);
     else if (a === 'layouts') openLayoutMenu(tb);
     else if (a === 'charttype') openChartTypeMenu(tb, inst);
@@ -11700,6 +12503,35 @@ document.addEventListener('click', (e) => {
     return;
   }
   if (!e.target.closest('#chartTypeMenu') && !e.target.closest('.tb-btn[data-tb="charttype"]')) closeChartTypeMenu();
+  // drawing style-template menu (apply / rename / delete / inline save)
+  const tplMenu = e.target.closest('#dtTplMenu');
+  if (tplMenu) {
+    e.stopPropagation();
+    const t = _tplCtx || {};
+    if (e.target.closest('[data-tpl-ok]')) { _tplCommitName(); return; }
+    if (e.target.id === 'dtTplName') return;                               // typing in the name field
+    const ren = e.target.closest('[data-tpl-ren]');
+    if (ren && t.d) { openDrawTplMenu(t.btn, t.inst, t.d, { mode:'ren', idx:+ren.dataset.tplRen }); return; }
+    const del = e.target.closest('[data-tpl-del]');
+    if (del && t.d) { const all=_drawTpls(); const arr=all[t.d.type]||[]; arr.splice(+del.dataset.tplDel,1); all[t.d.type]=arr; _saveDrawTpls(all); openDrawTplMenu(t.btn, t.inst, t.d); return; }
+    const ap = e.target.closest('[data-tpl-apply]');
+    if (ap && t.d) {
+      const arr = _drawTpls()[t.d.type] || []; const tt = arr[+ap.dataset.tplApply];
+      if (tt) {
+        Object.keys(tt.props).forEach(k => { t.d[k] = JSON.parse(JSON.stringify(tt.props[k])); });
+        if (t.inst) { syncDrawStyleToTab(t.inst, t.d); redrawOverlay(t.inst); }
+        if (typeof saveLayout === 'function') saveLayout();
+        const tb2 = document.getElementById('drawToolbar');
+        if (dtbDraw === t.d && tb2 && tb2.classList.contains('open')) { tb2.innerHTML = renderDrawToolbar(t.d); positionDrawToolbar(); }   // refresh toolbar state
+        if (dsDraw === t.d && document.getElementById('drawSettingsModal')?.classList.contains('open')) renderDsBody();                    // refresh settings modal
+        toast('success', 'Template applied', tt.name);
+      }
+      closeDrawTplMenu(); return;
+    }
+    if (e.target.closest('[data-tpl-save]') && t.d) { openDrawTplMenu(t.btn, t.inst, t.d, { mode:'save' }); return; }
+    return;
+  }
+  if (document.getElementById('dtTplMenu')?.classList.contains('open') && !e.target.closest('[data-dt-tpl]') && !e.target.closest('[data-ds-tplbtn]')) closeDrawTplMenu();
   // object-tree context-menu item
   const otcItem = e.target.closest('#otCtx .otc-item');
   if (otcItem) {
