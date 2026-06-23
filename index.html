@@ -533,6 +533,13 @@
   #otCtx .otc-item:hover{background:var(--bg-2);color:var(--text)}
   #otCtx .otc-item.danger:hover{color:#ff6b81}
   #otCtx .otc-sep{height:1px;background:var(--border);margin:4px 0}
+  /* oscillator banner "⋯ more" popover — keeps the banner tiny so it never crosses the price axis */
+  #indMorePop{position:fixed;display:none;z-index:2400;min-width:172px;background:var(--bg-1);border:1px solid var(--border-2);border-radius:6px;box-shadow:0 12px 34px rgba(0,0,0,.6);padding:4px 0;font-size:12px}
+  #indMorePop.open{display:block}
+  #indMorePop .imp-item{padding:6px 14px;color:var(--text-2);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap}
+  #indMorePop .imp-item:hover{background:var(--bg-2);color:var(--text)}
+  #indMorePop .imp-item.danger:hover{color:#ff6b81}
+  #indMorePop .imp-sep{height:1px;background:var(--border);margin:4px 0}
   /* drawing style-template dropdown (floating toolbar) */
   #dtTplMenu{position:fixed;display:none;z-index:2400;min-width:185px;background:var(--bg-1);border:1px solid var(--border-2);border-radius:6px;box-shadow:0 12px 34px rgba(0,0,0,.6);padding:4px 0;font-size:12px}
   #dtTplMenu.open{display:block}
@@ -611,14 +618,20 @@
   #tv-attr-logo,a#tv-attr-logo,a[id^="tv-attr"]{display:none!important}
   /* oscillator sub-pane inner legend */
   .pane-legends{position:absolute;inset:0;pointer-events:none;z-index:5}
-  .pane-leg{position:absolute;left:8px;display:flex;align-items:center;gap:5px;font-size:10.5px;padding:1px 6px;border-radius:3px;background:rgba(7,10,11,0.55);pointer-events:auto;backdrop-filter:blur(2px)}
+  .pane-leg{position:absolute;left:8px;display:flex;align-items:center;gap:5px;font-size:10.5px;padding:1px 6px;border-radius:3px;background:rgba(7,10,11,0.55);pointer-events:auto;backdrop-filter:blur(2px);overflow:hidden}
   .pane-leg .ind-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-  .pane-leg .pl-name{font-family:'IBM Plex Mono',monospace;color:var(--chart-text,var(--silver));white-space:nowrap}
-  .pane-leg .pl-value{font-family:'IBM Plex Mono',monospace;color:var(--chart-text,var(--text));white-space:nowrap}
-  .pane-leg .ind-btn{width:16px;height:16px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:var(--text-dim);cursor:pointer;padding:0}
+  .pane-leg .pl-name{font-family:'IBM Plex Mono',monospace;color:var(--chart-text,var(--silver));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .pane-leg .pl-value{font-family:'IBM Plex Mono',monospace;color:var(--chart-text,var(--text));white-space:nowrap;flex-shrink:0}
+  .pane-leg .ind-btn{width:16px;height:16px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:var(--text-dim);cursor:pointer;padding:0;flex-shrink:0}
   .pane-leg .ind-btn svg{width:11px;height:11px}
   .pane-leg .ind-btn:hover{color:var(--text)}
   .pane-leg .ind-btn.danger:hover{color:var(--red)}
+  .pane-leg .pl-more:hover{color:var(--teal-2,var(--text))}
+  /* full inline controls by default; positionPaneLegends adds .pl-compact only when the banner would overflow → ⋯ */
+  .pane-leg .pl-fullbtns{display:flex;align-items:center;gap:5px;flex-shrink:0}
+  .pane-leg .pl-more{display:none}
+  .pane-leg.pl-compact .pl-fullbtns{display:none}
+  .pane-leg.pl-compact .pl-more{display:flex}
   /* price-axis hover buttons (Auto / Log) — TradingView style */
   .axis-btns{position:absolute;display:none;flex-direction:row;gap:3px;z-index:60}
   .axis-btns.show{display:flex}
@@ -679,6 +692,12 @@
   #drawSettingsModal .ds-sel{background:var(--bg-2);border:1px solid var(--border-2);color:var(--text);font-size:12px;border-radius:6px;outline:none;padding:0 8px;cursor:pointer}
   #drawSettingsModal .ds-num{background:var(--bg-2);border:1px solid var(--border-2);color:var(--text);font-size:12px;border-radius:6px;outline:none;padding:0 8px;font-family:'IBM Plex Mono',monospace;text-align:right}
   #drawSettingsModal .ds-num:focus,#drawSettingsModal .ds-sel:focus{border-color:var(--teal-2)}
+  /* mouse-draggable slider row (e.g. image Opacity) + live % readout */
+  #drawSettingsModal .ds-rangewrap{grid-column:1 / -1;display:flex;align-items:center;gap:10px}
+  #drawSettingsModal .ds-range{flex:1 1 auto;min-width:0;height:4px;-webkit-appearance:none;appearance:none;background:var(--bg-2);border-radius:3px;outline:none;cursor:pointer}
+  #drawSettingsModal .ds-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:var(--teal-2,#15e0d8);cursor:pointer;border:none}
+  #drawSettingsModal .ds-range::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--teal-2,#15e0d8);cursor:pointer;border:none}
+  #drawSettingsModal .ds-rngval{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-2);min-width:38px;text-align:right;flex-shrink:0}
   #drawSettingsModal .ds-txt{background:var(--bg-2);border:1px solid var(--border-2);color:var(--text);font-size:12px;border-radius:6px;outline:none;padding:0 8px}
   #drawSettingsModal .ds-cellsw{border:1px solid var(--border-2);border-radius:6px;cursor:pointer;padding:0}
   #drawSettingsModal .ds-cellsw:hover{border-color:var(--silver)}
@@ -732,12 +751,14 @@
   .draw-toolbar .dt-del:hover{color:var(--red);background:rgba(255,44,100,0.12)}
   .draw-toolbar .dt-gear{width:24px;height:22px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:4px;color:var(--text-2);cursor:pointer}
   .draw-toolbar .dt-gear:hover{color:var(--teal-2);background:var(--bg-2)}
+  .draw-toolbar .dt-alert-btn.on{color:#ffc857}
+  .draw-toolbar .dt-alert-btn.on:hover{color:#ffd166;background:rgba(255,200,87,0.14)}
   .draw-toolbar .dt-fill-btn{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border-2);cursor:pointer;padding:0;background-image:linear-gradient(45deg,#444 25%,transparent 25%),linear-gradient(-45deg,#444 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#444 75%),linear-gradient(-45deg,transparent 75%,#444 75%);background-size:8px 8px;background-position:0 0,0 4px,4px -4px,-4px 0}
   .draw-toolbar .dt-fill-btn.on{border-color:#fff}
   .draw-toolbar .dt-colorbtn{width:22px;height:18px;border-radius:4px;border:1.5px solid var(--border-2);cursor:pointer;padding:0}
   .draw-toolbar .dt-colorbtn:hover{border-color:var(--silver)}
   .draw-toolbar .dt-sel{height:22px;background:var(--bg-2);border:1px solid var(--border-2);color:var(--text-2);font-size:11px;font-family:'IBM Plex Mono',monospace;border-radius:4px;cursor:pointer;outline:none;padding:0 4px}
-  .ohlc-overlay{position:absolute;top:8px;left:48px;z-index:5;font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--chart-text,var(--text-2));line-height:1.5;pointer-events:none}
+  .ohlc-overlay{position:absolute;top:8px;left:48px;z-index:5;font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--chart-text,var(--text-2));line-height:1.5;pointer-events:none;overflow:hidden}
   .ohlc-overlay .ohlc-main{pointer-events:none;display:flex;align-items:center;flex-wrap:wrap;gap:2px 11px}
   .ohlc-overlay .ohlc-main .sym{color:var(--chart-text,var(--text));font-weight:500}
   .ohlc-overlay .ohlc-main .ohlc-pair{display:inline-flex;align-items:center;gap:4px}
@@ -1811,7 +1832,10 @@
 <div class="notif-panel" id="notifPanel">
   <div class="notif-head">
     <div class="ttl">Notifications</div>
-    <button class="clear" id="notifClear">Clear all</button>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="clear" id="notifSound" title="Toggle alert sound">🔔 Sound</button>
+      <button class="clear" id="notifClear">Clear all</button>
+    </div>
   </div>
   <div class="notif-list" id="notifList"></div>
 </div>
@@ -2884,11 +2908,18 @@ function loadLayoutsStore() {
     if (migrated) console.log('[VEX] migrated old panels → layout "'+activeLayout+'"');
   }
 }
+let _saveQuotaWarned = false;
 function saveLayoutsStore() {
   try {
     localStorage.setItem(LAYOUTS_KEY, JSON.stringify(layouts));
     localStorage.setItem(ACTIVE_LAYOUT_KEY, activeLayout);
-  } catch(e){ console.warn('[VEX] saveLayoutsStore failed', e); }
+    _saveQuotaWarned = false;   // a successful write clears the warn latch
+  } catch(e){
+    console.warn('[VEX] saveLayoutsStore failed', e);
+    // quota exceeded would otherwise lose the whole layout silently on the next reload — warn the user once
+    const quota = !!e && (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED' || e.code === 22 || e.code === 1014);
+    if (quota && !_saveQuotaWarned && typeof toast === 'function') { _saveQuotaWarned = true; toast('warn', 'Storage full — layout not saved', 'Browser storage limit hit. Remove some images/drawings or your latest changes will be lost on reload.'); }
+  }
 }
 
 /* ---------- save / restore (active layout + breakpoint) ---------- */
@@ -2896,6 +2927,7 @@ function saveLayout() {
   if (!layouts[activeLayout]) layouts[activeLayout] = { panelsByBp: {} };
   layouts[activeLayout].panelsByBp[currentBreakpoint] = panels;
   saveLayoutsStore();
+  if (typeof _histScheduleCommit === 'function') _histScheduleCommit();   // global undo: capture this change (debounced, per-instance)
 }
 function loadLayout() {
   try {
@@ -3344,6 +3376,7 @@ function mountChart(panelEl, interval, tabOverride) {
   const instance = { panelEl, chart, candleSeries, volumeSeries, resizeObs:null, interval, bars: [], tab: activeTab, symbol: _instSym, chartType: (activeTab && activeTab.chartType) || 'candles', _historyLoaded: false };
 
   chart.subscribeCrosshairMove(param => {
+    instance._crosshairActive = !!(param && param.point && param.time != null);   // hovering vs not (so live ticks know whether to overwrite the legend)
     if (!param || !param.seriesData) return;
     // look up the full OHLC bar by time (works for line/area/baseline too, where series data has no OHLC)
     let d = param.seriesData.get(instance.candleSeries);
@@ -3481,7 +3514,18 @@ function closePresetMenu(){ const m=document.getElementById('presetMenu'); if(m)
 
 /* ---- active / focused chart ---- */
 let activeChartInst = null;
-function setActiveChart(inst){ if(!inst){ return; } const changed = inst!==activeChartInst; if(changed) activeChartInst = inst; paintActiveRing(); syncHeaderToActiveCell(inst); syncObjectTreeToActiveCell(inst); if(changed){ _closeStaleModals(inst); if(typeof syncMarketToActiveChart==='function') syncMarketToActiveChart(inst); } }
+function setActiveChart(inst){ if(!inst){ return; } const changed = inst!==activeChartInst; if(changed) activeChartInst = inst; if(changed) _persistActiveCell(inst); paintActiveRing(); syncHeaderToActiveCell(inst); syncObjectTreeToActiveCell(inst); if(changed){ _closeStaleModals(inst); if(typeof syncMarketToActiveChart==='function') syncMarketToActiveChart(inst); } }
+/* remember which grid cell is active on its panel tab, so the focus is restored after reload (split panels only) */
+function _persistActiveCell(inst){
+  try {
+    if(!inst.panelEl || !inst.panelEl.dataset || !inst.panelEl.closest) return;
+    const frame = inst.panelEl.closest('.panel-frame'); if(!frame) return;
+    const pObj = panels.find(p => p.id === frame.dataset.panelId); const ptab = pObj && pObj.tabs[pObj.active];
+    if(!ptab || !ptab.gridPreset || ptab.gridPreset === 'single') return;
+    const idx = parseInt(inst.panelEl.dataset.cellIdx, 10);
+    if(Number.isFinite(idx) && ptab.gridActiveCellIdx !== idx){ ptab.gridActiveCellIdx = idx; if(typeof saveLayout==='function') saveLayout(); }
+  } catch(_){}
+}
 /* a per-cell settings modal (chart/indicator/drawing) targets a specific cell — close it when the user activates a
    DIFFERENT cell, so an Apply can't land on the wrong chart */
 function _closeStaleModals(inst){
@@ -3827,7 +3871,9 @@ function splitChartPanelInternal(panelEl, preset){
   if (typeof resizeChart === 'function') resizeChart();
   if (typeof ensureActiveChart === 'function') ensureActiveChart();
   if (typeof rewireSync === 'function') rewireSync();
-  const fi = chartForPanel(cellEls[0]); if (fi && typeof setActiveChart === 'function') setActiveChart(fi);
+  let _aci = (tab.gridActiveCellIdx != null) ? tab.gridActiveCellIdx : 0;   // restore previously-active cell (split panels)
+  if (!(_aci >= 0 && _aci < cellEls.length)) _aci = 0;                       // clamp if the preset shrank below the saved index
+  const fi = chartForPanel(cellEls[_aci]) || chartForPanel(cellEls[0]); if (fi && typeof setActiveChart === 'function') setActiveChart(fi);
   if (typeof saveLayout === 'function') saveLayout();
 }
 function _bindCellDivider(dv, panelEl, axis){
@@ -4348,8 +4394,17 @@ function _updateMainSeries(inst, bar) {
       inst.candleSeries.update(cc ? Object.assign(haBar, cc) : haBar);
     }
   }
-  else if (_isSynthType(t)) {   // full synthetic rebuild is O(history×indicators); coalesce bursts of ticks into ONE rebuild per frame
-    if (inst._synthRaf) return;
+  else if (_isSynthType(t)) {
+    // synthetic bricks (renko/kagi/pnf/range/lineBreak) can only form or reverse on a NEW price extreme. If the
+    // forming candle's high/low stayed within the range already processed at the last rebuild, NO brick can change,
+    // so skip the costly O(history×indicators) recompute. Only rebuild on a new candle or a new high/low. Conservative
+    // — rebuilds whenever unsure. (The full rebuild is still done by _setMainData on load/TF/type/pagination paths.)
+    const n = inst.bars.length, last = inst.bars[n-1]; if (!last) return;
+    const hl = inst._lastSynthHL;
+    const changed = !hl || hl.time !== last.time || last.high > hl.high + 1e-9 || last.low < hl.low - 1e-9;
+    if (!changed) return;
+    inst._lastSynthHL = { time: last.time, high: last.high, low: last.low };
+    if (inst._synthRaf) return;   // coalesce remaining bursts into ONE rebuild per frame
     inst._synthRaf = requestAnimationFrame(() => { inst._synthRaf = null; try { if (_isSynthType(inst.chartType) && inst.chart) _setMainData(inst, inst.bars); } catch(_){} });
   }
   else { const n = inst.bars.length; const cc = (n >= 2) ? _prevCloseColors(inst, bar.close, inst.bars[n-2].close) : null; inst.candleSeries.update(cc ? Object.assign({}, bar, cc) : bar); }
@@ -5302,16 +5357,24 @@ function handleBybitKline(m) {
         return;   // never fall through to the main-series logic for this instance
       }
       // MAIN ROUTE — bar matches this instance's own symbol
-      if (isCustomTf(c.interval)) {   // custom TF: update the BASE series, then re-resample for display
+      if (isCustomTf(c.interval)) {   // custom TF: update the BASE series (O(1), immediate), then re-resample for display
         if (!Array.isArray(c._baseBars)) c._baseBars = [];
         const bl = c._baseBars, lastBT = bl.length ? bl[bl.length-1].time : -Infinity;
         if (bar.time < lastBT) return;
         if (bl.length && bl[bl.length-1].time === bar.time) bl[bl.length-1] = bar; else bl.push(bar);
-        c.bars = resampleBars(bl, customTfMin(c.interval)*60);
-        try { _setMainData(c, c.bars); } catch(e) { return; }   // full reset — a custom bucket spans many base bars
-        if (typeof updateFutureWhitespace === 'function') updateFutureWhitespace(c);
-        if (c.bars.length) setOHLC(c.bars[c.bars.length-1], c.panelEl, c.bars);
-        if (!_isSynthType(c.chartType) && typeof refreshIndicatorData === 'function') refreshIndicatorData(c);   // synthetic already refreshed inside _setMainData
+        // the resample + full setData + indicator refresh is O(n) per tick — coalesce bursts into ONE rebuild per frame
+        if (c._customTfRaf) return;
+        c._customTfRaf = requestAnimationFrame(() => {
+          c._customTfRaf = null;
+          try {
+            if (!chartInstances.includes(c) || !isCustomTf(c.interval)) return;   // torn down / TF changed mid-flight
+            c.bars = resampleBars(c._baseBars, customTfMin(c.interval)*60);
+            _setMainData(c, c.bars);   // full reset — a custom bucket spans many base bars
+            if (typeof updateFutureWhitespace === 'function') updateFutureWhitespace(c);
+            if (c.bars.length) setOHLC(c.bars[c.bars.length-1], c.panelEl, c.bars);
+            if (!_isSynthType(c.chartType) && typeof refreshIndicatorData === 'function') refreshIndicatorData(c);
+          } catch(e){}
+        });
         return;
       }
       // ignore stale / out-of-order klines (e.g. buffered messages from before a timeframe switch) —
@@ -5536,24 +5599,36 @@ function rescalePanelsProportional() {
   saveLayout();
   resizeChart();
 }
-window.addEventListener('resize', () => {
-  menu.classList.remove('open');
+let _resizeTimer = null, _bpSwapping = false;
+function _handleResizeSettled() {
   const newBp = detectBreakpoint();
   if (newBp !== currentBreakpoint) {
-    // BP changed -> swap to that BP layout
-    currentBreakpoint = newBp;
-    document.body.dataset.bp = newBp;
-    unmountChart();
-    if (!loadLayout()) {
-      panels = defaultLayout();
-      nextIdSeq = panels.length;
-    }
-    ensureAllChartConfigs();
-    renderAll();
-    snapshotCanvasSize();
+    if (_bpSwapping) return;                 // a BP swap is already rendering — don't re-enter mid-teardown
+    _bpSwapping = true;
+    try {
+      saveLayout();                          // keep the BP we're leaving up to date (incl. any proportional rescale)
+      currentBreakpoint = newBp;
+      document.body.dataset.bp = newBp;
+      unmountChart();
+      if (!loadLayout()) {
+        panels = defaultLayout();
+        nextIdSeq = panels.length;
+      }
+      ensureAllChartConfigs();
+      renderAll();
+      snapshotCanvasSize();
+    } catch(e){ console.warn('[VEX] BP swap failed', e); }
+    finally { _bpSwapping = false; }
   } else {
     rescalePanelsProportional();
   }
+}
+// debounce: a window drag fires dozens of resize events — coalesce into ONE settled handler so we don't
+// tear down / remount every chart (BP swap) or thrash localStorage (proportional rescale) on every pixel.
+window.addEventListener('resize', () => {
+  menu.classList.remove('open');
+  if (_resizeTimer) clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(() => { _resizeTimer = null; _handleResizeSettled(); }, 160);
 });
 
 /* ---------- tab cycling (event delegation) ---------- */
@@ -7240,6 +7315,32 @@ let notifications = [];
 let notifUnread = 0;
 try { notifications = JSON.parse(localStorage.getItem(NOTIF_KEY) || '[]'); } catch(e){}
 function notifySave() { try { localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications.slice(0, 50))); } catch(e){} }
+/* ---- alert sound (WebAudio two-tone beep) + toggle ---- */
+let alertSoundOn = true; try { alertSoundOn = localStorage.getItem('vex-alert-sound') !== 'off'; } catch(e){}
+let _alertAudioCtx = null;
+function _alertBeep() {
+  if (!alertSoundOn) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    _alertAudioCtx = _alertAudioCtx || new AC();
+    const ac = _alertAudioCtx; if (ac.state === 'suspended') { try { ac.resume(); } catch(_){} }
+    const now = ac.currentTime;
+    [880, 1320].forEach((f, i) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      const t0 = now + i * 0.14;
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.16, t0 + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.12);
+      o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0 + 0.13);
+    });
+  } catch(_){}
+}
+function renderNotifSoundBtn() {
+  const b = document.getElementById('notifSound'); if (!b) return;
+  b.textContent = alertSoundOn ? '🔔 Sound' : '🔕 Muted';
+  b.style.opacity = alertSoundOn ? '1' : '0.55';
+}
 function pushNotif(type, title, desc) {
   notifications.unshift({ id:'n_'+Date.now(), type, title, desc, time:Date.now(), read:false });
   notifications = notifications.slice(0, 50);
@@ -7263,6 +7364,7 @@ function renderNotifList() {
     success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>',
     error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>',
     info:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>',
+    warn:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>',
   };
   list.innerHTML = notifications.map(n => {
     const diff = Math.floor((Date.now() - n.time) / 1000);
@@ -7342,7 +7444,7 @@ function toggleNotifPanel() {
   const opening = !p.classList.contains('open');
   p.classList.toggle('open', opening);
   if (opening) {
-    notifUnread = 0; renderNotifBadge(); renderNotifList();
+    notifUnread = 0; renderNotifBadge(); renderNotifList(); renderNotifSoundBtn();
   }
 }
 
@@ -7384,7 +7486,8 @@ document.addEventListener('input', (e) => {
 document.addEventListener('click', (e) => {
   if (e.target.closest('#kbdTrigger'))  { openCmdPalette(); return; }
   if (e.target.closest('#notifBtn'))    { toggleNotifPanel(); return; }
-  if (e.target.closest('#notifClear'))  { notifications = []; notifySave(); renderNotifList(); return; }
+  if (e.target.closest('#notifSound'))  { alertSoundOn = !alertSoundOn; try { localStorage.setItem('vex-alert-sound', alertSoundOn ? 'on' : 'off'); } catch(_){} renderNotifSoundBtn(); if (alertSoundOn) _alertBeep(); return; }   // toggle + preview the beep when enabling
+  if (e.target.closest('#notifClear'))  { notifications = []; notifUnread = 0; notifySave(); renderNotifBadge(); renderNotifList(); return; }
   if (e.target.closest('#navConnectBtn') && !VEX.connected) { if (typeof handleSubmit==='function') handleSubmit(); return; }
   const cmdItem = e.target.closest('.cmd-item');
   if (cmdItem) { execCmd(+cmdItem.dataset.cmdIdx); return; }
@@ -7616,6 +7719,10 @@ const INDICATORS = [
   { id:'willr',  name:'Williams %R',    desc:'Williams %R · sub-pane', color:'#ff9f1c', kind:'sub-line', period:14, calc:calcWilliamsR },
   { id:'roc',    name:'ROC',            desc:'Rate of Change · sub-pane', color:'#00e599', kind:'sub-line', period:9, calc:calcROC },
   { id:'mfi',    name:'MFI',            desc:'Money Flow Index · sub-pane', color:'#4ca2ff', kind:'sub-line', period:14, calc:calcMFI },
+  { id:'adx',    name:'ADX',            desc:'Average Directional Index · sub-pane', color:'#ffb74d', kind:'sub-line', period:14, calc:calcADX },
+  { id:'st',     name:'Supertrend',     desc:'Supertrend (ATR trend)', color:'#00e599', kind:'overlay-st', period:10, mult:3 },
+  { id:'psar',   name:'Parabolic SAR',  desc:'Parabolic SAR · dots', color:'#4ca2ff', kind:'overlay-psar', step:0.02, max:0.2 },
+  { id:'stoch',  name:'Stochastic',     desc:'Stochastic Oscillator · sub-pane', color:'#15e0d8', kind:'sub-stoch', period:14 },
 ];
 /* legacy id (ma20/ma50/ma200/ema12/ema26) -> unified id+period migration map */
 const IND_ID_MIGRATE = {
@@ -7719,6 +7826,107 @@ function calcHMA(bars, period = 16) {
   const o = new Array(closes.length).fill(null), dn = sq*(sq+1)/2;
   for (let i = sq-1; i < diff.length; i++) { let ok = true, s = 0; for (let j = 0; j < sq; j++) { const v = diff[i-j]; if (v == null) { ok = false; break; } s += v*(sq-j); } if (ok) o[i] = s/dn; }
   return bars.map((b, i) => ({ time:b.time, value:o[i] })).filter(x => Number.isFinite(x.value));
+}
+/* ADX (Wilder): trend strength 0-100. Needs ~2×period bars to warm up. */
+function calcADX(bars, period = 14) {
+  period = Math.max(1, period); const out = []; if (bars.length < 2) return [];
+  let prevH = bars[0].high, prevL = bars[0].low, prevC = bars[0].close;
+  let trS = 0, pdmS = 0, ndmS = 0, n = 0, adx = null, dxSum = 0, dxN = 0;
+  out.push({ time: bars[0].time, value: null });
+  for (let i = 1; i < bars.length; i++) {
+    const b = bars[i];
+    const up = b.high - prevH, dn = prevL - b.low;
+    const pDM = (up > dn && up > 0) ? up : 0, nDM = (dn > up && dn > 0) ? dn : 0;
+    const tr = Math.max(b.high - b.low, Math.abs(b.high - prevC), Math.abs(b.low - prevC));
+    prevH = b.high; prevL = b.low; prevC = b.close;
+    if (n < period) { trS += tr; pdmS += pDM; ndmS += nDM; n++; out.push({ time: b.time, value: null }); continue; }
+    trS = trS - trS/period + tr; pdmS = pdmS - pdmS/period + pDM; ndmS = ndmS - ndmS/period + nDM;
+    const pDI = trS === 0 ? 0 : 100*pdmS/trS, nDI = trS === 0 ? 0 : 100*ndmS/trS;
+    const dx = (pDI + nDI) === 0 ? 0 : 100*Math.abs(pDI - nDI)/(pDI + nDI);
+    if (dxN < period) { dxSum += dx; dxN++; if (dxN === period) { adx = dxSum/period; out.push({ time: b.time, value: adx }); } else out.push({ time: b.time, value: null }); }
+    else { adx = (adx*(period-1) + dx)/period; out.push({ time: b.time, value: adx }); }
+  }
+  return out.filter(x => Number.isFinite(x.value));
+}
+/* Supertrend: ATR-banded trend line that flips above/below price. params: period (ATR len), mult (band). */
+function calcSupertrend(bars, period = 10, mult = 3) {
+  period = Math.max(1, period); mult = mult || 3;
+  const atrArr = new Array(bars.length).fill(null);
+  let prevC = null, a = null, sum = 0, n = 0;
+  for (let i = 0; i < bars.length; i++) { const b = bars[i];
+    if (prevC == null) { prevC = b.close; continue; }
+    const tr = Math.max(b.high - b.low, Math.abs(b.high - prevC), Math.abs(b.low - prevC)); prevC = b.close;
+    if (n < period) { sum += tr; n++; if (n === period) { a = sum/period; atrArr[i] = a; } } else { a = (a*(period-1) + tr)/period; atrArr[i] = a; }
+  }
+  const out = []; let st = null, dir = 1, finalUpper = null, finalLower = null;
+  for (let i = 0; i < bars.length; i++) { const b = bars[i], at = atrArr[i];
+    if (at == null) { out.push({ time: b.time, value: null }); continue; }
+    const hl2 = (b.high + b.low)/2, bu = hl2 + mult*at, bl = hl2 - mult*at, pClose = i > 0 ? bars[i-1].close : b.close;
+    finalUpper = (finalUpper == null || bu < finalUpper || pClose > finalUpper) ? bu : finalUpper;
+    finalLower = (finalLower == null || bl > finalLower || pClose < finalLower) ? bl : finalLower;
+    if (st == null) { dir = 1; st = finalLower; }
+    else if (dir === 1) { if (b.close < finalLower) { dir = -1; st = finalUpper; } else st = finalLower; }
+    else { if (b.close > finalUpper) { dir = 1; st = finalLower; } else st = finalUpper; }
+    out.push({ time: b.time, value: st, dir });
+  }
+  return out.filter(x => Number.isFinite(x.value));
+}
+/* split a supertrend array into up/down line series (gaps via whitespace) so each direction gets its own color.
+   carry the value into the flip bar of the new direction so the line connects across the flip. */
+function _supertrendSplit(arr) {
+  const up = [], dn = [];
+  for (let i = 0; i < arr.length; i++) {
+    const p = arr[i], connect = i > 0 && arr[i-1].dir !== p.dir;
+    if (p.dir === 1) { up.push({ time:p.time, value:p.value }); dn.push(connect ? { time:p.time, value:p.value } : { time:p.time }); }
+    else { dn.push({ time:p.time, value:p.value }); up.push(connect ? { time:p.time, value:p.value } : { time:p.time }); }
+  }
+  return { up, dn };
+}
+/* Parabolic SAR → [{time, value, dir}] (dir 1=rising/below price, -1=falling/above price). Wilder's algorithm. */
+function calcPSAR(bars, step = 0.02, maxAf = 0.2) {
+  if (bars.length < 2) return [];
+  step = step > 0 ? step : 0.02; maxAf = maxAf > 0 ? maxAf : 0.2;
+  let up = bars[1].close >= bars[0].close;          // initial trend guess
+  let af = step;
+  let ep = up ? bars[0].high : bars[0].low;          // extreme point
+  let sar = up ? bars[0].low : bars[0].high;
+  const out = [];
+  for (let i = 1; i < bars.length; i++) {
+    sar = sar + af * (ep - sar);
+    const lo1 = bars[i-1].low, hi1 = bars[i-1].high, lo2 = i >= 2 ? bars[i-2].low : lo1, hi2 = i >= 2 ? bars[i-2].high : hi1;
+    if (up) {
+      sar = Math.min(sar, lo1, lo2);                 // SAR can't penetrate the prior two lows
+      if (bars[i].low < sar) { up = false; sar = ep; ep = bars[i].low; af = step; }   // flip down
+      else if (bars[i].high > ep) { ep = bars[i].high; af = Math.min(af + step, maxAf); }
+    } else {
+      sar = Math.max(sar, hi1, hi2);
+      if (bars[i].high > sar) { up = true; sar = ep; ep = bars[i].high; af = step; }  // flip up
+      else if (bars[i].low < ep) { ep = bars[i].low; af = Math.min(af + step, maxAf); }
+    }
+    out.push({ time: bars[i].time, value: sar, dir: up ? 1 : -1 });
+  }
+  return out.filter(x => Number.isFinite(x.value));
+}
+/* split a dir-tagged array into up/down series (whitespace where inactive); no flip-connect (dots, not a line). */
+function _dirDotSplit(arr) {
+  const up = arr.map(p => p.dir === 1 ? { time:p.time, value:p.value } : { time:p.time });
+  const dn = arr.map(p => p.dir === -1 ? { time:p.time, value:p.value } : { time:p.time });
+  return { up, dn };
+}
+/* Stochastic oscillator → { k:[%K], d:[%D] }, 0-100. params: period(%K len), dPeriod, smooth(%K smoothing). */
+function calcStochastic(bars, period = 14, dPeriod = 3, smooth = 3) {
+  period = Math.max(1, period); dPeriod = Math.max(1, dPeriod); smooth = Math.max(1, smooth);
+  const rawK = [];
+  for (let i = 0; i < bars.length; i++) {
+    if (i < period-1) { rawK.push(null); continue; }
+    let hh = -Infinity, ll = Infinity; for (let j = i-period+1; j <= i; j++) { if (bars[j].high > hh) hh = bars[j].high; if (bars[j].low < ll) ll = bars[j].low; }
+    rawK.push(hh === ll ? 50 : 100*(bars[i].close - ll)/(hh - ll));
+  }
+  const sma = (arr, p) => arr.map((_, i) => { if (i < p-1) return null; let s = 0; for (let j = i-p+1; j <= i; j++) { if (arr[j] == null) return null; s += arr[j]; } return s/p; });
+  const kSm = sma(rawK, smooth), dSm = sma(kSm, dPeriod);
+  const k = [], d = [];
+  for (let i = 0; i < bars.length; i++) { if (kSm[i] != null) k.push({ time: bars[i].time, value: kSm[i] }); if (dSm[i] != null) d.push({ time: bars[i].time, value: dSm[i] }); }
+  return { k, d };
 }
 function calcBB(bars, period, mult) {
   const upper = [], mid = [], lower = [];
@@ -7939,6 +8147,26 @@ function createIndicatorSeries(inst, ind, active) {
     up.setData(upper); md.setData(mid); lo.setData(lower);
     return [up, md, lo];
   }
+  if (ind.kind === 'overlay-st') {   // Supertrend overlay: two direction-colored line segments on the price pane
+    const arr = calcSupertrend(_indBars(inst), period, mult ?? 3);
+    const { up, dn } = _supertrendSplit(arr);
+    const upC = active.params?.upColor || '#00e599', dnC = active.params?.downColor || '#ff2c64';
+    const opts = { lineWidth:lw, lineStyle:lst, priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false };
+    const us = inst.chart.addSeries(LightweightCharts.LineSeries, { ...opts, color:upC }, mainPi);
+    const ds = inst.chart.addSeries(LightweightCharts.LineSeries, { ...opts, color:dnC }, mainPi);
+    us.setData(up); ds.setData(dn);
+    return [us, ds];
+  }
+  if (ind.kind === 'overlay-psar') {   // Parabolic SAR: direction-colored dots on the price pane (no connecting line)
+    const arr = calcPSAR(_indBars(inst), active.params?.step ?? ind.step ?? 0.02, active.params?.max ?? ind.max ?? 0.2);
+    const { up, dn } = _dirDotSplit(arr);
+    const upC = active.params?.upColor || '#00e599', dnC = active.params?.downColor || '#ff2c64';
+    const dot = { lineVisible:false, pointMarkersVisible:true, pointMarkersRadius:(active.params?.dotSize ?? 2), priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false };
+    const us = inst.chart.addSeries(LightweightCharts.LineSeries, { ...dot, color:upC }, mainPi);
+    const ds = inst.chart.addSeries(LightweightCharts.LineSeries, { ...dot, color:dnC }, mainPi);
+    us.setData(up); ds.setData(dn);
+    return [us, ds];
+  }
   // -- oscillator sub-pane (v5 native pane) --
   // inMain = merged into the price pane (pane 0) as an overlay (own scale, bottom band)
   const inMain = !!active.params?.inMain;
@@ -8138,6 +8366,23 @@ function createIndicatorSeries(inst, ind, active) {
     else setSubHeight(120);
     return [hs, ml, sl];
   }
+  if (ind.kind === 'sub-stoch') {   // Stochastic: %K + %D lines in a sub-pane, with 80/20 reference lines
+    const dP = active.params?.dPeriod ?? 3, sm = active.params?.smooth ?? 3;
+    const { k, d } = calcStochastic(_indBars(inst), period, dP, sm);
+    const kC = active.params?.kColor || color, dC = active.params?.dColor || '#ff9f1c';
+    const fmt = { type:'custom', minMove:0.01, formatter:fmtAbbrev };
+    const kOpts = { color:kC, lineWidth:lw, lineStyle:lst, priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false, priceFormat:fmt }; if (ovId) kOpts.priceScaleId = ovId;
+    const dOpts = { color:dC, lineWidth:lw, lineStyle:lst, priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false, priceFormat:fmt }; if (ovId) dOpts.priceScaleId = ovId;
+    const ks = inst.chart.addSeries(LightweightCharts.LineSeries, kOpts, subPi);
+    ks.setData(k);
+    const ds = inst.chart.addSeries(LightweightCharts.LineSeries, dOpts, subPi);
+    ds.setData(d);
+    const DASH = LightweightCharts.LineStyle.Dashed;
+    try { ks.createPriceLine({ price:80, color:'#787B86', lineWidth:1, lineStyle:DASH, axisLabelVisible:false }); ks.createPriceLine({ price:20, color:'#787B86', lineWidth:1, lineStyle:DASH, axisLabelVisible:false }); } catch(_){}
+    if (inMain) { try { ks.priceScale().applyOptions({ scaleMargins:{ top:0.7, bottom:0 } }); } catch(e){} }
+    else setSubHeight(110);
+    return [ks, ds];
+  }
   const data = period ? ind.calc(_indBars(inst), period) : ind.calc(_indBars(inst));
   // overlay (MA/EMA/VWAP) shares the price axis — hide its value tag so it doesn't clutter the axis
   const s = inst.chart.addSeries(LightweightCharts.LineSeries, { color, lineWidth:lw, lineStyle:lst, priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false }, mainPi);
@@ -8169,7 +8414,7 @@ function applyIndicatorsTo(inst) {
     if (!ind) return;
     try {
       const series = createIndicatorSeries(inst, ind, active);
-      series.forEach(s => { try { s.applyOptions({ lastValueVisible: false }); } catch(e){} });   // no indicator value tag on any axis (all current + future)
+      { const _isSub = String(ind.kind).startsWith('sub'); series.forEach(s => { try { s.applyOptions({ lastValueVisible: _isSub }); } catch(e){} }); }   // oscillator value → its own right axis (like price); overlay keeps value in the OHLC title
       if (active.hidden) series.forEach(s => s.applyOptions({ visible: false }));
       let pane = 0; try { pane = series[0].getPane().paneIndex(); } catch(e){}
       const _e = { iid: active.iid, id: active.id, series, pane }; inst._indSeries.push(_e);
@@ -8208,11 +8453,22 @@ function refreshIndicatorData(inst) {
       } else if (ind.kind === 'sub-macd') {
         const { macd, signal, hist } = calcMACD(_indBars(inst), active.params?.fast ?? 12, active.params?.slow ?? 26, active.params?.signal ?? 9);
         entry.series[0]?.setData(hist); entry.series[1]?.setData(macd); entry.series[2]?.setData(signal);
+      } else if (ind.kind === 'overlay-st') {
+        const { up, dn } = _supertrendSplit(calcSupertrend(_indBars(inst), period, mult ?? 3));
+        entry.series[0]?.setData(up); entry.series[1]?.setData(dn);
+      } else if (ind.kind === 'overlay-psar') {
+        const { up, dn } = _dirDotSplit(calcPSAR(_indBars(inst), active.params?.step ?? ind.step ?? 0.02, active.params?.max ?? ind.max ?? 0.2));
+        entry.series[0]?.setData(up); entry.series[1]?.setData(dn);
+      } else if (ind.kind === 'sub-stoch') {
+        const { k, d } = calcStochastic(_indBars(inst), period, active.params?.dPeriod ?? 3, active.params?.smooth ?? 3);
+        entry.series[0]?.setData(k); entry.series[1]?.setData(d);
       } else {
         entry.series[0]?.setData(period ? ind.calc(_indBars(inst), period) : ind.calc(_indBars(inst)));
       }
     } catch(e){}
   });
+  // when NOT hovering, refresh the legend values to the latest bar so they update live (not only on crosshair move)
+  if (!inst._crosshairActive && typeof updateIndValuesToLastBar === 'function') updateIndValuesToLastBar(inst);
 }
 
 /* build label */
@@ -8225,6 +8481,9 @@ function indLabel(ind, active) {
     return `MACD ${f} ${s} ${sg}`;
   }
   if (ind.kind === 'sub-vol') return 'Volume';
+  if (ind.kind === 'sub-stoch') { const dP = active.params?.dPeriod ?? 3, sm = active.params?.smooth ?? 3; return `Stoch ${p} ${sm} ${dP}`; }
+  if (ind.kind === 'overlay-st') return `Supertrend ${p} ${m}`;
+  if (ind.kind === 'overlay-psar') { const s = active.params?.step ?? ind.step ?? 0.02, mx = active.params?.max ?? ind.max ?? 0.2; return `PSAR ${s} ${mx}`; }
   if (p != null) return `${ind.name} ${p}`;   // e.g.: MA 20, EMA 12, RSI 14
   return ind.name;
 }
@@ -8300,6 +8559,7 @@ function renderPaneLegends(inst) {
   const downIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
   const mergeIco= '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 12 6 19 13"/><line x1="4" y1="19" x2="20" y2="19"/></svg>';
   const splitIco= '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="20" y2="5"/><polyline points="5 11 12 18 19 11"/></svg>';
+  const moreIco = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
   const subs = (inst._indSeries || []).filter(e => { const ind = INDICATORS.find(x => x.id === e.id); return ind && String(ind.kind).startsWith('sub'); });
   inst._paneLegends.innerHTML = subs.map(e => {
     const ind = INDICATORS.find(x => x.id === e.id);
@@ -8315,15 +8575,14 @@ function renderPaneLegends(inst) {
     const mergeBtn = inMain
       ? `<button class="ind-btn" data-pane-action="merge" data-iid="${e.iid}" title="Move to own pane">${splitIco}</button>`
       : `<button class="ind-btn" data-pane-action="merge" data-iid="${e.iid}" title="Merge into price pane">${mergeIco}</button>`;
+    // full inline controls (shown when the banner fits) + a ⋯ fallback (shown only when positionPaneLegends marks
+    // the banner .pl-compact because it would otherwise overflow the plot). Live value now shows on the right axis
+    // (lastValueVisible), not in the banner.
     return `<div class="pane-leg${inMain?' merged':''}" data-pane-leg="${pane}" data-iid="${e.iid}">
       <span class="ind-dot" style="background:${color}"></span>
       <span class="pl-name" data-ind-action="select" data-iid="${e.iid}" title="Click to select · Ctrl+C / Ctrl+V to clone">${label}</span>
-      <span class="pl-value" data-pl-value="${e.iid}"></span>
-      ${moveBtns}
-      ${mergeBtn}
-      <button class="ind-btn" data-ind-action="hide" data-iid="${e.iid}" title="${active.hidden?'Show':'Hide'}">${active.hidden?eyeOff:eye}</button>
-      <button class="ind-btn" data-ind-action="config" data-iid="${e.iid}" title="Settings">${gear}</button>
-      <button class="ind-btn danger" data-ind-action="delete" data-iid="${e.iid}" title="Delete">${xIco}</button>
+      <span class="pl-fullbtns">${moveBtns}${mergeBtn}<button class="ind-btn" data-ind-action="hide" data-iid="${e.iid}" title="${active.hidden?'Show':'Hide'}">${active.hidden?eyeOff:eye}</button><button class="ind-btn" data-ind-action="config" data-iid="${e.iid}" title="Settings">${gear}</button><button class="ind-btn danger" data-ind-action="delete" data-iid="${e.iid}" title="Delete">${xIco}</button></span>
+      <button class="ind-btn pl-more" data-pl-more="${e.iid}" title="More">${moreIco}</button>
     </div>`;
   }).join('');
   positionPaneLegends(inst);
@@ -8338,12 +8597,42 @@ function positionPaneLegends(inst) {
   let mH = 0; try { mH = panes[mpi].getHeight(); } catch(e){}
   // ticker / OHLC overlay follows the candle pane so it never overlaps an oscillator moved above it
   try { const ov = inst.panelEl?.querySelector('.ohlc-overlay'); if (ov) ov.style.top = (8 + mTop) + 'px'; } catch(_){}
+  // pin the OHLC overlay to a small inset from the chart plot's LEFT edge, and cap its width to the plot area
+  // (so it wraps instead of bleeding over the right price axis in narrow split cells). The overlay is a sibling
+  // of the slot inside chart-wrap; the static CSS left:48px only looks right in single mode (40px side-tools + 8),
+  // but split cells share the side-tools at row level → the slot starts at x=0, so 48px showed as a visible left
+  // gap. Position relative to the slot's own left instead so it's a consistent 8px inset in BOTH layouts.
+  // cached so we don't write every frame.
+  try {
+    const ov = inst.panelEl?.querySelector('.ohlc-overlay'), slot = inst.panelEl?.querySelector('.chart-slot');
+    if (ov && slot) {
+      const INSET = 8;
+      const left = slot.offsetLeft + INSET;   // 8px into the plot whether or not a side-tools column precedes the slot
+      if (inst._ohlcLeft !== left) { inst._ohlcLeft = left; ov.style.left = left + 'px'; }
+      let psW = 0; try { psW = inst.chart.priceScale('right').width() || 0; } catch(_){}
+      const maxW = Math.max(40, Math.round(slot.clientWidth - psW - INSET - 4));
+      if (inst._ohlcMaxW !== maxW) { inst._ohlcMaxW = maxW; ov.style.maxWidth = maxW + 'px'; }
+    }
+  } catch(_){}
   const cont = inst._paneLegends; if (!cont || !cont.children.length) return;
+  // cap each oscillator banner to the plot area (slot − 8px left − right price axis) so its name ellipsizes
+  // and it never bleeds over the price axis in narrow split cells; buttons stay pinned/visible.
+  let legPsW = 0; try { legPsW = inst.chart.priceScale('right').width() || 0; } catch(_){}
+  const legSlotW = inst.panelEl?.querySelector('.chart-slot')?.clientWidth || 0;
+  const legMaxW = Math.max(60, Math.round(legSlotW - 8 - legPsW - 4));
   let mergedStack = 0;
   cont.querySelectorAll('[data-pane-leg]').forEach(el => {
     let pi = +el.dataset.paneLeg;
     const entry = (inst._indSeries || []).find(e => e.iid === el.dataset.iid);   // live pane index
     if (entry) { try { pi = entry.series[0].getPane().paneIndex(); } catch(_){} }
+    el.style.maxWidth = legMaxW + 'px';
+    // show the full inline controls when they fit; collapse to ⋯ only when they'd overflow the plot.
+    // fullW is measured from STABLE inputs (name's scrollWidth ignores the ellipsis clamp, button count is the
+    // DOM count regardless of display) so toggling .pl-compact can't oscillate frame-to-frame.
+    const nmEl = el.querySelector('.pl-name'); const nameNat = nmEl ? nmEl.scrollWidth : 0;
+    const fbEl = el.querySelector('.pl-fullbtns'); const nBtns = fbEl ? fbEl.querySelectorAll('.ind-btn').length : 0;
+    const fullW = 12 + 7 + 5 + nameNat + nBtns * (16 + 5) + 4;   // pad + dot + gap + name + buttons
+    el.classList.toggle('pl-compact', fullW > legMaxW);
     if (el.classList.contains('merged')) {
       // merged into the candle pane → stack near the bottom of that pane (over its overlay band)
       el.style.top = Math.max(mTop + 3, mTop + mH - 22 - mergedStack * 20) + 'px';
@@ -8428,7 +8717,7 @@ function _mountOneIndicator(inst, active) {
   if (!ind || !inst.chart || !inst.bars || !inst.bars.length) return;
   try {
     const series = createIndicatorSeries(inst, ind, active);
-    series.forEach(s => { try { s.applyOptions({ lastValueVisible: false }); } catch(e){} });   // no indicator value tag on any axis (all current + future)
+    { const _isSub = String(ind.kind).startsWith('sub'); series.forEach(s => { try { s.applyOptions({ lastValueVisible: _isSub }); } catch(e){} }); }   // oscillator value → its own right axis (like price); overlay keeps value in the OHLC title
     if (active.hidden) series.forEach(s => { try { s.applyOptions({ visible:false }); } catch(e){} });
     let pane = 0; try { pane = series[0].getPane().paneIndex(); } catch(e){}
     inst._indSeries = inst._indSeries || [];
@@ -8545,13 +8834,14 @@ function normalizeSubPanes(inst) { applySubPaneHeights(inst); }
    factors. stretch is re-normalized by lightweight-charts on every layout, so the pane is always the
    same fraction regardless of WHEN it's applied or the chart size — no growth, no timing fragility.
    (setHeight in px would lock a wrong proportion if applied before the chart reaches final size.) */
-const SUBPANE_DEF_FRAC = { 'sub-macd': 0.17, 'sub-rsi': 0.15 };   // default fraction of plot per kind (else 0.13)
+const SUBPANE_DEF_FRAC = { 'sub-macd': 0.17, 'sub-rsi': 0.15, 'sub-stoch': 0.15 };   // default fraction of plot per kind (else 0.13)
 /* size each oscillator pane via setHeight(fraction × current plot height). setHeight is reliable
    (unlike deferred setStretchFactor here) AND setHeight(frac×plotH) yields an internal stretch of
    exactly `frac`, so it holds at the final size too — no growth, no timing dependence. */
 function applySubPaneHeights(inst) {
   try {
     if (!inst || !inst.chart) return;
+    if (inst._oscHidden) { _collapseOscPanes(inst); return; }   // double-click "hide oscillators" mode — keep them collapsed across resizes/settle ticks
     const panes = inst.chart.panes();
     if (!panes || panes.length <= 1) return;
     const mpi = mainPaneIdx(inst);   // every pane EXCEPT the candle pane is an oscillator
@@ -8591,10 +8881,97 @@ function applySubPanesWhenSettled(inst) {
   };
   requestAnimationFrame(tick);
 }
+/* ===== TradingView-style "maximize the price pane": double-click the chart to HIDE (collapse) every
+   oscillator sub-pane to a sliver — NOT remove them — and double-click again to restore saved heights. ===== */
+function _hasOscPanes(inst){ try { return inst.chart.panes().length > 1; } catch(_){ return false; } }
+function _collapseOscPanes(inst){
+  try {
+    const panes = inst.chart.panes(); if (!panes || panes.length <= 1) return;
+    if (typeof panes[0].setStretchFactor !== 'function') return;
+    const mpi = mainPaneIdx(inst);
+    // candle gets a huge stretch, every oscillator a near-zero one → the library normalizes them to ~0 height
+    panes.forEach((p, i) => { try { p.setStretchFactor(i === mpi ? 60 : 0.0008); } catch(_){} });
+  } catch(_){}
+}
+/* show/hide every oscillator sub-pane SERIES — so the collapsed ~2px sliver draws nothing. When showing again,
+   respect each indicator's own hidden (eye) flag so a user-hidden oscillator stays hidden. */
+function _setOscSeriesVisible(inst, visible){
+  (inst._indSeries || []).forEach(e => {
+    const ind = INDICATORS.find(x => x.id === e.id); if (!(ind && String(ind.kind).startsWith('sub'))) return;
+    const act = (instIndicators(inst) || []).find(a => a.iid === e.iid);
+    const v = visible ? !(act && act.hidden) : false;
+    (e.series || []).forEach(s => { try { s.applyOptions({ visible: v }); } catch(_){} });
+  });
+}
+function setOscPanesHidden(inst, hidden){
+  if (!inst || !inst.chart) return;
+  if (hidden && !_hasOscPanes(inst)) return;
+  inst._oscHidden = !!hidden;
+  if (hidden){
+    _collapseOscPanes(inst);
+    _setOscSeriesVisible(inst, false);                                  // no line in the sliver
+    try { inst.chart.applyOptions({ layout:{ panes:{ separatorColor:'rgba(0,0,0,0)' } } }); } catch(_){}   // no separator line → sliver blends into the bg
+    if (inst._paneLegends) inst._paneLegends.style.display = 'none';    // hide the oscillator banners while collapsed
+  } else {
+    if (inst._paneLegends) inst._paneLegends.style.display = '';
+    const sc = (inst.tab && inst.tab.prefs && inst.tab.prefs.separatorColor) || (typeof CHART_PREFS_DEFAULT !== 'undefined' && CHART_PREFS_DEFAULT.separatorColor) || '#10161a';
+    try { inst.chart.applyOptions({ layout:{ panes:{ separatorColor: sc } } }); } catch(_){}            // restore the chart's configured separator color
+    _setOscSeriesVisible(inst, true);                                   // restore series (honours per-indicator hidden flag)
+    applySubPaneHeights(inst);                                          // restore saved fractions
+  }
+  try { redrawOverlay(inst); } catch(_){}
+  try { positionPaneLegends(inst); } catch(_){}
+}
+function toggleOscPanes(inst){
+  if (!inst) return;
+  if (!inst._oscHidden && !_hasOscPanes(inst)) return;   // nothing to hide
+  setOscPanesHidden(inst, !inst._oscHidden);
+}
+/* ===== oscillator banner "⋯ more" popover — moves the up/down/merge/hide/settings/delete controls out of the
+   inline banner into a click-popover, so the banner stays tiny (dot + name + value + ⋯) and can never cross the
+   right price axis, even in a minimum-width split cell. ===== */
+function openIndMorePopover(inst, iid, anchorEl){
+  let m = document.getElementById('indMorePop'); if (!m){ m = document.createElement('div'); m.id = 'indMorePop'; document.body.appendChild(m); }
+  if (m._iid === iid && m.classList.contains('open')) { m.classList.remove('open'); return; }   // 2nd ⋯ click toggles closed
+  const act = (instIndicators(inst) || []).find(a => a.iid === iid) || {};
+  const inMain = !!(act.params && act.params.inMain);
+  const item = (a, label, cls) => `<div class="imp-item${cls?' '+cls:''}" data-imp="${a}">${label}</div>`;
+  let h = '';
+  if (!inMain) h += item('up','Move pane up') + item('down','Move pane down');
+  h += item('merge', inMain ? 'Move to own pane' : 'Merge into price pane');
+  h += item('hide', act.hidden ? 'Show' : 'Hide');
+  h += item('config','Settings');
+  h += '<div class="imp-sep"></div>' + item('delete','Delete','danger');
+  m.innerHTML = h; m._inst = inst; m._iid = iid;
+  const r = anchorEl.getBoundingClientRect();
+  m.style.left = Math.min(r.left, window.innerWidth - 184) + 'px';
+  m.style.top  = Math.min(r.bottom + 4, window.innerHeight - 210) + 'px';
+  m.classList.add('open');
+}
+document.addEventListener('click', (e) => {
+  const m = document.getElementById('indMorePop'); if (!m || !m.classList.contains('open')) return;
+  const it = e.target.closest('#indMorePop .imp-item');
+  if (it) {
+    const inst = m._inst, iid = m._iid, a = it.dataset.imp; m.classList.remove('open');
+    if (inst) {
+      if (a === 'up' || a === 'down') movePaneDir(inst, iid, a);
+      else if (a === 'merge') toggleMergeMain(inst, iid);
+      else if (a === 'hide') toggleIndHidden(inst, iid);
+      else if (a === 'config') openIndSettings(inst, iid);
+      else if (a === 'delete') deleteIndicator(inst, iid);
+    }
+    return;
+  }
+  // click outside the popover closes it — the ⋯ opener is excluded so the opening click can't self-close
+  if (!e.target.closest('#indMorePop') && !e.target.closest('[data-pl-more]')) m.classList.remove('open');
+});
 function addIndicator(inst, catalogId) {
   if (!inst || !inst.tab) { toast('warn', 'Select a chart first'); return; }
   const ind = INDICATORS.find(x => x.id === catalogId);
   if (!ind) return;
+  // can't drop a new oscillator into the double-click-collapsed band (it would be a permanently-invisible sliver
+  // with a hidden banner) — exit the maximize/hide view first so the user actually sees what they added.
+  if (inst._oscHidden && String(ind.kind).startsWith('sub') && typeof setOscPanesHidden === 'function') setOscPanesHidden(inst, false);
   const active = { iid: newIid(), id: ind.id, color: ind.color, hidden: false, params: { period: ind.period, mult: ind.mult } };
   instIndicators(inst).push(active);
   _mountOneIndicator(inst, active);   // incremental add (does not touch existing panes)
@@ -8612,6 +8989,13 @@ function deleteIndicator(inst, iid) {
   inst.tab.indicators = instIndicators(inst).filter(a => a.iid !== iid);
   // recompute remaining sub-pane indices + re-apply their saved fractions (stretch)
   (inst._indSeries || []).forEach(e => { try { e.pane = e.series[0].getPane().paneIndex(); } catch(_){} });
+  // deleting the LAST oscillator while double-click-hidden would otherwise leave _oscHidden=true + a transparent
+  // separator + display:none legends stuck on a now-single-pane chart (audit #9) — clean that view state up.
+  if (inst._oscHidden && typeof _hasOscPanes === 'function' && !_hasOscPanes(inst)) {
+    inst._oscHidden = false;
+    if (inst._paneLegends) inst._paneLegends.style.display = '';
+    try { applyChartPrefsToInst(inst); } catch(_){}
+  }
   if (typeof applySubPaneHeights === 'function') requestAnimationFrame(() => applySubPaneHeights(inst));
   renderIndTitles(inst);
   if (typeof renderPaneLegends === 'function') renderPaneLegends(inst);
@@ -8621,6 +9005,9 @@ function deleteIndicator(inst, iid) {
 function toggleIndHidden(inst, iid) {
   const a = instIndicators(inst).find(x => x.iid === iid);
   if (!a) return;
+  // if the oscillators are double-click-collapsed, exit that view first so toggling visibility is actually visible
+  // (otherwise un-hiding a sub series just makes it draw inside the 2px sliver)
+  if (inst._oscHidden && typeof setOscPanesHidden === 'function') { const e0 = (inst._indSeries||[]).find(e=>e.iid===iid); const isSub = e0 && (function(){ const ix=INDICATORS.find(x=>x.id===e0.id); return ix && String(ix.kind).startsWith('sub'); })(); if (isSub) setOscPanesHidden(inst, false); }
   a.hidden = !a.hidden;
   // no full recreate -> keep pane heights/layout. only toggle series visible
   const entry = (inst._indSeries || []).find(e => e.iid === iid);
@@ -8659,6 +9046,21 @@ function applyIndicatorStyle(inst, a) {
     } else if (ind.kind === 'sub-vol') {
       const up = a.params.upColor || '#00e599', dn = a.params.downColor || '#ff2c64';
       entry.series[0]?.setData(_indBars(inst).map(c => ({ time:c.time, value:c.volume, color: c.close>=c.open ? up : dn })));
+    } else if (ind.kind === 'overlay-st') {
+      const { up, dn } = _supertrendSplit(calcSupertrend(_indBars(inst), period, a.params.mult ?? ind.mult ?? 3));
+      entry.series[0]?.setData(up); entry.series[1]?.setData(dn);
+      entry.series[0]?.applyOptions({ color:a.params.upColor || '#00e599', lineWidth:lw, lineStyle:ls });
+      entry.series[1]?.applyOptions({ color:a.params.downColor || '#ff2c64', lineWidth:lw, lineStyle:ls });
+    } else if (ind.kind === 'overlay-psar') {
+      const { up, dn } = _dirDotSplit(calcPSAR(_indBars(inst), a.params.step ?? ind.step ?? 0.02, a.params.max ?? ind.max ?? 0.2));
+      entry.series[0]?.setData(up); entry.series[1]?.setData(dn);
+      entry.series[0]?.applyOptions({ color:a.params.upColor || '#00e599', pointMarkersRadius:(a.params.dotSize ?? 2) });
+      entry.series[1]?.applyOptions({ color:a.params.downColor || '#ff2c64', pointMarkersRadius:(a.params.dotSize ?? 2) });
+    } else if (ind.kind === 'sub-stoch') {
+      const { k, d } = calcStochastic(_indBars(inst), period, a.params.dPeriod ?? 3, a.params.smooth ?? 3);
+      entry.series[0]?.setData(k); entry.series[1]?.setData(d);
+      entry.series[0]?.applyOptions({ color:a.params.kColor || a.color || ind.color, lineWidth:lw, lineStyle:ls });
+      entry.series[1]?.applyOptions({ color:a.params.dColor || '#ff9f1c', lineWidth:lw, lineStyle:ls });
     } else {
       entry.series[0]?.setData(period ? ind.calc(_indBars(inst), period) : ind.calc(_indBars(inst)));
       entry.series[0]?.applyOptions({ color:a.color, lineWidth:lw, lineStyle:ls });
@@ -8706,6 +9108,9 @@ function renderIsBody() {
   let html = '';
   if (isTab === 'inputs') {
     if (ind.kind === 'sub-macd') html += num('Fast Length','fast',p.fast??12) + num('Slow Length','slow',p.slow??26) + num('Signal','signal',p.signal??9);
+    else if (ind.kind === 'sub-stoch') html += num('%K Length','period',p.period??ind.period,1,500) + num('%K Smoothing','smooth',p.smooth??3,1,100) + num('%D Smoothing','dPeriod',p.dPeriod??3,1,100);
+    else if (ind.kind === 'overlay-st') html += num('ATR Length','period',p.period??ind.period,1,500) + num('Factor','mult',p.mult??ind.mult??3,0.1,50,0.1);
+    else if (ind.kind === 'overlay-psar') html += num('Step (AF)','step',p.step??ind.step??0.02,0.001,1,0.001) + num('Max Step','max',p.max??ind.max??0.2,0.001,1,0.001);
     else if (ind.kind === 'sub-vol') html += `<div class="is-empty">No inputs</div>`;
     else if (ind.kind === 'sub-rsi') {
       const mt = p.maType || 'sma';
@@ -8726,6 +9131,9 @@ function renderIsBody() {
     }
   } else {
     if (ind.kind === 'sub-vol') html += col('Up color','upColor',p.upColor??'#00e599') + col('Down color','downColor',p.downColor??'#ff2c64');
+    else if (ind.kind === 'overlay-st') html += col('Up trend','upColor',p.upColor??'#00e599') + col('Down trend','downColor',p.downColor??'#ff2c64') + widthSel(p.width) + styleSel(p.style);
+    else if (ind.kind === 'overlay-psar') html += col('Up dots','upColor',p.upColor??'#00e599') + col('Down dots','downColor',p.downColor??'#ff2c64') + num('Dot Size','dotSize',p.dotSize??2,1,8);
+    else if (ind.kind === 'sub-stoch') html += col('%K','kColor',p.kColor??a.color??ind.color) + col('%D','dColor',p.dColor??'#ff9f1c') + widthSel(p.width) + styleSel(p.style);
     else if (ind.kind === 'sub-macd') html += col('MACD line','macdColor',p.macdColor??'#15e0d8') + col('Signal line','signalColor',p.signalColor??'#ff9f1c') + widthSel(p.width) + styleSel(p.style);
     else if (ind.kind === 'sub-rsi') {
       html += sec('RSI', true);
@@ -8759,10 +9167,11 @@ function isOnFieldChange(el) {
   const f = el.dataset.isField;
   if (el.type === 'checkbox') a.params[f] = el.checked;   // calcDivergence
   else if (f === 'color') a.color = el.value;
-  else if (['period','mult','fast','slow','signal','width','maLength','bbMult'].includes(f)) { const v = parseFloat(el.value); if (Number.isFinite(v)) a.params[f] = (f === 'mult' || f === 'bbMult') ? Math.max(0.1, v) : Math.max(1, Math.round(v)); }   // clamp ≥1 (≥0.1 for mult); empty/invalid keeps the previous value so the indicator doesn't blank out
+  else if (['period','mult','fast','slow','signal','width','maLength','bbMult','smooth','dPeriod','step','max','dotSize'].includes(f)) { const v = parseFloat(el.value); if (Number.isFinite(v)) a.params[f] = (f === 'mult' || f === 'bbMult') ? Math.max(0.1, v) : (f === 'step' || f === 'max') ? Math.max(0.001, v) : Math.max(1, Math.round(v)); }   // clamp ≥1 (≥0.1 for mult); empty/invalid keeps the previous value so the indicator doesn't blank out
   else a.params[f] = el.value;   // style, source, maType, macdColor, signalColor, upColor, downColor
   applyIndicatorStyle(isInst, a);
   if (f === 'maType') renderIsBody();   // changing MA type shows/hides MA Length & BB StdDev inputs
+  if (typeof saveLayout === 'function') saveLayout();   // persist the edit immediately (else param edits vanish on reload)
 }
 
 /* update each indicator value on crosshair move */
@@ -8784,9 +9193,44 @@ function updateIndValuesOnCrosshair(inst, param) {
       } else {
         valEl.textContent = '—';
       }
+    } else if (ind.kind === 'sub-stoch') {
+      const k = param.seriesData?.get(entry.series[0])?.value, d = param.seriesData?.get(entry.series[1])?.value;
+      valEl.innerHTML = `<span style="color:var(--text-2)">%K ${fmtIndVal(k)}</span> <span style="color:var(--text-dim)">%D ${fmtIndVal(d)}</span>`;
+    } else if (ind.kind === 'overlay-st' || ind.kind === 'overlay-psar') {
+      const a = param.seriesData?.get(entry.series[0])?.value, b = param.seriesData?.get(entry.series[1])?.value;
+      valEl.textContent = fmtIndVal(a != null ? a : b);
     } else {
       const v = param.seriesData?.get(entry.series[0])?.value;
       valEl.textContent = fmtIndVal(v);
+    }
+  });
+}
+/* set indicator legend values to the LATEST bar (used on live ticks when the user isn't hovering, so values update live) */
+function updateIndValuesToLastBar(inst) {
+  if (!inst || !inst._indSeries || !inst.panelEl) return;
+  const lastOf = s => { try { const d = s.data(); return d.length ? d[d.length-1].value : null; } catch(_){ return null; } };
+  inst._indSeries.forEach(entry => {
+    const titleEl = inst.panelEl.querySelector(`.ind-title[data-iid="${entry.iid}"]`);
+    const valEl = (titleEl && titleEl.querySelector('[data-ind-value]')) || inst.panelEl.querySelector(`.pane-leg[data-iid="${entry.iid}"] [data-pl-value]`);
+    if (!valEl) return;
+    const ind = INDICATORS.find(x => x.id === entry.id);
+    if (ind && ind.kind === 'overlay-bb' && entry.series.length === 3) {
+      const up = lastOf(entry.series[0]), mi = lastOf(entry.series[1]), lo = lastOf(entry.series[2]);
+      valEl.innerHTML = (up != null && mi != null && lo != null)
+        ? `<span style="color:var(--text-2)">↑${fmtIndVal(up)}</span> <span style="color:var(--text-dim)">${fmtIndVal(mi)}</span> <span style="color:var(--text-2)">↓${fmtIndVal(lo)}</span>`
+        : '—';
+    } else if (ind && ind.kind === 'sub-stoch') {
+      const k = lastOf(entry.series[0]), d = lastOf(entry.series[1]);
+      valEl.innerHTML = `<span style="color:var(--text-2)">%K ${fmtIndVal(k)}</span> <span style="color:var(--text-dim)">%D ${fmtIndVal(d)}</span>`;
+    } else if (ind && (ind.kind === 'overlay-st' || ind.kind === 'overlay-psar')) {
+      // up/down series each drop their whitespace bars from data(), so each series' LAST point may be a stale
+      // pre-flip value — pick the series whose last point is the most recent (= current trend direction).
+      const lp = s => { try { const d = s.data(); return d.length ? d[d.length-1] : null; } catch(_){ return null; } };
+      const a = lp(entry.series[0]), b = lp(entry.series[1]);
+      const pick = (a && b) ? (a.time >= b.time ? a : b) : (a || b);
+      valEl.textContent = fmtIndVal(pick ? pick.value : null);
+    } else {
+      valEl.textContent = fmtIndVal(lastOf(entry.series[0]));
     }
   });
 }
@@ -9126,7 +9570,7 @@ function applyChartPrefsToInst(inst) {
   const gridV = prefs.grid === 'both' || prefs.grid === 'vertical';
   const gridH = prefs.grid === 'both' || prefs.grid === 'horizontal';
   const gridColor = prefs.gridColor || '#15181d';
-  const sepColor = prefs.separatorColor || '#10161a';
+  const sepColor = inst._oscHidden ? 'rgba(0,0,0,0)' : (prefs.separatorColor || '#10161a');   // keep separators invisible while oscillators are double-click-collapsed (else they reappear across the sliver band)
   const xhairColor = prefs.crosshairColor || 'rgba(200,204,206,0.55)';
   // crosshair-specific: 'dashed' -> LargeDashed so it reads as clear dashes (Dashed[2,2] looks like dots at width 1)
   const _LS = LightweightCharts.LineStyle;
@@ -9659,7 +10103,7 @@ document.addEventListener('click', (e) => {
         a.params = a.params || {};
         if (field === 'color') a.color = color; else a.params[field] = color;
         applyIndicatorStyle(isInst, a);
-        if (field === 'bg' && typeof saveLayout === 'function') saveLayout();
+        if (typeof saveLayout === 'function') saveLayout();   // persist any indicator color change (was bg-only → others vanished on reload)
       });
     }
     return;
@@ -10249,7 +10693,7 @@ const TOOL_REGISTRY = {
   flag:       { group:'text', section:'Annotations', name:'Flag',        icon:'flag',       pts:1, dt:['color','width'], tabs:['style','text','coords'], anno:true, textEditor:true },
   emoji:      { group:'text', section:'Objects', name:'Emoji',       icon:'emoji',      pts:1, dt:[], tabs:['style','coords'], defaults:{ emoji:'⭐', fontSize:32 } },
   sticker:    { group:'text', section:'Objects', name:'Sticker',     icon:'sticker',    pts:1, dt:['color','font','bold'], tabs:['style','text','coords'], anno:true, textEditor:true },
-  image:      { group:'text', section:'Objects', name:'Image',       icon:'image',      pts:2, dt:['color','width','style'], tabs:['style','coords'], defaults:{ url:'' } },
+  image:      { group:'text', section:'Objects', name:'Image',       icon:'image',      pts:2, dt:[], tabs:['style','coords'], defaults:{ url:'' } },   // bitmap: no line color/width/style cells on the floating toolbar (they only edited the off-by-default border, which was confusing); opacity + border live in the gear settings
   table:      { group:'text', section:'Objects', name:'Table',       icon:'table',      pts:2, dt:['color','fill','width'], tabs:['style','coords'], defaults:{ trows:3, tcols:3 } },
 };
 /* ─── derived registries — auto-generated from the cards above, DO NOT hand-edit ─── */
@@ -10396,6 +10840,9 @@ function setDrawingTool(tool, panelEl) {
   if (tool === 'lockall')  { drawLockAll = !drawLockAll; if (drawLockAll) { selectedDraw = null; selectedInst = null; if (typeof hideDrawToolbar === 'function') hideDrawToolbar(); } rebuildAllSideTools(); toast('info', `Drawings ${drawLockAll ? 'LOCKED' : 'unlocked'}`); return; }
   if (tool === 'hideall')  { drawHideAll = !drawHideAll; if (drawHideAll) { selectedDraw = null; selectedInst = null; if (typeof hideDrawToolbar === 'function') hideDrawToolbar(); } if (typeof chartInstances !== 'undefined') chartInstances.forEach(i => { try { redrawOverlay(i); } catch(e){} }); rebuildAllSideTools(); toast('info', `Drawings ${drawHideAll ? 'HIDDEN' : 'shown'}`); return; }
   if (tool === 'objtree')  { toggleObjectTree(instFromEl(panelEl)); return; }
+  // Image tool = upload (TradingView-style): open a file picker instead of drawing an empty URL box.
+  // Drag&drop and Ctrl+V paste are the other two ways to add an image.
+  if (tool === 'image')    { if (typeof closeToolFlyout==='function') closeToolFlyout(); openImageUpload(instFromEl(panelEl)); return; }
   // cancel in-progress drawing (on tool change)
   cancelDrawing();
   closeToolFlyout();
@@ -10880,6 +11327,11 @@ function _balloonPath(ctx, bx, by, bw, bh, rad, ax, ay) {
   ctx.lineTo(bx, by+rad); ctx.arcTo(bx, by, bx+rad, by, rad);
   ctx.closePath();
 }
+/* compact local "YYYY-MM-DD HH:MM" stamp for the optional note edit-date line */
+function _fmtDrawDate(ms){
+  try { const d=new Date(ms); if (isNaN(d)) return ''; const p=n=>(''+n).padStart(2,'0');
+    return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; } catch(_){ return ''; }
+}
 /* render a text-anchored annotation (note/callout/pricelabel/signpost/flag/comment).
    Caches the on-screen box rect + anchor on the object (_box/_anchor) for hit-testing. */
 function _paintAnno(ctx, ts, cs, d, color, selected) {
@@ -10973,6 +11425,30 @@ function _paintAnno(ctx, ts, cs, d, color, selected) {
     let bw2=fw;
     if(text){ if(!d._editing){ ctx.fillStyle=fg; ctx.textBaseline='middle'; ctx.fillText(text, ax+fw+6, top+fh/2); } bw2=fw+6+tw; }
     d._box=[ax,top,bw2,Math.max(fh,bh)];
+  }
+  // optional edit-date — drawn as an independent rounded chip with its OWN background, sized to the date text
+  // (NOT inside the box, so a tiny note's bubble never stretches). Placed on the side OPPOSITE the leader tail
+  // and painted last (on top) so it stays legible over candles/objects. Toggled per-drawing via d.showDate.
+  if (d.showDate && d.textModified && d._box && !d._editing) {
+    const bx=d._box[0], by=d._box[1], bw3=d._box[2], bh3=d._box[3];
+    const dfs = Math.max(8, fs-3), dstr = _fmtDrawDate(d.textModified);
+    ctx.save();
+    ctx.font = `${dfs}px 'IBM Plex Mono', monospace`; ctx.textBaseline='middle'; ctx.textAlign='left';
+    const padx=5, pady=2, dw=ctx.measureText(dstr).width, chW=dw+padx*2, chH=dfs+pady*2, crad=3;
+    // anchor side: if the tail goes DOWN (anchor below the box) put the chip ABOVE the box, else BELOW — away from the tail
+    const anchorBelow = !!(d._anchor && d._anchor[1] > by + bh3/2);
+    const dpr = window.devicePixelRatio || 1;
+    const Hc = (ctx.canvas && ctx.canvas.height) ? ctx.canvas.height / dpr : 1e9;
+    const Wc = (ctx.canvas && ctx.canvas.width)  ? ctx.canvas.width  / dpr : 1e9;
+    const cyAbove = by - 6 - chH, cyBelow = by + bh3 + 4;
+    let cx = Math.max(2, Math.min(bx, Wc - chW - 2)), cy = anchorBelow ? cyAbove : cyBelow;   // clamp the chip on BOTH horizontal edges (audit #11 — only the left was clamped)
+    if (cy < 2) cy = cyBelow;                          // preferred side clips off the top → flip below the box
+    if (cy + chH > Hc - 2) cy = cyAbove;               // clips off the bottom → flip above
+    cy = Math.max(2, Math.min(cy, Hc - chH - 2));      // hard-clamp fully on-canvas
+    ctx.fillStyle='rgba(11,14,15,0.84)'; _roundRectPath(ctx, cx, cy, chW, chH, crad); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.10)'; ctx.lineWidth=1; _roundRectPath(ctx, cx, cy, chW, chH, crad); ctx.stroke();
+    ctx.fillStyle='rgba(192,200,204,0.95)'; ctx.fillText(dstr, cx+padx, cy+chH/2+0.5);
+    ctx.restore();
   }
   if (selected) { _drawHandle(ctx, ax, ay); if ((t==='callout'||t==='note'||t==='pricenote') && d._box) _drawHandle(ctx, d._box[0], d._box[1]+d._box[3]/2); }   // box handle = its left-center anchor (points[1])
 }
@@ -11677,10 +12153,21 @@ function _paintDraw(ctx, inst, d, W, H, selected, preview) {
     const x0=xc(ts,d.points[0]),y0=cs.priceToCoordinate(d.points[0].price),x1=xc(ts,d.points[1]),y1=cs.priceToCoordinate(d.points[1].price);
     if(x0!=null&&y0!=null&&x1!=null&&y1!=null){
       const lx=Math.min(x0,x1),ty=Math.min(y0,y1),bw=Math.max(4,Math.abs(x1-x0)),bh=Math.max(4,Math.abs(y1-y0));
-      const fs=_shapeFill(d,0.06); if(fs){ctx.fillStyle=fs; ctx.fillRect(lx,ty,bw,bh);}
-      ctx.setLineDash(dashForStyle(d.style||'dashed')); ctx.strokeStyle=color; ctx.lineWidth=baseW; ctx.strokeRect(lx,ty,bw,bh); ctx.setLineDash([]);
-      ctx.fillStyle='rgba(154,163,166,0.7)'; ctx.font='11px IBM Plex Mono'; ctx.textAlign='center'; ctx.textBaseline='middle';
-      const t=d.url||'Image URL → settings'; ctx.fillText(t.length>32?t.slice(0,32)+'…':t, lx+bw/2, ty+bh/2); ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+      _ensureDrawImage(d, inst);   // lazy-load d.url into d._img (cached; reloads on URL change)
+      if (d._imgState === 'loaded' && d._img) {
+        ctx.save(); ctx.beginPath(); ctx.rect(lx,ty,bw,bh); ctx.clip();   // clip so the bitmap stays inside the frame
+        if (d.imgOpacity != null) ctx.globalAlpha = Math.max(0, Math.min(1, (+d.imgOpacity)/100));
+        try { ctx.drawImage(d._img, lx, ty, bw, bh); } catch(_){ d._imgState='error'; }
+        ctx.restore();
+        if (d.showBorder) { ctx.setLineDash(dashForStyle(d.style||'solid')); ctx.strokeStyle=color; ctx.lineWidth=baseW; ctx.strokeRect(lx,ty,bw,bh); ctx.setLineDash([]); }
+      } else {   // empty / loading / error → placeholder frame + status text
+        const fs=_shapeFill(d,0.06); if(fs){ctx.fillStyle=fs; ctx.fillRect(lx,ty,bw,bh);}
+        const err = d._imgState==='error';
+        ctx.setLineDash(dashForStyle(d.style||'dashed')); ctx.strokeStyle=err?'#ff5252':color; ctx.lineWidth=baseW; ctx.strokeRect(lx,ty,bw,bh); ctx.setLineDash([]);
+        ctx.fillStyle=err?'rgba(255,82,82,0.85)':'rgba(154,163,166,0.7)'; ctx.font='11px IBM Plex Mono'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        const t = d._imgState==='loading' ? 'Loading image…' : err ? 'Image failed to load' : (d.url||'Image URL → settings');
+        ctx.fillText(t.length>34?t.slice(0,34)+'…':t, lx+bw/2, ty+bh/2); ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+      }
       if(selected){ _drawHandle(ctx,x0,y0); _drawHandle(ctx,x1,y1); }
     }
   } else if (d.type === 'table') {
@@ -12358,6 +12845,24 @@ function _paintPaneBackgrounds(ctx, inst, W) {
     ctx.fillRect(0, tops[pi], W, h);
   });
 }
+/* image drawing: lazy-load d.url into a cached HTMLImageElement on d._img.
+   Tries CORS-anonymous first (keeps PNG export working); on failure retries WITHOUT crossOrigin so any URL still
+   displays. Runtime fields (_img/_imgState/_imgUrl) are stripped by _serOf so they never persist to the layout. */
+function _ensureDrawImage(d, inst) {
+  const url = d.url || '';
+  if (!url) { if (d._imgState !== 'empty') { d._img = null; d._imgUrl = ''; d._imgState = 'empty'; } return; }
+  if (d._imgUrl === url && (d._imgState === 'loading' || d._imgState === 'loaded' || d._imgState === 'error')) return;   // already handling this URL
+  d._imgUrl = url; d._imgState = 'loading'; d._img = null;
+  const repaint = () => { try { if (typeof redrawOverlay === 'function' && inst) redrawOverlay(inst); } catch(_){} };
+  const load = (useCors) => {
+    const img = new Image();
+    if (useCors) img.crossOrigin = 'anonymous';
+    img.onload  = () => { if (d._imgUrl !== url) return; d._img = img; d._imgState = 'loaded'; repaint(); };
+    img.onerror = () => { if (d._imgUrl !== url) return; if (useCors) { load(false); return; } d._img = null; d._imgState = 'error'; repaint(); };
+    img.src = url;
+  };
+  load(true);
+}
 function redrawOverlay(inst) {
   const cv = inst._drawCanvas; if (!cv) return;
   const slot = inst.panelEl?.querySelector('.chart-slot'); if (!slot) return;
@@ -12436,7 +12941,7 @@ function _pushUndo(inst, action) {
   inst._redoStack = [];   // a new action invalidates the redo branch
 }
 function _tabArr(inst) { const o = inst._drawObjs || []; return (inst.tab && Array.isArray(inst.tab.drawings) && inst.tab.drawings.length === o.length) ? inst.tab.drawings : null; }
-function _serOf(d) { const c = JSON.parse(JSON.stringify(d)); delete c._box; delete c._anchor; delete c._editing; return c; }
+function _serOf(d) { const c = JSON.parse(JSON.stringify(d)); delete c._box; delete c._anchor; delete c._editing; delete c._img; delete c._imgState; delete c._imgUrl; if (c.alert) { delete c.alert._fireMs; delete c.alert._flash; c.alert.lastSide = null; } return c; }   // also scrub nested alert runtime so clone/undo serialization can't carry a live cross-state (audit #14)
 function _deselectIf(d) { if (selectedDraw === d) { selectedDraw = null; selectedInst = null; if (typeof hideDrawToolbar === 'function') hideDrawToolbar(); } }
 function _undoFinish(inst) {
   if (typeof redrawOverlay === 'function') redrawOverlay(inst);
@@ -12489,6 +12994,111 @@ function redoDrawing(inst) {
   }
   (inst._undoStack = inst._undoStack || []).push(a);
   _undoFinish(inst);
+}
+/* ===== GLOBAL undo/redo (TradingView-style) — snapshots the chart's full undoable state (timeframe, chart
+   type, indicators, drawings, pane sizes, prefs) so Ctrl+Z reverts ANY chart-panel change, not just drawing
+   add/delete. Captured automatically off saveLayout (debounced); per-instance stacks. ===== */
+const HIST_MAX = 25;
+let _histReady = false;   // suppress history capture until the saved layout has finished loading (avoids bogus load-time entries)
+function _chartSnapshot(inst){
+  const t = (inst && inst.tab) || {};
+  // FULL state for faithful restore (incl. image url + per-point logical). NOTE: symbol is intentionally NOT
+  // captured — there is no symbol-restore path, so an undoable symbol entry would corrupt state (audit). A symbol
+  // switch is simply not undoable.
+  return {
+    interval: inst.interval, chartType: inst.chartType,
+    indicators: JSON.parse(JSON.stringify(t.indicators || [])),
+    drawings:   JSON.parse(JSON.stringify(t.drawings || [])),
+    paneHeights:JSON.parse(JSON.stringify(t.paneHeights || {})),
+    prefs:      t.prefs ? JSON.parse(JSON.stringify(t.prefs)) : null,
+  };
+}
+/* change signature = what counts as a USER-meaningful change. Deliberately excludes: per-point `logical` (pan/
+   pagination-variant → would record spurious entries), the heavy image data-URL (compared by length only, so
+   stringify stays cheap), and alert RUNTIME (firedAt/enabled/lastSide/_* — a live market fire must NOT create a
+   history entry). */
+function _histSig(s){
+  try {
+    const lite = { iv:s.interval, ct:s.chartType, ind:s.indicators, ph:s.paneHeights, pr:s.prefs,
+      dr: (s.drawings||[]).map(d => {
+        const c = {}; for (const k in d){ if (k==='url'||k==='points'||k==='alert'||k[0]==='_') continue; c[k]=d[k]; }
+        c.p = (d.points||[]).map(p => [p.time, p.price]);                 // time+price (logical is pan-variant)
+        if (d.url != null) c.u = (''+d.url).length;                       // image identity by length (cheap)
+        if (d.alert) c.a = [d.alert.cond, !!d.alert.recurring];           // user-set alert config only
+        return c;
+      }) };
+    return JSON.stringify(lite);
+  } catch(_){ return ''+Math.random(); }
+}
+function _histInit(inst){
+  _histReady = true;
+  if (!inst || inst._histBaselineSig != null) return;
+  inst._histBaseline = _chartSnapshot(inst); inst._histBaselineSig = _histSig(inst._histBaseline);
+  inst._histStack = inst._histStack || []; inst._histRedo = inst._histRedo || [];
+}
+let _histCommitTimer = null;
+function _histScheduleCommit(){ clearTimeout(_histCommitTimer); _histCommitTimer = setTimeout(_histCommitAll, 350); }   // coalesce the many saveLayout()s a single action fires into ONE history entry
+function _histCommitAll(){
+  if (!_histReady) return;
+  (typeof chartInstances !== 'undefined' ? chartInstances : []).forEach(inst => {
+    if (!inst || !inst.tab || inst._histApplying || inst._histCooldown) return;
+    const snap = _chartSnapshot(inst), sig = _histSig(snap);
+    if (inst._histBaselineSig == null) { inst._histBaseline = snap; inst._histBaselineSig = sig; inst._histStack = inst._histStack||[]; inst._histRedo = inst._histRedo||[]; return; }
+    if (sig === inst._histBaselineSig) return;   // this instance didn't change
+    (inst._histStack = inst._histStack || []).push(inst._histBaseline);
+    if (inst._histStack.length > HIST_MAX) inst._histStack.shift();
+    inst._histRedo = [];                          // a fresh change invalidates the redo branch
+    inst._histBaseline = snap; inst._histBaselineSig = sig;
+  });
+}
+function _applyChartSnapshot(inst, snap){
+  if (!inst || !inst.tab || !snap) return;
+  // the double-click "maximize" (_oscHidden) is a transient view flag NOT in the snapshot — restore to the SHOWN
+  // state first, else a rebuild would mount oscillator series inside the 2px collapsed sliver (audit #8).
+  if (inst._oscHidden && typeof setOscPanesHidden === 'function') setOscPanesHidden(inst, false);
+  const ivChanged = snap.interval && snap.interval !== inst.interval;
+  inst._histApplying = true;
+  try {
+    const t = inst.tab;
+    t.indicators  = JSON.parse(JSON.stringify(snap.indicators || []));
+    t.drawings    = JSON.parse(JSON.stringify(snap.drawings || []));
+    t.paneHeights = JSON.parse(JSON.stringify(snap.paneHeights || {}));
+    if (snap.prefs) t.prefs = JSON.parse(JSON.stringify(snap.prefs));
+    inst._paneH = Object.assign({}, t.paneHeights);
+    if (snap.chartType && snap.chartType !== inst.chartType) { try { setChartType(inst, snap.chartType); if (typeof updateChartTypeLabel === 'function') updateChartTypeLabel(inst); } catch(_){} }
+    if (ivChanged) {
+      try { selectInterval(inst, snap.interval); } catch(_){}   // async: loadHistoryFor re-applies tab.indicators + tab.drawings after the reload
+    } else {
+      try { applyChartPrefsToInst(inst); } catch(_){}
+      try { applyIndicatorsTo(inst); } catch(_){}
+      try { recreateDrawings(inst); } catch(_){}
+      try { redrawOverlay(inst); } catch(_){}
+    }
+    inst._histBaseline = snap; inst._histBaselineSig = _histSig(snap);   // applied state IS the new baseline → trailing saveLayouts won't record it
+    if (typeof saveLayout === 'function') saveLayout();
+  } finally {
+    inst._histApplying = false;
+    clearTimeout(inst._histCdTimer);
+    // ONLY the async (interval) reload needs a settle window. A synchronous apply must NOT hold a cooldown, else a
+    // user edit made right after Ctrl+Z is silently swallowed (un-undoable) and the redo branch isn't cleared (audit #2/#10).
+    if (ivChanged) { inst._histCooldown = true; inst._histCdTimer = setTimeout(() => { inst._histCooldown = false; inst._histBaseline = _chartSnapshot(inst); inst._histBaselineSig = _histSig(inst._histBaseline); }, 2500); }
+    else { inst._histCooldown = false; }
+  }
+}
+function _histFlush(){ if (_histCommitTimer) { clearTimeout(_histCommitTimer); _histCommitTimer = null; _histCommitAll(); } }   // commit a just-made edit that's still in the 350ms debounce, so Ctrl+Z right after it actually undoes it (audit #10)
+function globalUndo(inst){
+  if (!inst) return; _histInit(inst); _histFlush();
+  const st = inst._histStack || []; if (!st.length) { if (typeof toast === 'function') toast('info', 'Nothing to undo', ''); return; }
+  const cur = _chartSnapshot(inst);
+  (inst._histRedo = inst._histRedo || []).push(cur);
+  _applyChartSnapshot(inst, st.pop());
+}
+function globalRedo(inst){
+  if (!inst) return; _histInit(inst); _histFlush();
+  const rs = inst._histRedo || []; if (!rs.length) { if (typeof toast === 'function') toast('info', 'Nothing to redo', ''); return; }
+  const cur = _chartSnapshot(inst);
+  (inst._histStack = inst._histStack || []).push(cur);
+  _applyChartSnapshot(inst, rs.pop());
 }
 /* draw the DOM legend (symbol · TF · OHLC + indicator titles) onto the snapshot canvas, pixel-matched:
    each text leaf is rendered at its on-screen position with its computed font & colour */
@@ -12682,6 +13292,10 @@ function _rebaseLogicalFromTime(inst) {
 function recreateDrawings(inst) {
   if (!inst || !inst.tab || !Array.isArray(inst.tab.drawings)) return;
   if (selectedInst === inst) { selectedDraw = null; selectedInst = null; if (typeof hideDrawToolbar==='function') hideDrawToolbar(); }
+  // the rebuilt _drawObjs below are BRAND-NEW object instances, so any action still on the undo/redo stacks
+  // holds a stale reference: undoDrawing('add') would indexOf()=-1 (silent no-op) and a later redo would
+  // splice the stale object back in → a duplicate. Reset both stacks whenever the objects are recreated.
+  inst._undoStack = []; inst._redoStack = [];
   const before = inst.tab.drawings.length;
   inst.tab.drawings = inst.tab.drawings.filter(d => validDrawPoints(d.type, d.points));
   if (inst.tab.drawings.length !== before && typeof saveLayout === 'function') saveLayout();
@@ -12689,7 +13303,7 @@ function recreateDrawings(inst) {
     const o = { type:d.type, points: d.points.map(p => { const q = { time:p.time, price:p.price }; if (p.logical != null) q.logical = p.logical; return q; }) };
     // copy every persisted style/option prop (deep-copy level arrays)
     Object.keys(d).forEach(k => {
-      if (k === 'type' || k === 'points') return;
+      if (k === 'type' || k === 'points' || k[0] === '_') return;   // never rehydrate runtime cache fields leaked by an older build
       if (k === 'levels') { if (Array.isArray(d.levels)) o.levels = d.levels.map(L => ({...L})); return; }
       o[k] = d[k];
     });
@@ -13191,6 +13805,7 @@ function renderDrawToolbar(d) {
   let html = `<span class="dt-grip" data-dt-grip title="Drag to move">⋮⋮</span>`;
   html += parts.join(div);
   if (parts.length) html += div;
+  if (typeof canAlert === 'function' && canAlert(d)) html += `<button class="dt-gear dt-alert-btn${(d.alert && d.alert.enabled!==false)?' on':''}" data-dt-alert title="${d.alert?(d.alert.enabled===false?'Alert triggered — click to re-arm':'Edit alert'):'Add alert'}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>`;
   html += `<button class="dt-gear" data-dt-tpl title="Style template"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>`;
   html += `<button class="dt-gear" data-dt-gear title="Settings">${_gearSvg()}</button>`;
   html += `<button class="dt-gear" data-dt-clone title="Clone (Ctrl+C / Ctrl+V)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>`;
@@ -13245,9 +13860,20 @@ function positionDrawToolbar() {
 function syncDrawStyleToTab(inst, d) {
   const i = (inst._drawObjs || []).indexOf(d);
   if (i >= 0 && inst.tab && Array.isArray(inst.tab.drawings) && inst.tab.drawings[i]) {
-    // copy every style/option prop (everything except geometry) so all per-tool settings persist
+    // copy every style/option prop (everything except geometry) so all per-tool settings persist.
+    // SKIP runtime-only fields (the _-prefixed cache: _box/_anchor/_editing/_img/_imgState/_imgUrl) — leaking
+    // them into the persisted twin corrupts the saved layout (an Image serializes to {} and a stale
+    // _imgUrl/_imgState short-circuits _ensureDrawImage on reload → "Image failed to load").
     const t = inst.tab.drawings[i];
-    Object.keys(d).forEach(k => { if (k !== 'points') t[k] = d[k]; });
+    Object.keys(d).forEach(k => {
+      if (k === 'points' || k[0] === '_') return;
+      // d.alert is a live object carrying runtime state (_fireMs/_flash + a non-null lastSide) — reference-copying it
+      // into the persisted twin makes a reloaded chart fire a phantom alert on the first tick (audit #12). Store a
+      // clean config-only twin, exactly like alertPersist does.
+      if (k === 'alert') { t.alert = d.alert ? { cond:d.alert.cond, recurring:!!d.alert.recurring, enabled:d.alert.enabled, lastSide:null, firedAt:d.alert.firedAt || null, sym:d.alert.sym } : undefined; return; }
+      t[k] = d[k];
+    });
+    Object.keys(t).forEach(k => { if (k[0] === '_') delete t[k]; });   // scrub any previously-leaked runtime fields
   }
 }
 
@@ -13678,6 +14304,108 @@ document.addEventListener('drop', (e) => {
   renderObjectTree();
 });
 document.addEventListener('dragend', () => { _otDragIdx = null; _otDragSet = []; document.querySelectorAll('.ot-dock .ot-row').forEach(r => r.classList.remove('ot-drag-over', 'ot-dragging')); _otClearDragOver(); });
+
+/* ===== image drag&drop + paste + upload (TradingView-style) =====
+   drop an image file onto a chart, paste a copied image (Ctrl+V), or click the Image tool to upload one →
+   it becomes a movable/resizable image drawing. Backed by a data-URL stored in d.url, so it reuses the whole
+   existing image render path (_ensureDrawImage) and persists/undoes like any other drawing. */
+function _imgIsEditableTarget(t){ return !!(t && t.closest && t.closest('input, textarea, select, [contenteditable=""], [contenteditable="true"]')); }
+/* cap the stored bitmap so a few big images don't blow the localStorage layout budget; keep small/transparent as-is */
+function _normalizeImageDataURL(srcURL, mime){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const W = img.naturalWidth, H = img.naturalHeight, longer = Math.max(W, H);
+      const MAX = 1280;
+      if (longer <= MAX && srcURL.length < 1500000) { resolve({ url: srcURL, w: W, h: H }); return; }
+      const sc = Math.min(1, MAX / longer), cw = Math.max(1, Math.round(W*sc)), ch = Math.max(1, Math.round(H*sc));
+      const cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
+      try { cv.getContext('2d').drawImage(img, 0, 0, cw, ch); } catch(_){ resolve({ url: srcURL, w: W, h: H }); return; }
+      const jpeg = !/png|gif|webp|svg/i.test(mime || '');   // keep PNG for potentially-transparent sources at ANY size — forcing big PNGs to JPEG flattened alpha to solid BLACK (audit #6); only opaque (jpeg) sources go to JPEG
+      let out; try { out = cv.toDataURL(jpeg ? 'image/jpeg' : 'image/png', jpeg ? 0.85 : undefined); } catch(_){ out = srcURL; }
+      resolve({ url: (out && out.length < srcURL.length) ? out : srcURL, w: W, h: H });
+    };
+    img.onerror = () => resolve(null);
+    img.src = srcURL;
+  });
+}
+function _placeImageOnChart(inst, dataURL, natW, natH, clientX, clientY){
+  if (!inst || !inst.chart || !dataURL) return;
+  let r; try { r = inst.chart.chartElement().getBoundingClientRect(); } catch(_){ return; }
+  let psW = 0, tsH = 0; try { psW = inst.chart.priceScale('right').width() || 0; } catch(_){} try { tsH = inst.chart.timeScale().height() || 0; } catch(_){}
+  const plotW = Math.max(40, r.width - psW), plotH = Math.max(40, r.height - tsH);
+  const ar = (natW && natH) ? (natW/natH) : 1.5;                         // displayed size: cap longer side to ~60% of the plot, keep aspect
+  const maxSide = Math.max(60, Math.min(420, Math.min(plotW, plotH) * 0.6));
+  let dw, dh; if ((natW||0) >= (natH||0)) { dw = Math.min(natW || maxSide, maxSide); dh = dw/ar; } else { dh = Math.min(natH || maxSide, maxSide); dw = dh*ar; }
+  let cx = (clientX != null) ? (clientX - r.left) : plotW/2;             // center on the drop point (or plot center for paste/upload)
+  let cy = (clientY != null) ? (clientY - r.top)  : plotH/2;
+  let px0 = cx - dw/2, py0 = cy - dh/2;
+  px0 = Math.max(2, Math.min(plotW - dw - 2, px0)); py0 = Math.max(2, Math.min(plotH - dh - 2, py0));
+  const p0 = makePoint(inst, px0, py0, false), p1 = makePoint(inst, px0 + dw, py0 + dh, false);
+  if (!p0 || !p1) { if (typeof toast==='function') toast('warn','Image drop failed','Drop over the chart plot area'); return; }
+  const obj = finalizeDrawing('image', inst, [p0, p1]);
+  if (!obj) return;
+  obj.url = dataURL;
+  const tabArr = inst.tab && inst.tab.drawings;                          // mirror onto the persisted twin (finalizeDrawing pushed it last)
+  if (Array.isArray(tabArr) && tabArr.length) tabArr[tabArr.length-1].url = dataURL;
+  if (typeof saveLayout === 'function') saveLayout();
+  if (typeof redrawOverlay === 'function') redrawOverlay(inst);
+  if (typeof selectDraw === 'function') selectDraw(inst, obj);           // select so the user can resize/move immediately
+  if (typeof toast==='function') toast('info','Image added','Drag the corner handles to resize');
+}
+function _handleImageFile(file, inst, clientX, clientY){
+  if (!file || !/^image\//i.test(file.type)) return false;
+  const fr = new FileReader();
+  fr.onload = () => { _normalizeImageDataURL(String(fr.result), file.type).then(res => { if (res) _placeImageOnChart(inst, res.url, res.w, res.h, clientX, clientY); }); };
+  fr.readAsDataURL(file);
+  return true;
+}
+let _imgFileInput = null;
+function openImageUpload(inst){
+  inst = inst || (typeof activeChartInst !== 'undefined' && activeChartInst) || (chartInstances && chartInstances[0]);
+  if (!inst) { if (typeof toast==='function') toast('warn','Select a chart first'); return; }
+  if (!_imgFileInput){ _imgFileInput = document.createElement('input'); _imgFileInput.type='file'; _imgFileInput.accept='image/*'; _imgFileInput.style.display='none'; document.body.appendChild(_imgFileInput); }
+  _imgFileInput.value = '';
+  _imgFileInput.onchange = () => { const f = _imgFileInput.files && _imgFileInput.files[0]; if (f) _handleImageFile(f, inst, null, null); };
+  _imgFileInput.click();
+}
+// dragover: allow image-file drops over a chart slot (object-tree reorder owns the drag when _otDragIdx is set)
+document.addEventListener('dragover', (e) => {
+  if (_otDragIdx != null) return;
+  const dt = e.dataTransfer; if (!dt || !(dt.types && [...dt.types].includes('Files'))) return;
+  if (!e.target.closest || !e.target.closest('.chart-slot')) return;
+  e.preventDefault(); try { dt.dropEffect = 'copy'; } catch(_){}
+}, true);
+document.addEventListener('drop', (e) => {
+  if (_otDragIdx != null) return;                                        // object-tree drop handled by its own listener
+  const dt = e.dataTransfer; if (!dt) return;
+  if (!e.target.closest || !e.target.closest('.chart-slot')) return;
+  const files = dt.files ? [...dt.files].filter(f => /^image\//i.test(f.type)) : [];
+  const inst = (typeof instFromEl==='function' && instFromEl(e.target)) || activeChartInst || (chartInstances && chartInstances[0]);
+  if (files.length){
+    e.preventDefault();
+    if (inst){ if (typeof setActiveChart==='function') setActiveChart(inst); _handleImageFile(files[0], inst, e.clientX, e.clientY); }
+    return;
+  }
+  const uri = (dt.getData && (dt.getData('text/uri-list') || dt.getData('text/plain')) || '').trim();   // image dragged from another tab
+  if (/^(https?:|data:image\/)/i.test(uri) && inst){
+    e.preventDefault();
+    const probe = new Image();
+    probe.onload  = () => _placeImageOnChart(inst, uri, probe.naturalWidth, probe.naturalHeight, e.clientX, e.clientY);
+    probe.onerror = () => _placeImageOnChart(inst, uri, 0, 0, e.clientX, e.clientY);
+    probe.src = uri;
+  }
+}, true);
+// paste a copied image (screenshot / copied picture) → image drawing centered on the active chart
+document.addEventListener('paste', (e) => {
+  if (_imgIsEditableTarget(e.target) || _imgIsEditableTarget(document.activeElement)) return;   // let text inputs paste normally
+  const items = (e.clipboardData && e.clipboardData.items) ? [...e.clipboardData.items] : [];
+  const imgItem = items.find(it => it.kind === 'file' && /^image\//i.test(it.type));
+  if (!imgItem) return;
+  const file = imgItem.getAsFile(); if (!file) return;
+  e.preventDefault();
+  _handleImageFile(file, (typeof activeChartInst!=='undefined' && activeChartInst) || (chartInstances && chartInstances[0]), null, null);
+});
 /* object-tree: right-click context menu + bulk/clone/visual-order */
 function _otCtxClose() { const m = document.getElementById('otCtx'); if (m) m.classList.remove('open'); }
 function _otVisualOrder(inst, targets, where) {
@@ -13724,16 +14452,23 @@ function fireAlert(inst, d, level, price){
   const sym = (a.sym || SYMBOL || '').toUpperCase();
   const dirTxt = a.cond === 'up' ? 'crossed up through' : a.cond === 'down' ? 'crossed down through' : 'crossed';
   toast('warn', `${sym} alert`, `${typeof toolName === 'function' ? toolName(d.type) : d.type} ${dirTxt} $${(+level).toFixed(1)} (last $${(+price).toFixed(1)})`);
+  try { if (typeof _alertBeep === 'function') _alertBeep(); } catch(_){}   // sound cue
   a.firedAt = { time: (inst.bars && inst.bars.length ? inst.bars[inst.bars.length-1].time : 0), price };
+  a._fireMs = Date.now(); a._flash = a._fireMs;   // runtime only (NOT persisted): recurring cooldown + marker flash
   if (!a.recurring) a.enabled = false;
   alertPersist(inst, d);
   try { redrawOverlay(inst); } catch(_){}
+  if (typeof _refreshDrawToolbarAlert === 'function') _refreshDrawToolbarAlert(d);   // a one-shot alert just disarmed → un-gold the toolbar bell if it's showing this drawing
 }
 function evalAlerts(inst, price){
   if (!inst || price == null || !isFinite(price)) return;
   const objs = inst._drawObjs; if (!objs || !objs.length) return;
   for (const d of objs){
     const a = d.alert; if (!a || a.enabled === false) continue;
+    // a hidden drawing paints no marker, so firing its alert would be invisible/confusing — skip it (matches the
+    // redrawOverlay hidden guards; audit #13). Covers per-drawing hide, per-timeframe hide, and group hide.
+    if (d.hidden || d['vis_' + inst.interval] === false) continue;
+    if (d.groupId && typeof _otGroupOf === 'function') { const g = _otGroupOf(inst, d); if (g && g.hidden) continue; }
     if (a.sym && SYMBOL && a.sym.toUpperCase() !== SYMBOL.toUpperCase()) continue;
     const lvl = alertLevel(inst, d); if (lvl == null) continue;
     const side = price >= lvl ? 1 : -1;
@@ -13742,7 +14477,7 @@ function evalAlerts(inst, price){
       const crossedUp = a.lastSide === -1 && side === 1, crossedDown = a.lastSide === 1 && side === -1;
       const hit = a.cond === 'up' ? crossedUp : a.cond === 'down' ? crossedDown : (crossedUp || crossedDown);
       a.lastSide = side;
-      if (hit) fireAlert(inst, d, lvl, price);
+      if (hit && !(a._fireMs && (Date.now() - a._fireMs) < 1500)) fireAlert(inst, d, lvl, price);   // 1.5s cooldown stops noisy oscillation from spamming recurring alerts
     }
   }
 }
@@ -13750,12 +14485,20 @@ function alertsOnTrade(price){ (chartInstances || []).forEach(inst => evalAlerts
 function alertsOnClose(inst, closePrice){ evalAlerts(inst, closePrice); }
 /* persistence: mirror d.alert onto the index-synced persisted twin + saveLayout */
 function _alertTabArr(inst){ const o = inst._drawObjs || []; return (inst.tab && Array.isArray(inst.tab.drawings) && inst.tab.drawings.length === o.length) ? inst.tab.drawings : null; }
+/* refresh the horizontal draw toolbar's bell button on/off (gold) state after an alert is added/removed,
+   but only when the toolbar is open and showing THIS drawing (covers both ctx-menu and toolbar entry points) */
+function _refreshDrawToolbarAlert(d){
+  if (typeof dtbDraw === 'undefined' || dtbDraw !== d) return;
+  const el = document.getElementById('drawToolbar');
+  if (el && el.classList.contains('open')) { el.innerHTML = renderDrawToolbar(d); if (typeof positionDrawToolbar === 'function') positionDrawToolbar(); }
+}
 function setDrawAlert(inst, d, opts){
   if (!canAlert(d)) return;
   const prev = d.alert || {};
   d.alert = { cond: opts.cond || prev.cond || 'cross', recurring: !!opts.recurring, enabled: true, lastSide: null, firedAt: null, sym: (SYMBOL || '').toUpperCase() };
   alertPersist(inst, d);
   try { redrawOverlay(inst); } catch(_){}
+  _refreshDrawToolbarAlert(d);
 }
 function removeDrawAlert(inst, d){
   delete d.alert;
@@ -13763,6 +14506,7 @@ function removeDrawAlert(inst, d){
   if (tabD){ const i = (inst._drawObjs||[]).indexOf(d); if (i >= 0 && tabD[i]) delete tabD[i].alert; }
   if (typeof saveLayout === 'function') saveLayout();
   try { redrawOverlay(inst); } catch(_){}
+  _refreshDrawToolbarAlert(d);
 }
 function alertPersist(inst, d){
   const tabD = _alertTabArr(inst);
@@ -13820,6 +14564,7 @@ function _paintAlertMarker(ctx, inst, d, W, H){
   ctx.beginPath(); ctx.moveTo(x-5.5, y+3); ctx.lineTo(x+5.5, y+3); ctx.stroke();
   ctx.beginPath(); ctx.arc(x, y+5, 1, 0, Math.PI*2); ctx.fill();
   if (a.firedAt){ ctx.globalAlpha = 0.85; ctx.beginPath(); ctx.arc(x-13, y, 2.4, 0, Math.PI*2); ctx.fillStyle = '#ff5d6c'; ctx.fill(); }
+  if (a._flash){ const dt = Date.now() - a._flash; if (dt < 700){ const k = dt/700; ctx.globalAlpha = (1-k)*0.7; ctx.strokeStyle = '#ffd166'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 5 + k*16, 0, Math.PI*2); ctx.stroke(); } else { a._flash = 0; } }   // expanding ring pulse on fire (rAF loop animates it)
   ctx.restore();
 }
 function openDrawCtxMenu(inst, d, clientX, clientY) {
@@ -13949,6 +14694,20 @@ function setupDrawInteraction(inst) {
   const ts = () => inst.chart.timeScale();
   function coords(e) { const r = inst.chart.chartElement().getBoundingClientRect(); return { x:e.clientX-r.left, y:e.clientY-r.top - mainPaneTop(inst) }; }   // y -> main-pane-local
 
+  // double-click empty plot area → toggle oscillator panes hidden/shown (TradingView "maximize chart")
+  slot.addEventListener('dblclick', (e) => {
+    if (!isCursorTool(activeTool)) return;                                                  // only in cursor mode, never mid-drawing
+    if (e.target.closest('.pane-leg, .ohlc-overlay, .ind-titles, .pane-legends, button, input, select')) return;   // let UI handle its own dblclick
+    const rr = slot.getBoundingClientRect();
+    let psW = 0, tsH = 0; try { psW = inst.chart.priceScale('right').width() || 0; } catch(_){} try { tsH = inst.chart.timeScale().height() || 0; } catch(_){}
+    if ((e.clientX - rr.left) > rr.width - psW || (e.clientY - rr.top) > rr.height - tsH) return;   // ignore the price/time axis (their own dbl-click resets scale)
+    const { x, y } = coords(e);
+    if (drawHitTest(inst, x, y)) return;                                                    // double-clicked a drawing → leave it for select/edit
+    if (!inst._oscHidden && !_hasOscPanes(inst)) return;                                    // nothing to hide
+    e.preventDefault();
+    toggleOscPanes(inst);
+  });
+
   slot.addEventListener('mousemove', (e) => {
     _lastHoverInst = inst;   // Ctrl+Z/Y target when nothing is selected
     // freehand brush: record points while dragging
@@ -13965,8 +14724,10 @@ function setupDrawInteraction(inst) {
       const magnet = e.ctrlKey || magnetMode;   // Ctrl OR magnet toggle -> snap to candle OHLC
       if (drawDrag.mode === 'rotate') {
         const ang = Math.atan2(y - drawDrag.cy, x - drawDrag.cx);
-        const da = ang - drawDrag.startAngle, ca = Math.cos(da), sa = Math.sin(da);
-        const bars = inst.bars || [];
+        let da = ang - drawDrag.startAngle;
+        if (e.shiftKey) { const inc = Math.PI/12; da = Math.round(da/inc)*inc; }   // Shift → snap rotation to 15° steps
+        const ca = Math.cos(da), sa = Math.sin(da);
+        const bars = (typeof _drawBars === 'function') ? _drawBars(inst) : (inst.bars || []);   // synthetic types anchor on _synthBars, not the real candles
         drawDrag.d.points = drawDrag.orig.map(op => {
           const px = lcoord(ts(), op.logical), py = cs().priceToCoordinate(op.price);   // original pixel pos
           const rx = drawDrag.cx + (px - drawDrag.cx) * ca - (py - drawDrag.cy) * sa;     // rotate around center
@@ -13980,7 +14741,7 @@ function setupDrawInteraction(inst) {
       if (drawDrag.mode === 'point') {
         let price = cs().coordinateToPrice(y);
         let logical = ts().coordinateToLogical(x);
-        const bars = inst.bars || [];
+        const bars = (typeof _drawBars === 'function') ? _drawBars(inst) : (inst.bars || []);   // synthetic types anchor on _synthBars
         if (magnet && logical != null) logical = Math.round(logical);
         const li = (logical != null) ? Math.round(logical) : -1;
         const time = (li >= 0 && li < bars.length) ? bars[li].time : null;   // for OHLC magnet only
@@ -14009,7 +14770,7 @@ function setupDrawInteraction(inst) {
       if (price==null || logical==null) return;
       const dPrice = price - drawDrag.startPrice;
       const dLogical = logical - drawDrag.startLogical;
-      const bars = inst.bars || [];
+      const bars = (typeof _drawBars === 'function') ? _drawBars(inst) : (inst.bars || []);   // synthetic types anchor on _synthBars
       drawDrag.d.points = drawDrag.origPoints.map(op => {
         const np = {};
         if (op.price != null) np.price = op.price + dPrice;
@@ -14206,6 +14967,7 @@ document.getElementById('drawToolbar').addEventListener('click', (e) => {
   if (e.target.closest('[data-dt-fill-off]')) { dtbDraw.fill = false; _dtbApply(); return; }
   if (e.target.closest('[data-dt-pffill]')) { dtbDraw.pfFill = (dtbDraw.pfFill === false); _dtbApply(); return; }
   if (e.target.closest('[data-dt-tpl]')) { openDrawTplMenu(e.target.closest('[data-dt-tpl]')); return; }
+  if (e.target.closest('[data-dt-alert]')) { const b = e.target.closest('[data-dt-alert]'); const r = b.getBoundingClientRect(); if (typeof openAlertPop === 'function') openAlertPop(dtbInst, dtbDraw, r.left, r.bottom + 4); return; }
   if (e.target.closest('[data-dt-gear]')) { openDrawSettings(dtbInst, dtbDraw); return; }
   if (e.target.closest('[data-dt-clone]')) { if (dtbInst && dtbDraw) cloneDrawingById(dtbInst, (dtbInst._drawObjs||[]).indexOf(dtbDraw)); return; }
   if (e.target.closest('[data-dt-del]')) { deleteSelectedDraw(); return; }
@@ -14230,7 +14992,7 @@ function _dtbApply() {
 const DRAW_TPL_KEY = 'vex-draw-templates';
 function _drawTpls() { try { const t = JSON.parse(localStorage.getItem(DRAW_TPL_KEY) || '{}'); return (t && typeof t === 'object') ? t : {}; } catch(_) { return {}; } }
 function _saveDrawTpls(t) { try { localStorage.setItem(DRAW_TPL_KEY, JSON.stringify(t)); } catch(_){} }
-const TPL_EXCLUDE = ['type','points','groupId','name','text','_box','_anchor','_editing'];   // identity/geometry/content stay out
+const TPL_EXCLUDE = ['type','points','groupId','name','text','alert','url','_box','_anchor','_editing','_img','_imgState','_imgUrl'];   // identity/geometry/content/alert + image bitmap (url) & its runtime cache stay out (a style template carries style only — e.g. opacity/border — never the picture — audit #5)
 function _tplPropsOf(d) {
   const o = {};
   Object.keys(d).forEach(k => { if (!TPL_EXCLUDE.includes(k) && typeof d[k] !== 'function' && d[k] !== undefined) o[k] = JSON.parse(JSON.stringify(d[k])); });
@@ -14506,10 +15268,10 @@ function renderDsBody() {
       h += _dsRow('Bold', '', _dsSw('bold', !!d.bold));
     } else if (d.type === 'image') {
       h += _dsRow('Image URL', `<input class="ds-txt full" data-ds-field="url" value="${(d.url||'').replace(/"/g,'&quot;')}" placeholder="https://…">`);
-      h += _dsRow('Border', _dsColorR('color', d.color||'#15e0d8'));
+      h += _dsRow('Opacity', `<div class="ds-rangewrap"><input class="ds-range" type="range" min="0" max="100" step="1" data-ds-field="imgOpacity" value="${d.imgOpacity!=null?d.imgOpacity:100}"><span class="ds-rngval" data-ds-rngval="imgOpacity">${d.imgOpacity!=null?d.imgOpacity:100}%</span></div>`);
+      h += _dsRow('Border', _dsColorR('color', d.color||'#15e0d8'), _dsSw('showBorder', !!d.showBorder));
       h += _dsRow('Line', _dsSelH('style', STYLE_OPTS, d.style||'solid') + _dsSelH('width', WIDTH_OPTS, +(d.width||2)));
-      h += _dsRow('Fill', `<button class="ds-cellsw right" data-ds-color="fillColor" style="background:${d.fillColor||d.color||'#15e0d8'}"></button>`, _dsSw('fill', d.fill!==false));
-      h += `<div class="ds-sec" style="color:var(--text-dim);font-size:11px">URL placeholder frame (no file upload)</div>`;
+      h += `<div class="ds-sec" style="color:var(--text-dim);font-size:11px">Paste a direct image URL (https). CORS-enabled hosts also export to PNG.</div>`;
     } else if (d.type === 'table') {
       h += _dsRow('Rows', `<input class="ds-num right" type="number" min="1" max="20" step="1" data-ds-field="trows" value="${d.trows!=null?d.trows:3}">`);
       h += _dsRow('Columns', `<input class="ds-num right" type="number" min="1" max="20" step="1" data-ds-field="tcols" value="${d.tcols!=null?d.tcols:3}">`);
@@ -14610,6 +15372,7 @@ function renderDsBody() {
       h += _dsRow('Background', _dsColorR('textBgColor', d.textBgColor||'rgba(11,14,15,0.85)'), _dsSw('textBg', !!d.textBg));
       h += _dsRow('Border', _dsColorCell('textBorderColor', d.textBorderColor||'#2a3338') + _dsSelH('textBorderStyle', STYLE_OPTS, d.textBorderStyle||'solid'), _dsSw('textBorder', !!d.textBorder));
       h += _dsRow('Border width', _dsSelR('textBorderWidth', WIDTH_OPTS, +(d.textBorderWidth||1)));
+      h += _dsRow('Edit date', '', _dsSw('showDate', !!d.showDate));   // show the last-modified date under the box
     }
   } else if (dsTab === 'risk') {
     const r = _dsRiskCalc(d);
@@ -14781,6 +15544,7 @@ document.getElementById('drawSettingsModal').addEventListener('click', (e) => {
     else if (k === 'showPrice') dsDraw.showPrice = (dsDraw.showPrice === false);   // default true
     else if (k === 'alwaysStats' || k.indexOf('stat_') === 0) dsDraw[k] = (dsDraw[k] === false);   // info-line stats (default ON)
     else if (k.indexOf('vis_') === 0) dsDraw[k] = (dsDraw[k] === false);   // per-timeframe visibility (default ON)
+    else if (k === 'showDate') { dsDraw.showDate = !dsDraw.showDate; if (dsDraw.showDate && !dsDraw.textModified) dsDraw.textModified = Date.now(); }   // edit-date line; stamp now if never edited
     // default-ON toggles (stored false when turned off)
     else if (['showBorder','showMid','priceLabel','mPrice','mPct','mBars','pfFill','gannBg','showLabels','showWave','showR','showRanges','leftLabels','rightLabels','topLabels','bottomLabels','priceBg','timeBg','vpVA','vpShowPOC','vpLabels','showPoc','showVA','upDownColor','bpUp','bpDn','bpBody','bothDir'].includes(k)) dsDraw[k] = (dsDraw[k] === false);
     else dsDraw[k] = !dsDraw[k];   // generic default-OFF toggle (bg/border/bands/arrowBoth/measure flags…)
@@ -14793,9 +15557,10 @@ document.getElementById('drawSettingsModal').addEventListener('input', (e) => {
   if (f) {
     const k = f.dataset.dsField;
     if (k === 'fontSize') dsDraw.fontSize = parseInt(f.value, 10);
-    else if (['fibBgOpacity','fillOpacity','bandFill','textBgOpacity','zoneOpacity','pfFillOpacity','gannBgOpacity','priceBgOpacity','timeBgOpacity'].includes(k)) dsDraw[k] = Math.max(0, Math.min(100, parseInt(f.value,10)||0));
+    else if (['fibBgOpacity','fillOpacity','bandFill','textBgOpacity','zoneOpacity','pfFillOpacity','gannBgOpacity','priceBgOpacity','timeBgOpacity','imgOpacity'].includes(k)) dsDraw[k] = Math.max(0, Math.min(100, parseInt(f.value,10)||0));
     else if (['width','trendWidth','midWidth','arrowSize','bandMult','bandCount','riskAccount','riskPct','riskLev','textBorderWidth','ratio','devMult','trows','tcols','repeats','cycles','vpRows','vpValueArea','rows','widthPct','vaPct'].includes(k)) { const v=parseFloat(f.value); if (Number.isFinite(v)) dsDraw[k]=v; else delete dsDraw[k]; }
     else dsDraw[k] = f.value;   // generic string field (selects: style/extend/labelH/source/midStyle/… and text)
+    if (f.type === 'range') { const rv = document.querySelector(`[data-ds-rngval="${k}"]`); if (rv) rv.textContent = (parseInt(f.value,10)||0) + '%'; }   // live % readout for slider rows (drag with the mouse)
     if (dsDraw.type === 'long' || dsDraw.type === 'short') _dsUpdateRisk();
     _dsCommit(); return;
   }
@@ -15058,7 +15823,9 @@ function openTextEditor(inst, d) {
     delete d._editing;
     // empty text NEVER deletes the drawing — it stays with its "Enter text" placeholder
     // (deliberately friendlier than TradingView). Esc just reverts to the previous text.
-    d.text = keep ? inp.value.trim() : orig0;
+    const newText = keep ? inp.value.trim() : orig0;
+    if (keep && newText !== orig0) d.textModified = Date.now();   // stamp edit time (shown below the box when d.showDate)
+    d.text = newText;
     syncTextToTab(inst, d);
     if (typeof saveLayout === 'function') saveLayout();
     if (typeof redrawOverlay === 'function') redrawOverlay(inst);
@@ -15076,7 +15843,7 @@ function openTextEditor(inst, d) {
 /* sync text -> tab.drawings */
 function syncTextToTab(inst, d) {
   const i = (inst._drawObjs||[]).indexOf(d);
-  if (i>=0 && inst.tab && Array.isArray(inst.tab.drawings) && inst.tab.drawings[i]) inst.tab.drawings[i].text = d.text;
+  if (i>=0 && inst.tab && Array.isArray(inst.tab.drawings) && inst.tab.drawings[i]) { inst.tab.drawings[i].text = d.text; inst.tab.drawings[i].textModified = d.textModified; }
 }
 /* Table cell editor: a one-off contenteditable over a single cell, writing back to d.cells[idx] */
 function _openCellEditor(inst, d, idx, cellX, cellY, cw, ch) {
@@ -15177,6 +15944,7 @@ if (typeof _origMountChart === 'function') {
       setupAxisButtons(inst);        // price-axis hover buttons (Auto / Log) per pane
       startOverlayLoop(inst);        // always render drawings synced to chart
       applyChartPrefsToInst(inst);   // apply only this chart prefs
+      setTimeout(() => { if (typeof _histInit === 'function') _histInit(inst); }, 1200);   // seed the global-undo baseline once this chart's saved state has settled
 
       // V2: infinite pagination — auto-load older data when scrolling near left edge
       inst.chart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
@@ -15295,8 +16063,8 @@ document.addEventListener('click', (e) => {
     const inst = instFromEl(tb);   // this panel chart instance
     if (a === 'indicators') openIndicatorModal(inst);
     else if (a === 'settings') openChartSettings(inst);
-    else if (a === 'undo') undoDrawing(inst);
-    else if (a === 'redo') redoDrawing(inst);
+    else if (a === 'undo') globalUndo(inst);
+    else if (a === 'redo') globalRedo(inst);
     else if (a === 'snapshot') snapshotChart(inst);
     else if (a === 'equalize') equalizePanes(inst);
     else if (a === 'layouts') openLayoutMenu(tb);
@@ -15528,6 +16296,13 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('[data-ind-close]')) { closeIndicatorModal(); return; }
   if (e.target.id === 'indModal') { closeIndicatorModal(); return; }
 
+  // oscillator banner "⋯" more menu (replaces the inline button cluster so the banner stays tiny → never crosses the axis)
+  const plMoreBtn = e.target.closest('[data-pl-more]');
+  if (plMoreBtn) {
+    const inst = instFromEl(plMoreBtn);
+    if (inst) { focusIndicator(inst, plMoreBtn.dataset.plMore); openIndMorePopover(inst, plMoreBtn.dataset.plMore, plMoreBtn); }
+    return;
+  }
   // indicator title controls (eye / gear / x) — only that panel chart
   const indActBtn = e.target.closest('[data-ind-action]');
   if (indActBtn) {
@@ -15639,7 +16414,7 @@ document.addEventListener('keydown', (e) => {
       if (inst) {
         e.preventDefault();
         const redo = (e.key === 'y' || e.key === 'Y' || e.shiftKey);
-        if (redo) redoDrawing(inst); else undoDrawing(inst);
+        if (redo) globalRedo(inst); else globalUndo(inst);   // global history (timeframe/chart-type/indicators/drawings/…), not just drawings
       }
     }
   }
@@ -15669,6 +16444,7 @@ document.addEventListener('change', _isFieldEvt);
 window.addEventListener('DOMContentLoaded', () => {
   applyDensity();
   renderNotifBadge();
+  renderNotifSoundBtn();
   initSparkData();
   // apply indicators/settings after charts mount
   setTimeout(() => { applyChartPrefs(); applyIndicatorsAll(); if (typeof setupGridFromLayout === 'function') setupGridFromLayout(); }, 800);   // restore chart-grid dividers once all panels' charts are mounted
