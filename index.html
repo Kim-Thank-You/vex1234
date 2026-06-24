@@ -251,11 +251,30 @@
   .module-menu-item.disabled{opacity:0.4;cursor:not-allowed}
   .module-menu-item .ico{font-size:14px;width:18px;text-align:center}
   .module-menu-item .name{flex:1}
-  .module-menu-item .check{color:var(--teal-2);font-size:12px;visibility:hidden}
-  .module-menu-item.active .check{visibility:visible}
+  .module-menu-item .check{color:var(--teal-2);font-size:14px;font-weight:600;visibility:hidden;margin-left:auto}
+  .module-menu-item.active .check,.module-menu-item:hover .check{visibility:visible}
   .module-menu-item .soon-pill,.module-menu-item .in-use-pill{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border-radius:2px;margin-left:auto}
   .module-menu-item .soon-pill{background:var(--teal-bg);color:var(--teal-2)}
   .module-menu-item .in-use-pill{background:var(--bg-3);color:var(--text-dim)}
+  /* category-grouped add-tab flyout (2-pane) */
+  .module-menu.mm-cats{padding:6px;min-width:0}
+  .mm-head{padding:2px 2px 6px}
+  .mm-search{width:100%;box-sizing:border-box;background:var(--bg-3);border:1px solid var(--border-2);border-radius:3px;color:var(--text);font-size:12px;padding:7px 9px;outline:none;font-family:inherit}
+  .mm-search:focus{border-color:var(--teal-2)}
+  .mm-search::placeholder{color:var(--text-dim2)}
+  .mm-body{display:flex;height:336px}
+  .mm-rail{width:166px;flex-shrink:0;overflow-y:auto;border-right:1px solid var(--border-2);padding-right:4px}
+  .mm-rail.mm-dim{opacity:.4;pointer-events:none}
+  .mm-cat{display:flex;align-items:center;gap:8px;padding:8px 8px;cursor:pointer;color:var(--text-2);font-size:11.5px;border-radius:2px;border-left:2px solid transparent}
+  .mm-cat:hover{background:var(--bg-hover)}
+  .mm-cat.active{background:var(--bg-3);color:var(--teal-2);border-left-color:var(--teal-2)}
+  .mm-cat .ci{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+  .mm-cat .cn{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .mm-cat .cc{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text-dim2);flex-shrink:0}
+  .mm-items{flex:1;overflow-y:auto;padding-left:6px;min-width:0}
+  .mm-items .module-menu-item .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .mm-cat-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim2);padding:6px 8px 6px}
+  .mm-empty{color:var(--text-dim);font-size:11px;padding:18px 8px;text-align:center}
 
   /* MODULE: Orderbook (orderblock design) */
   .ob-tools{display:flex;align-items:center;gap:6px;padding:7px 10px 5px;background:var(--bg);flex-shrink:0;justify-content:flex-end;position:relative}
@@ -1268,6 +1287,21 @@
   .module-placeholder .title{font-size:14px;font-weight:600;color:var(--text-2);margin-bottom:8px}
   .module-placeholder .desc{font-size:12px;max-width:280px;line-height:1.6;margin-bottom:18px;color:var(--text-dim);word-break:keep-all}
   .module-placeholder .soon{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;background:var(--teal-bg);color:var(--teal-2);padding:5px 12px;border-radius:2px}
+  /* Live News panel (livetv) */
+  .livetv{display:flex;flex-direction:column;height:100%;min-height:0;overflow:hidden}
+  .ltv-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border-2);flex-shrink:0}
+  .ltv-title{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--text);text-transform:uppercase}
+  .ltv-live{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#ff4d4f;text-transform:uppercase}
+  .ltv-dot{width:7px;height:7px;border-radius:50%;background:#ff4d4f;animation:ltvpulse 1.6s ease-in-out infinite}
+  @keyframes ltvpulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .ltv-tabs{display:flex;gap:2px;padding:6px 8px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid var(--border-2);scrollbar-width:thin}
+  .ltv-tabs::-webkit-scrollbar{height:4px}
+  .ltv-tabs::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:2px}
+  .ltv-tab{flex-shrink:0;background:transparent;border:none;color:var(--text-dim);font-size:11px;font-weight:600;letter-spacing:.03em;padding:6px 11px;border-radius:3px;cursor:pointer;white-space:nowrap;font-family:inherit}
+  .ltv-tab:hover{background:var(--bg-hover);color:var(--text-2)}
+  .ltv-tab.active{background:var(--teal-bg);color:var(--teal-2)}
+  .ltv-stage{position:relative;flex:1;min-height:0;background:#000}
+  .ltv-frame{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 
   /* FOOTER — V2: connection status + latency */
   .footer{background:var(--bg);flex-shrink:0;display:flex;align-items:center;gap:14px;padding:0 14px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);height:28px;overflow:hidden}
@@ -1993,17 +2027,76 @@ const SYMBOLS = [
 ];
 
 /* ---------- module catalog ---------- */
+// Panel-picker categories (drive the category-grouped add-tab flyout). Order = rail order.
+const PANEL_CATEGORIES = [
+  { id:'chart',   name:'차트 & 분석',      icon:'📈' },
+  { id:'flow',    name:'호가 & 오더플로우', icon:'📊' },
+  { id:'deriv',   name:'파생 & 청산',      icon:'🔥' },
+  { id:'onchain', name:'온체인 & 자금',    icon:'⛓'  },
+  { id:'macro',   name:'심리 & 매크로',    icon:'🌐' },
+  { id:'news',    name:'뉴스 & 미디어',    icon:'📰' },
+  { id:'social',  name:'소셜 & 커뮤니티',  icon:'💬' },
+  { id:'account', name:'계정 & 리스크',    icon:'💼' },
+  { id:'work',    name:'작업공간',         icon:'📒' },
+];
 const MODULES = [
-  { id:'chart',     name:'Chart',           icon:'📈', live:true,  singleton:false, pickable:true  },
-  { id:'orderbook', name:'Orderbook',       icon:'📊', live:true,  singleton:true,  pickable:true  },
-  { id:'trades',    name:'Trade History',   icon:'📜', live:true,  singleton:false, pickable:true  },
-  { id:'panel',     name:'Order Form',      icon:'🛒', live:true,  singleton:true,  pickable:false }, // excluded from dropdown
-  { id:'account',   name:'My Account',      icon:'💼', live:true,  singleton:true,  pickable:false }, // excluded from dropdown
-  { id:'liq',       name:'Liquidation Map', icon:'🔥', live:false, singleton:false, pickable:true  },
-  { id:'news',      name:'News Feed',       icon:'📰', live:false, singleton:false, pickable:true  },
-  { id:'whale',     name:'Whale Activity',  icon:'🐋', live:false, singleton:false, pickable:true  },
-  { id:'leaders',   name:'Top Traders',     icon:'🏆', live:false, singleton:false, pickable:true  },
-  { id:'onchain',   name:'On-chain Flow',   icon:'⛓',  live:false, singleton:false, pickable:true  },
+  // ---- built / live ----
+  { id:'chart',     name:'Chart',           icon:'📈', live:true,  singleton:false, pickable:true,  cat:'chart'   },
+  { id:'orderbook', name:'Orderbook',       icon:'📊', live:true,  singleton:true,  pickable:true,  cat:'flow'    },
+  { id:'trades',    name:'Trade History',   icon:'📜', live:true,  singleton:false, pickable:true,  cat:'flow'    },
+  { id:'panel',     name:'Order Form',      icon:'🛒', live:true,  singleton:true,  pickable:false, cat:'account' }, // excluded from dropdown
+  { id:'account',   name:'My Account',      icon:'💼', live:true,  singleton:true,  pickable:false, cat:'account' }, // excluded from dropdown
+  // ---- placeholders (generic "Coming Soon" body via moduleHTML fallback) ----
+  // 차트 & 분석
+  { id:'screener',    name:'Screener',           icon:'🔎', live:false, singleton:false, pickable:true, cat:'chart' },
+  { id:'heatmap',     name:'Market Heatmap',     icon:'🗺️', live:false, singleton:false, pickable:true, cat:'chart' },
+  { id:'volregime',   name:'Volatility / DVOL',  icon:'📉', live:false, singleton:false, pickable:true, cat:'chart' },
+  { id:'correlation', name:'Correlation Matrix', icon:'🔗', live:false, singleton:false, pickable:true, cat:'chart' },
+  { id:'airecap',     name:'AI Market Recap',    icon:'🤖', live:false, singleton:false, pickable:true, cat:'chart' },
+  // 호가 & 오더플로우
+  { id:'cvd',         name:'CVD / Aggression',   icon:'💹', live:false, singleton:false, pickable:true, cat:'flow' },
+  { id:'bookmap',     name:'Order Book Heatmap', icon:'🌊', live:false, singleton:false, pickable:true, cat:'flow' },
+  { id:'fillcost',    name:'Fill Cost Estimator',icon:'🧾', live:false, singleton:false, pickable:true, cat:'flow' },
+  // 파생 & 청산
+  { id:'liq',         name:'Liquidation Map',    icon:'🔥', live:false, singleton:false, pickable:true, cat:'deriv' },
+  { id:'oi',          name:'Open Interest',      icon:'📦', live:false, singleton:false, pickable:true, cat:'deriv' },
+  { id:'oiquad',      name:'OI Δ vs Price',      icon:'🎯', live:false, singleton:false, pickable:true, cat:'deriv' },
+  { id:'funding',     name:'Funding & Basis',    icon:'💸', live:false, singleton:false, pickable:true, cat:'deriv' },
+  { id:'longshort',   name:'Long/Short Ratio',   icon:'⚖️', live:false, singleton:false, pickable:true, cat:'deriv' },
+  { id:'fundingarb',  name:'Funding Arb Scanner',icon:'🛰️', live:false, singleton:false, pickable:true, cat:'deriv' },
+  { id:'leadlag',     name:'Cross-Venue Lead/Lag',icon:'🔀', live:false, singleton:false, pickable:true, cat:'deriv' },
+  // 온체인 & 자금
+  { id:'onchain',     name:'On-chain Flow',      icon:'⛓',  live:false, singleton:false, pickable:true, cat:'onchain' },
+  { id:'whale',       name:'Whale Activity',     icon:'🐋', live:false, singleton:false, pickable:true, cat:'onchain' },
+  { id:'netflow',     name:'Exchange Netflow',   icon:'🏦', live:false, singleton:false, pickable:true, cat:'onchain' },
+  { id:'stablecoin',  name:'Stablecoin Flows',   icon:'💵', live:false, singleton:false, pickable:true, cat:'onchain' },
+  { id:'newpools',    name:'New Listings / Pools',icon:'🆕', live:false, singleton:false, pickable:true, cat:'onchain' },
+  { id:'gas',         name:'Gas Tracker',        icon:'⛽', live:false, singleton:false, pickable:true, cat:'onchain' },
+  // 심리 & 매크로
+  { id:'feargreed',   name:'Fear & Greed',       icon:'😱', live:false, singleton:false, pickable:true, cat:'macro' },
+  { id:'valuation',   name:'On-chain Valuation', icon:'🧭', live:false, singleton:false, pickable:true, cat:'macro' },
+  { id:'macropress',  name:'Macro Pressure',     icon:'🌐', live:false, singleton:false, pickable:true, cat:'macro' },
+  { id:'econcal',     name:'Economic Calendar',  icon:'🗓️', live:false, singleton:false, pickable:true, cat:'macro' },
+  { id:'coincal',     name:'Coin Event Calendar',icon:'📅', live:false, singleton:false, pickable:true, cat:'macro' },
+  { id:'predmarket',  name:'Prediction Markets', icon:'🔮', live:false, singleton:false, pickable:true, cat:'macro' },
+  // 뉴스 & 미디어
+  { id:'news',        name:'News Feed',          icon:'📰', live:false, singleton:false, pickable:true, cat:'news' },
+  { id:'livetv',      name:'Live News',          icon:'📺', live:true,  singleton:false, pickable:true, cat:'news' },
+  // 소셜 & 커뮤니티
+  { id:'leaders',     name:'Top Traders',        icon:'🏆', live:false, singleton:false, pickable:true, cat:'social' },
+  { id:'streaming',   name:'Live Streaming',     icon:'🎥', live:false, singleton:false, pickable:true, cat:'social' },
+  { id:'chat',        name:'Symbol Chat',        icon:'💬', live:false, singleton:false, pickable:true, cat:'social' },
+  // 계정 & 리스크
+  { id:'liqladder',   name:'Liquidation Ladder', icon:'🪜', live:false, singleton:false, pickable:true, cat:'account' },
+  { id:'possize',     name:'Position Calculator',icon:'📐', live:false, singleton:false, pickable:true, cat:'account' },
+  { id:'carrypnl',    name:'Funding / Carry PnL',icon:'💰', live:false, singleton:false, pickable:true, cat:'account' },
+  { id:'equitycurve', name:'Equity Curve',       icon:'〽️', live:false, singleton:false, pickable:true, cat:'account' },
+  { id:'exposure',    name:'Exposure Matrix',    icon:'🧱', live:false, singleton:false, pickable:true, cat:'account' },
+  // 작업공간
+  { id:'journal',     name:'Trade Journal',      icon:'📒', live:false, singleton:false, pickable:true, cat:'work' },
+  { id:'memo',        name:'Notes',              icon:'📝', live:false, singleton:false, pickable:true, cat:'work' },
+  { id:'checklist',   name:'Checklist',          icon:'✅', live:false, singleton:false, pickable:true, cat:'work' },
+  { id:'alertcenter', name:'Alert Center',       icon:'🔔', live:false, singleton:false, pickable:true, cat:'work' },
 ];
 const PLACEHOLDER_DESCS = {
   liq:     'Heatmap of liquidation clusters by price. Preview clusters that pull price like a magnet.',
@@ -2011,7 +2104,86 @@ const PLACEHOLDER_DESCS = {
   whale:   'Real-time log of large fills, whale deposits/withdrawals, and liquidations.',
   leaders: 'Live positions of top traders on the VEX leaderboard.',
   onchain: 'Exchange flows, whale wallets, and smart-money movement.',
+  // chart & analysis
+  screener:    'Scan every symbol against your custom-indicator conditions and surface setups.',
+  heatmap:     'Sector / market heatmap — spot rotation and risk-on/off at a glance.',
+  volregime:   'Realized vs implied volatility (DVOL) regime to size risk by the environment.',
+  correlation: 'Rolling correlation matrix across symbols + altseason gauge.',
+  airecap:     'AI-written market recap: what moved, why, and what to watch next.',
+  // book & order flow
+  cvd:        'Cumulative volume delta + aggressive-buy/sell tape to read who is in control.',
+  bookmap:    'Bookmap-style resting-liquidity heatmap with iceberg / spoof hints.',
+  fillcost:   'Estimate slippage and fill cost for a given order size against the live book.',
+  // derivatives & liquidation
+  oi:         'Open interest over time — is the move new money or just positioning?',
+  oiquad:     'OI delta vs price quadrant: long buildup / short squeeze / long flush / short build.',
+  funding:    'Funding rate, basis, and the next-funding countdown across venues.',
+  longshort:  'Long/short account & position ratio to gauge crowd lean.',
+  fundingarb: 'Scan funding + basis spreads for cash-and-carry arbitrage opportunities.',
+  leadlag:    'Which venue leads price — cross-exchange lead/lag and divergence.',
+  // on-chain & flows
+  netflow:    'Exchange inflow/outflow netflow — accumulation vs distribution.',
+  stablecoin: 'Stablecoin supply & exchange flows: dry powder entering or leaving.',
+  newpools:   'New token listings and freshly created liquidity pools, in real time.',
+  gas:        'Gas, bridge volume, and network congestion across chains.',
+  // sentiment & macro
+  feargreed:  'Crypto Fear & Greed index with history and regime shading.',
+  valuation:  'On-chain valuation cycle metrics (MVRV / SOPR / NUPL).',
+  macropress: 'Macro pressure board: DXY, rates, gold, and risk proxies vs crypto.',
+  econcal:    'Economic calendar with consensus vs actual for high-impact prints.',
+  coincal:    'Coin event calendar: token unlocks, mainnets, upgrades, listings.',
+  predmarket: 'Prediction-market odds (Polymarket etc.) for events that move price.',
+  // news & media
+  livetv:     'Embedded live market TV / streams for headline flow.',
+  // social & community
+  streaming:  'Live trader streaming — watch top users trade in real time.',
+  chat:       'Per-symbol chat room synced to whatever chart you are on.',
+  // account & risk
+  liqladder:  'Liquidation ladder across all open positions — distance to liq at a glance.',
+  possize:    'Position sizing & liquidation-price calculator from risk %, leverage, entry.',
+  carrypnl:   'Funding / carry PnL accrued on your open positions over time.',
+  equitycurve:'Account equity curve and drawdown from your fills.',
+  exposure:   'Net exposure & correlation matrix across your book.',
+  // workspace
+  journal:    'Trade journal: log entries/exits with notes, tags, and review stats.',
+  memo:       'Free-form sticky notes that live in your workspace.',
+  checklist:  'Pre-trade checklist to enforce your own rules before clicking.',
+  alertcenter:'Central panel for every armed alert and recent trigger.',
 };
+
+// Live News panel — YouTube live channels. Each tab swaps a single muted-autoplay iframe.
+// url       = a CURRENT YouTube live URL (watch?v=, youtu.be, /live/, /embed/) or a bare 11-char id. MOST RELIABLE — paste the live you actually see playing.
+// channelId = stable UC id, used only as a last-resort fallback. NOTE: the live_stream?channel= follow-embed is DEPRECATED by YouTube and usually errors — so a working `url` is required per channel.
+const LIVETV_CHANNELS = [
+  { id:'bloomberg', label:'BLOOMBERG',  url:'', channelId:'UCIALMKvObZNtJ6AmdCLP7Lg' },  // free live ~7AM–6PM ET weekdays only
+  { id:'skynews',   label:'SKY NEWS',   url:'', channelId:'UCoMdktPbSTixAyNGwb-UYkQ' },
+  { id:'euronews',  label:'EURONEWS',   url:'', channelId:'UCSrZ3UV4jOidv8ppoVuvW9Q' },
+  { id:'dw',        label:'DW',         url:'', channelId:'UCknLrEdhRCp1aegoMqRaCZg' },
+  { id:'cnbc',      label:'CNBC',       url:'', channelId:'UCF8HUTbUwPKh2Q-KpGOCVGw' },   // CNBC International (US CNBC is members-only)
+  { id:'france24',  label:'FRANCE 24',  url:'', channelId:'UCQfwfsi5VrQ8yKZ-UWmAEFg' },
+  { id:'alarabiya', label:'AL ARABIYA', url:'', channelId:'UCIZJ9a6P_nxCFJTmL0gh_IQ' },
+  { id:'aljazeera', label:'AL JAZEERA', url:'', channelId:'UCNye-wNBqNL5ZzHSJj3l8Bg' },
+];
+function _ytId(s) {
+  if (!s) return '';
+  s = String(s).trim();
+  if (/^[\w-]{11}$/.test(s)) return s;                      // bare 11-char id
+  const m = s.match(/[?&]v=([\w-]{11})/)                    // watch?v=ID
+        || s.match(/youtu\.be\/([\w-]{11})/)                // youtu.be/ID
+        || s.match(/\/live\/([\w-]{11})/)                   // /live/ID
+        || s.match(/\/embed\/([\w-]{11})/)                  // /embed/ID
+        || s.match(/\/shorts\/([\w-]{11})/);
+  return m ? m[1] : '';
+}
+function livetvSrc(ch) {
+  if (!ch) return '';
+  const id = _ytId(ch.url);
+  const base = id
+    ? `https://www.youtube.com/embed/${id}`
+    : (ch.channelId ? `https://www.youtube.com/embed/live_stream?channel=${ch.channelId}` : '');
+  if (!base) return '';
+  return base + (base.includes('?') ? '&' : '?') + 'autoplay=1&mute=1&playsinline=1';
+}
 
 /* ---------- module HTML generation ---------- */
 function moduleHTML(modId) {
@@ -2350,6 +2522,24 @@ function moduleHTML(modId) {
         <div class="meta-box">
           <div class="meta-row"><span>Unrealized PnL</span><span class="v" id="mtUpnl" style="color:var(--green)">+$0.00</span></div>
           <div class="meta-row"><span>Cross Leverage</span><span class="v" id="mtCrossLev">0.00×</span></div>
+        </div>
+      </div>`;
+  }
+  if (modId === 'livetv') {
+    const saved = localStorage.getItem('vex-livetv-channel');
+    const active = LIVETV_CHANNELS.find(c => c.id === saved) || LIVETV_CHANNELS[0];
+    const tabs = LIVETV_CHANNELS.map(c =>
+      `<button class="ltv-tab ${c.id === active.id ? 'active' : ''}" data-ltv-ch="${c.id}">${c.label}</button>`).join('');
+    return `
+      <div class="livetv">
+        <div class="ltv-head">
+          <span class="ltv-title">LIVE NEWS</span>
+          <span class="ltv-live"><span class="ltv-dot"></span>LIVE</span>
+        </div>
+        <div class="ltv-tabs">${tabs}</div>
+        <div class="ltv-stage">
+          <iframe class="ltv-frame" src="${livetvSrc(active)}" title="Live News" frameborder="0"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
         </div>
       </div>`;
   }
@@ -5436,45 +5626,92 @@ setInterval(() => {
 
 /* ---------- module picker menu (for adding new tabs) ---------- */
 const menu = document.getElementById('moduleMenu');
+let _mmActiveCat = 'chart';
+function _mmPickable(catId) { return MODULES.filter(m => m.pickable !== false && m.cat === catId); }
+function _mmCatCount(catId) { return _mmPickable(catId).length; }
+
+function mmItemHTML(panelId, m) {
+  const inUse = isSingletonInUse(m.id);
+  const cls = inUse ? 'disabled' : '';
+  const badge = !m.live ? '<span class="soon-pill">Soon</span>'
+              : (inUse ? '<span class="in-use-pill">In Use</span>' : '<span class="check">+</span>');
+  return `<div class="module-menu-item ${cls}" data-add-tab="${panelId}" data-mod="${m.id}" title="${(PLACEHOLDER_DESCS[m.id]||m.name).replace(/"/g,'&quot;')}">
+    <span class="ico">${m.icon}</span><span class="name">${m.name}</span>${badge}</div>`;
+}
+
+function mmItemsHTML(panelId, catId, query) {
+  const q = (query || '').trim().toLowerCase();
+  if (q) {
+    const hits = MODULES.filter(m => m.pickable !== false && m.name.toLowerCase().includes(q));
+    if (!hits.length) return `<div class="mm-empty">"${query}" 검색 결과 없음</div>`;
+    return `<div class="mm-cat-head">검색 결과 · ${hits.length}</div>` + hits.map(m => mmItemHTML(panelId, m)).join('');
+  }
+  const cat = PANEL_CATEGORIES.find(c => c.id === catId);
+  const mods = _mmPickable(catId);
+  if (!mods.length) return `<div class="mm-empty">패널 없음</div>`;
+  return `<div class="mm-cat-head">${cat ? cat.name : ''}</div>` + mods.map(m => mmItemHTML(panelId, m)).join('');
+}
+
+function mmRailHTML(activeCat) {
+  return PANEL_CATEGORIES.filter(c => _mmCatCount(c.id) > 0).map(c =>
+    `<div class="mm-cat ${c.id === activeCat ? 'active' : ''}" data-cat="${c.id}">
+      <span class="ci">${c.icon}</span><span class="cn">${c.name}</span><span class="cc">${_mmCatCount(c.id)}</span></div>`
+  ).join('');
+}
+
 function openAddTabMenu(addBtn) {
   const panelId = addBtn.dataset.tabAdd;
   const rect = addBtn.getBoundingClientRect();
-  const live = MODULES.filter(m => m.live && m.pickable !== false);
-  const soon = MODULES.filter(m => !m.live && m.pickable !== false);
+  if (_mmCatCount(_mmActiveCat) === 0) _mmActiveCat = (PANEL_CATEGORIES.find(c => _mmCatCount(c.id) > 0) || {}).id || 'chart';
 
-  const renderItem = (m, isSoon) => {
-    const inUse = isSingletonInUse(m.id);
-    const cls = inUse ? 'disabled' : '';
-    return `
-      <div class="module-menu-item ${cls}" data-add-tab="${panelId}" data-mod="${m.id}">
-        <span class="ico">${m.icon}</span><span class="name">${m.name}</span>
-        ${isSoon ? '<span class="soon-pill">Soon</span>' : (inUse ? '<span class="in-use-pill">In Use</span>' : '<span class="check">+</span>')}
-      </div>`;
-  };
-
+  menu.classList.add('mm-cats');
   menu.innerHTML = `
-    <div class="module-menu-section">New tab — live modules</div>
-    ${live.map(m => renderItem(m, false)).join('')}
-    <div class="module-menu-section">Coming Soon</div>
-    ${soon.map(m => renderItem(m, true)).join('')}
-  `;
-  const menuWidth = 260;
+    <div class="mm-head"><input class="mm-search" type="text" placeholder="패널 검색…" autocomplete="off" spellcheck="false"></div>
+    <div class="mm-body">
+      <div class="mm-rail">${mmRailHTML(_mmActiveCat)}</div>
+      <div class="mm-items">${mmItemsHTML(panelId, _mmActiveCat, '')}</div>
+    </div>`;
+
+  const menuWidth = 486, menuHeight = 392;
   let left = rect.left;
   if (left + menuWidth > window.innerWidth - 12) left = window.innerWidth - menuWidth - 12;
   let top = rect.bottom + 4;
-  if (top + 480 > window.innerHeight - 40) top = rect.top - 480 - 4;
-  menu.style.left = left + 'px';
+  if (top + menuHeight > window.innerHeight - 12) top = rect.top - menuHeight - 4;
+  menu.style.left = Math.max(8, left) + 'px';
   menu.style.top = Math.max(8, top) + 'px';
+  menu.style.width = menuWidth + 'px';
   menu.classList.add('open');
 
-  menu.querySelectorAll('.module-menu-item').forEach(item => {
-    if (item.classList.contains('disabled')) return;
-    item.addEventListener('click', (e) => {
-      e.stopPropagation();
-      addTab(item.dataset.addTab, item.dataset.mod);
-      menu.classList.remove('open');
-    });
+  const railEl = menu.querySelector('.mm-rail');
+  const itemsEl = menu.querySelector('.mm-items');
+  const searchEl = menu.querySelector('.mm-search');
+
+  const selectCat = (catId) => {
+    if (!catId || _mmCatCount(catId) === 0) return;
+    _mmActiveCat = catId;
+    railEl.querySelectorAll('.mm-cat').forEach(el => el.classList.toggle('active', el.dataset.cat === catId));
+    itemsEl.innerHTML = mmItemsHTML(panelId, catId, searchEl.value);
+    itemsEl.scrollTop = 0;
+  };
+
+  railEl.querySelectorAll('.mm-cat').forEach(el => {
+    el.addEventListener('click', () => { searchEl.value = ''; railEl.classList.remove('mm-dim'); selectCat(el.dataset.cat); });
+    el.addEventListener('mouseenter', () => { if (!searchEl.value.trim()) selectCat(el.dataset.cat); });
   });
+  searchEl.addEventListener('input', () => {
+    const q = searchEl.value;
+    railEl.classList.toggle('mm-dim', !!q.trim());
+    itemsEl.innerHTML = mmItemsHTML(panelId, _mmActiveCat, q);
+    itemsEl.scrollTop = 0;
+  });
+  itemsEl.addEventListener('click', (e) => {
+    const item = e.target.closest('.module-menu-item');
+    if (!item || item.classList.contains('disabled')) return;
+    e.stopPropagation();
+    addTab(item.dataset.addTab, item.dataset.mod);
+    menu.classList.remove('open');
+  });
+  setTimeout(() => { try { searchEl.focus(); } catch (_) {} }, 0);
 }
 
 /* ---------- panel drag (header drag-space) ---------- */
@@ -5537,6 +5774,20 @@ document.addEventListener('click', (e) => {
     e.stopPropagation();
     if (menu.classList.contains('open')) menu.classList.remove('open');
     else openAddTabMenu(tabAdd);
+    return;
+  }
+  // Live News channel switch (swap the single iframe's src; per-panel scoped)
+  const ltvTab = e.target.closest('.ltv-tab[data-ltv-ch]');
+  if (ltvTab) {
+    e.stopPropagation();
+    const root = ltvTab.closest('.livetv');
+    const ch = LIVETV_CHANNELS.find(c => c.id === ltvTab.dataset.ltvCh);
+    if (root && ch) {
+      root.querySelectorAll('.ltv-tab').forEach(t => t.classList.toggle('active', t === ltvTab));
+      const frame = root.querySelector('.ltv-frame');
+      if (frame) frame.src = livetvSrc(ch);
+      try { localStorage.setItem('vex-livetv-channel', ch.id); } catch (_) {}
+    }
     return;
   }
   // close panel
