@@ -2156,12 +2156,13 @@ const PLACEHOLDER_DESCS = {
 // channelId = stable UC id, used only as a last-resort fallback. NOTE: the live_stream?channel= follow-embed is DEPRECATED by YouTube and usually errors — so a working `url` is required per channel.
 const LIVETV_CHANNELS = [
   { id:'bloomberg', label:'BLOOMBERG',  url:'', channelId:'UCIALMKvObZNtJ6AmdCLP7Lg' },  // free live ~7AM–6PM ET weekdays only
-  { id:'skynews',   label:'SKY NEWS',   url:'', channelId:'UCoMdktPbSTixAyNGwb-UYkQ' },
+  { id:'skynews',   label:'SKY NEWS',   url:'https://www.youtube.com/watch?v=VYd4ywPAiFk', channelId:'UCoMdktPbSTixAyNGwb-UYkQ' },
   { id:'euronews',  label:'EURONEWS',   url:'', channelId:'UCSrZ3UV4jOidv8ppoVuvW9Q' },
   { id:'dw',        label:'DW',         url:'', channelId:'UCknLrEdhRCp1aegoMqRaCZg' },
-  { id:'cnbc',      label:'CNBC',       url:'', channelId:'UCF8HUTbUwPKh2Q-KpGOCVGw' },   // CNBC International (US CNBC is members-only)
+  { id:'yahoofin',  label:'YAHOO FINANCE', url:'https://www.youtube.com/watch?v=KQp-e_XQnDE', channelId:'UCEAZeUIeJs0IjQiqTCdVSIg' }, // 24/7 free markets stream
+  { id:'cnbctv18',  label:'CNBC-TV18',     url:'https://www.youtube.com/watch?v=1_Ih0JYmkjI', channelId:'UCmRbHAgG2k2vDUvb3xsEunQ' }, // India 24x7 free business news
   { id:'france24',  label:'FRANCE 24',  url:'', channelId:'UCQfwfsi5VrQ8yKZ-UWmAEFg' },
-  { id:'alarabiya', label:'AL ARABIYA', url:'', channelId:'UCIZJ9a6P_nxCFJTmL0gh_IQ' },
+  { id:'alarabiya', label:'AL ARABIYA', url:'https://www.youtube.com/watch?v=n7eQejkXbnM', channelId:'UCahpxixMCwoANAftn6IxkTg' }, // Arabic flagship 24/7 free
   { id:'aljazeera', label:'AL JAZEERA', url:'', channelId:'UCNye-wNBqNL5ZzHSJj3l8Bg' },
 ];
 function _ytId(s) {
