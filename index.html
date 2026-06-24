@@ -1305,28 +1305,42 @@
   /* Workspace panels: Notes (memo) + Checklist */
   .ws-panel{display:flex;flex-direction:column;height:100%;min-height:0;overflow:hidden}
   .ws-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border-2);flex-shrink:0}
-  .ws-title{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--text);text-transform:uppercase;white-space:nowrap}
-  .ws-count{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-left:4px;letter-spacing:0}
+  .ws-title{font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--text);text-transform:uppercase;white-space:nowrap;display:flex;align-items:center}
+  .ws-count{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);margin-left:6px;letter-spacing:0}
   .ws-head-btns{display:flex;gap:6px;flex-shrink:0}
-  .ws-add,.ws-mini{background:var(--bg-3);border:1px solid var(--border-2);color:var(--text-2);font-size:11px;padding:4px 9px;border-radius:3px;cursor:pointer;font-family:inherit;white-space:nowrap}
-  .ws-add:hover,.ws-mini:hover{background:var(--bg-hover);color:var(--teal-2)}
+  .ws-add,.ws-mini{font-size:11px;padding:4px 10px;border-radius:5px;cursor:pointer;font-family:inherit;white-space:nowrap;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}
+  .ws-add{background:var(--teal-bg);color:var(--teal-2)}
+  .ws-add:hover{background:var(--teal-2);color:var(--bg)}
+  .ws-mini{background:transparent;border-color:var(--border-2);color:var(--text-dim)}
+  .ws-mini:hover{color:var(--text);border-color:var(--text-dim)}
+  .ws-progress{height:2px;background:var(--bg-3);flex-shrink:0;overflow:hidden}
+  .ws-progress-fill{height:100%;width:0;background:var(--teal-2);transition:width .25s ease}
   .ws-list{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:8px;min-height:0}
-  .ws-empty{color:var(--text-dim);font-size:11px;text-align:center;padding:28px 8px;line-height:1.7}
-  .ws-del{background:transparent;border:none;color:var(--text-dim);cursor:pointer;font-size:12px;padding:2px 5px;border-radius:2px;flex-shrink:0;line-height:1}
+  .ws-empty{color:var(--text-dim);font-size:11px;text-align:center;padding:24px 8px;line-height:1.7;margin:auto 0}
+  .ws-empty-ico{font-size:26px;opacity:.4;margin-bottom:8px;line-height:1}
+  .ws-del{background:transparent;border:none;color:var(--text-dim2);cursor:pointer;font-size:12px;padding:2px 5px;border-radius:4px;flex-shrink:0;line-height:1;opacity:0;transition:opacity .12s,color .12s,background .12s}
   .ws-del:hover{color:#ff5757;background:var(--bg-3)}
+  .ws-card:hover .ws-del,.ws-check-row:hover .ws-del,.ws-del:focus-visible{opacity:1}
+  .ws-add:focus-visible,.ws-mini:focus-visible,.ws-del:focus-visible,.ws-check-box:focus-visible{outline:2px solid var(--teal-2);outline-offset:2px}
   /* memo */
-  .ws-card{background:var(--bg-2);border:1px solid var(--border-2);border-radius:4px;padding:8px;display:flex;flex-direction:column;gap:6px}
-  .ws-memo-text{width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;color:var(--text);font-size:12px;line-height:1.55;font-family:inherit;resize:vertical;min-height:46px}
-  .ws-card-foot{display:flex;align-items:center;justify-content:space-between}
+  .ws-card{background:var(--bg-2);border:1px solid var(--border-2);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;transition:border-color .15s,box-shadow .15s}
+  .ws-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.28)}
+  .ws-card:focus-within{border-color:var(--teal-2)}
+  .ws-memo-text{width:100%;box-sizing:border-box;background:transparent;border:none;outline:none;color:var(--text);font-size:12px;line-height:1.55;font-family:inherit;resize:none;overflow:hidden;min-height:44px;display:block}
+  .ws-card-foot{display:flex;align-items:center;justify-content:space-between;min-height:16px}
   .ws-ts{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text-dim2)}
   /* checklist */
-  .ws-check-row{display:flex;align-items:center;gap:8px}
-  .ws-check-box{flex-shrink:0;width:18px;height:18px;border:1px solid var(--border-2);border-radius:3px;background:var(--bg-2);color:var(--teal-2);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .ws-check-row{display:flex;align-items:center;gap:9px;padding:1px 0}
+  .ws-check-box{flex-shrink:0;width:18px;height:18px;border:1.5px solid var(--border-2);border-radius:5px;background:var(--bg-2);cursor:pointer;padding:0;position:relative;transition:background .15s,border-color .15s,transform .1s}
   .ws-check-box:hover{border-color:var(--teal-2)}
-  .ws-check-row.done .ws-check-box{background:var(--teal-bg);border-color:var(--teal-2)}
-  .ws-check-text{flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid transparent;outline:none;color:var(--text);font-size:12px;padding:4px 2px;font-family:inherit}
+  .ws-check-box:active{transform:scale(.88)}
+  .ws-check-box::after{content:'';position:absolute;left:5px;top:1.5px;width:5px;height:9px;border:solid var(--bg);border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transform-origin:center;transition:transform .18s cubic-bezier(.3,1.7,.5,1)}
+  .ws-check-row.done .ws-check-box{background:var(--teal-2);border-color:var(--teal-2)}
+  .ws-check-row.done .ws-check-box::after{transform:rotate(45deg) scale(1)}
+  .ws-check-text{flex:1;min-width:0;background:transparent;border:none;border-bottom:1px solid transparent;outline:none;color:var(--text);font-size:12px;padding:5px 2px;font-family:inherit}
   .ws-check-text:focus{border-bottom-color:var(--border-2)}
-  .ws-check-row.done .ws-check-text{color:var(--text-dim);text-decoration:line-through}
+  .ws-check-row.done .ws-check-text{color:var(--text-2);opacity:.6;text-decoration:line-through}
+  @media (prefers-reduced-motion: reduce){.ws-add,.ws-mini,.ws-del,.ws-card,.ws-check-box,.ws-check-box::after,.ws-progress-fill{transition:none}}
 
   /* FOOTER — V2: connection status + latency */
   .footer{background:var(--bg);flex-shrink:0;display:flex;align-items:center;gap:14px;padding:0 14px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);height:28px;overflow:hidden}
@@ -2218,20 +2232,21 @@ function wsId(){ return 'w' + Math.random().toString(36).slice(2,8) + Date.now()
 function wsEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function wsEscAttr(s){ return wsEsc(s).replace(/"/g,'&quot;'); }
 function wsFmtTs(ms){ const d=new Date(ms); const p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; }
+function wsRelTs(ms){ const s=Math.floor((Date.now()-ms)/1000); if(s<60) return '방금'; const m=Math.floor(s/60); if(m<60) return m+'분 전'; const h=Math.floor(m/60); if(h<24) return h+'시간 전'; const d=Math.floor(h/24); if(d<7) return d+'일 전'; return wsFmtTs(ms).slice(0,10); }
+function wsAutoGrow(ta){ if(!ta) return; ta.style.height='auto'; ta.style.height=Math.max(44, ta.scrollHeight)+'px'; }
+function wsSizeMemos(){ document.querySelectorAll('[data-memo-text]').forEach(wsAutoGrow); }
+let wsComposing = false;
 
 const WS_MEMO_KEY = 'vex-memo-v1';
 function wsMemoNotes(){ return wsLoad(WS_MEMO_KEY, []); }
 function wsMemoCardHTML(n){
   return `<div class="ws-card" data-memo-id="${n.id}">
-    <textarea class="ws-memo-text" data-memo-text placeholder="메모 입력…">${wsEsc(n.text)}</textarea>
-    <div class="ws-card-foot"><span class="ws-ts">${n.ts?wsFmtTs(n.ts):''}</span><button class="ws-del" data-memo-del title="삭제">✕</button></div>
+    <textarea class="ws-memo-text" data-memo-text rows="1" placeholder="메모 입력…">${wsEsc(n.text)}</textarea>
+    <div class="ws-card-foot"><span class="ws-ts" title="${n.ts?wsFmtTs(n.ts):''}">${n.ts?wsRelTs(n.ts):''}</span><button class="ws-del" data-memo-del aria-label="메모 삭제"><span aria-hidden="true">✕</span></button></div>
   </div>`;
 }
-function wsMemoEmpty(){ return '<div class="ws-empty">메모가 없습니다.<br>+ 새 메모로 추가하세요.</div>'; }
-function wsMemoRenderAll(){ document.querySelectorAll('.memo-panel').forEach(root=>{
-  const list=root.querySelector('[data-memo-list]'); if(!list) return;
-  const notes=wsMemoNotes(); list.innerHTML = notes.length ? notes.map(wsMemoCardHTML).join('') : wsMemoEmpty();
-}); }
+function wsMemoEmpty(){ return '<div class="ws-empty"><div class="ws-empty-ico">🗒️</div>메모가 없습니다.<br>+ 새 메모로 추가하세요.</div>'; }
+function wsMemoRenderExcept(except){ document.querySelectorAll('.memo-panel').forEach(root=>{ if(root===except) return; const list=root.querySelector('[data-memo-list]'); if(!list) return; const notes=wsMemoNotes(); list.innerHTML = notes.length ? notes.map(wsMemoCardHTML).join('') : wsMemoEmpty(); }); wsSizeMemos(); }
 
 const WS_CHECK_KEY = 'vex-checklist-v1';
 function wsCheckItems(){
@@ -2246,28 +2261,62 @@ function wsCheckItems(){
 }
 function wsCheckRowHTML(it){
   return `<div class="ws-check-row ${it.done?'done':''}" data-check-id="${it.id}">
-    <button class="ws-check-box" data-check-toggle>${it.done?'✓':''}</button>
+    <button class="ws-check-box" data-check-toggle role="checkbox" aria-checked="${it.done?'true':'false'}" aria-label="완료 토글"></button>
     <input class="ws-check-text" data-check-text value="${wsEscAttr(it.text)}" placeholder="항목…">
-    <button class="ws-del" data-check-del title="삭제">✕</button>
+    <button class="ws-del" data-check-del aria-label="항목 삭제"><span aria-hidden="true">✕</span></button>
   </div>`;
 }
-function wsCheckRenderAll(){ document.querySelectorAll('.check-panel').forEach(root=>{
+function wsCheckEmpty(){ return '<div class="ws-empty"><div class="ws-empty-ico">✓</div>항목이 없습니다.<br>+ 항목으로 룰을 추가하세요.</div>'; }
+function wsCheckProgress(root){ if(!root) return; const items=wsCheckItems(); const done=items.filter(i=>i.done).length, total=items.length; const c=root.querySelector('.ws-count'); if(c) c.textContent=`${done}/${total}`; const bar=root.querySelector('.ws-progress-fill'); if(bar) bar.style.width=(total?Math.round(done/total*100):0)+'%'; }
+function wsCheckRenderExcept(except){ document.querySelectorAll('.check-panel').forEach(root=>{ if(root===except) return; const list=root.querySelector('[data-check-list]'); if(!list) return; const items=wsCheckItems(); list.innerHTML = items.length ? items.map(wsCheckRowHTML).join('') : wsCheckEmpty(); wsCheckProgress(root); }); }
+function wsCheckInsert(root, afterId){
+  if(!root) return;
+  const a=wsCheckItems(); const it={id:wsId(),text:'',done:false};
+  let idx=a.length; if(afterId){ const i=a.findIndex(x=>x.id===afterId); if(i>=0) idx=i+1; }
+  a.splice(idx,0,it); wsSave(WS_CHECK_KEY,a);
   const list=root.querySelector('[data-check-list]'); if(!list) return;
-  const items=wsCheckItems(); list.innerHTML = items.map(wsCheckRowHTML).join('');
-  const c=root.querySelector('.ws-count'); if(c) c.textContent = `${items.filter(i=>i.done).length}/${items.length}`;
-}); }
+  if(list.querySelector('.ws-empty')) list.innerHTML='';
+  const refRow=afterId ? list.querySelector(`[data-check-id="${afterId}"]`) : null;
+  if(refRow) refRow.insertAdjacentHTML('afterend', wsCheckRowHTML(it));
+  else list.insertAdjacentHTML('beforeend', wsCheckRowHTML(it));
+  wsCheckProgress(root); wsCheckRenderExcept(root);
+  const inp=list.querySelector(`[data-check-id="${it.id}"] [data-check-text]`); if(inp) inp.focus();
+}
 
 document.addEventListener('click', (e)=>{
-  if(e.target.closest('[data-memo-add]')){ const a=wsMemoNotes(); const n={id:wsId(),text:'',ts:Date.now()}; a.unshift(n); wsSave(WS_MEMO_KEY,a); wsMemoRenderAll(); const ta=e.target.closest('.memo-panel')?.querySelector(`[data-memo-id="${n.id}"] [data-memo-text]`); if(ta) ta.focus(); return; }
-  const md=e.target.closest('[data-memo-del]'); if(md){ const id=md.closest('[data-memo-id]')?.dataset.memoId; wsSave(WS_MEMO_KEY, wsMemoNotes().filter(n=>n.id!==id)); wsMemoRenderAll(); return; }
-  if(e.target.closest('[data-check-add]')){ const a=wsCheckItems(); const it={id:wsId(),text:'',done:false}; a.push(it); wsSave(WS_CHECK_KEY,a); wsCheckRenderAll(); const inp=e.target.closest('.check-panel')?.querySelector(`[data-check-id="${it.id}"] [data-check-text]`); if(inp) inp.focus(); return; }
-  const cd=e.target.closest('[data-check-del]'); if(cd){ const id=cd.closest('[data-check-id]')?.dataset.checkId; wsSave(WS_CHECK_KEY, wsCheckItems().filter(i=>i.id!==id)); wsCheckRenderAll(); return; }
-  const ctg=e.target.closest('[data-check-toggle]'); if(ctg){ const id=ctg.closest('[data-check-id]')?.dataset.checkId; const a=wsCheckItems(); const it=a.find(i=>i.id===id); if(it){ it.done=!it.done; wsSave(WS_CHECK_KEY,a); wsCheckRenderAll(); } return; }
-  if(e.target.closest('[data-check-reset]')){ const a=wsCheckItems(); a.forEach(i=>i.done=false); wsSave(WS_CHECK_KEY,a); wsCheckRenderAll(); return; }
+  // memo add (surgical insert + autosize + focus)
+  if(e.target.closest('[data-memo-add]')){ const root=e.target.closest('.memo-panel'); if(!root) return; const a=wsMemoNotes(); const n={id:wsId(),text:'',ts:Date.now()}; a.unshift(n); wsSave(WS_MEMO_KEY,a); const list=root.querySelector('[data-memo-list]'); if(list.querySelector('.ws-empty')) list.innerHTML=''; list.insertAdjacentHTML('afterbegin', wsMemoCardHTML(n)); const ta=list.querySelector(`[data-memo-id="${n.id}"] [data-memo-text]`); wsAutoGrow(ta); if(ta) ta.focus(); wsMemoRenderExcept(root); return; }
+  // memo delete (content-aware confirm)
+  const md=e.target.closest('[data-memo-del]'); if(md){ const card=md.closest('[data-memo-id]'); const id=card&&card.dataset.memoId; const notes=wsMemoNotes(); const n=notes.find(x=>x.id===id); if(n && n.text.trim() && !confirm('이 메모를 삭제할까요?')) return; const a=notes.filter(x=>x.id!==id); wsSave(WS_MEMO_KEY,a); const root=md.closest('.memo-panel'); if(card) card.remove(); if(!a.length && root){ const list=root.querySelector('[data-memo-list]'); if(list) list.innerHTML=wsMemoEmpty(); } wsMemoRenderExcept(root); return; }
+  // checklist add
+  if(e.target.closest('[data-check-add]')){ wsCheckInsert(e.target.closest('.check-panel'), null); return; }
+  // checklist delete (content-aware confirm)
+  const cd=e.target.closest('[data-check-del]'); if(cd){ const row=cd.closest('[data-check-id]'); const id=row&&row.dataset.checkId; const items=wsCheckItems(); const it=items.find(x=>x.id===id); if(it && it.text.trim() && !confirm('이 항목을 삭제할까요?')) return; const a=items.filter(x=>x.id!==id); wsSave(WS_CHECK_KEY,a); const root=cd.closest('.check-panel'); if(row) row.remove(); if(!a.length && root){ const list=root.querySelector('[data-check-list]'); if(list) list.innerHTML=wsCheckEmpty(); } wsCheckProgress(root); wsCheckRenderExcept(root); return; }
+  // checklist toggle (surgical — no innerHTML rebuild, preserves focus/IME)
+  const ctg=e.target.closest('[data-check-toggle]'); if(ctg){ const row=ctg.closest('[data-check-id]'); const id=row&&row.dataset.checkId; const a=wsCheckItems(); const it=a.find(i=>i.id===id); if(it){ it.done=!it.done; wsSave(WS_CHECK_KEY,a); if(row) row.classList.toggle('done', it.done); ctg.setAttribute('aria-checked', it.done?'true':'false'); const root=ctg.closest('.check-panel'); wsCheckProgress(root); wsCheckRenderExcept(root); } return; }
+  // checklist reset (surgical)
+  if(e.target.closest('[data-check-reset]')){ const a=wsCheckItems(); a.forEach(i=>i.done=false); wsSave(WS_CHECK_KEY,a); const root=e.target.closest('.check-panel'); if(root){ root.querySelectorAll('.ws-check-row').forEach(r=>{ r.classList.remove('done'); const b=r.querySelector('[data-check-toggle]'); if(b) b.setAttribute('aria-checked','false'); }); wsCheckProgress(root); } wsCheckRenderExcept(root); return; }
 });
 document.addEventListener('input', (e)=>{
-  const mt=e.target.closest('[data-memo-text]'); if(mt){ const id=mt.closest('[data-memo-id]')?.dataset.memoId; const a=wsMemoNotes(); const n=a.find(x=>x.id===id); if(n){ n.text=mt.value; n.ts=Date.now(); wsSave(WS_MEMO_KEY,a); } return; }
-  const ct=e.target.closest('[data-check-text]'); if(ct){ const id=ct.closest('[data-check-id]')?.dataset.checkId; const a=wsCheckItems(); const it=a.find(x=>x.id===id); if(it){ it.text=ct.value; wsSave(WS_CHECK_KEY,a); } return; }
+  const mt=e.target.closest('[data-memo-text]'); if(mt){ const card=mt.closest('[data-memo-id]'); const id=card&&card.dataset.memoId; const a=wsMemoNotes(); const n=a.find(x=>x.id===id); if(n){ n.text=mt.value; n.ts=Date.now(); wsSave(WS_MEMO_KEY,a); wsAutoGrow(mt); const tsEl=card&&card.querySelector('.ws-ts'); if(tsEl){ tsEl.textContent=wsRelTs(n.ts); tsEl.title=wsFmtTs(n.ts); } document.querySelectorAll(`[data-memo-id="${id}"] [data-memo-text]`).forEach(el=>{ if(el!==mt && el.value!==mt.value){ el.value=mt.value; wsAutoGrow(el); } }); } return; }
+  const ct=e.target.closest('[data-check-text]'); if(ct){ const row=ct.closest('[data-check-id]'); const id=row&&row.dataset.checkId; const a=wsCheckItems(); const it=a.find(x=>x.id===id); if(it){ it.text=ct.value; wsSave(WS_CHECK_KEY,a); document.querySelectorAll(`[data-check-id="${id}"] [data-check-text]`).forEach(el=>{ if(el!==ct && el.value!==ct.value) el.value=ct.value; }); } return; }
+});
+document.addEventListener('keydown', (e)=>{
+  const ct=e.target.closest && e.target.closest('[data-check-text]'); if(!ct) return;
+  if(e.isComposing || wsComposing) return;
+  const root=ct.closest('.check-panel'); const row=ct.closest('[data-check-id]'); const id=row&&row.dataset.checkId;
+  if(e.key==='Enter'){ e.preventDefault(); if(ct.value.trim()==='') ct.blur(); else wsCheckInsert(root, id); }
+  else if(e.key==='Escape'){ ct.blur(); }
+  else if(e.key==='Backspace' && ct.value===''){ const items=wsCheckItems(); if(items.length>1){ e.preventDefault(); const idx=items.findIndex(x=>x.id===id); const prevId=idx>0?items[idx-1].id:null; const a=items.filter(x=>x.id!==id); wsSave(WS_CHECK_KEY,a); if(row) row.remove(); wsCheckProgress(root); wsCheckRenderExcept(root); if(prevId){ const prev=root&&root.querySelector(`[data-check-id="${prevId}"] [data-check-text]`); if(prev){ prev.focus(); prev.setSelectionRange(prev.value.length, prev.value.length); } } } }
+});
+document.addEventListener('compositionstart', (e)=>{ if(e.target.closest && e.target.closest('[data-memo-text],[data-check-text]')) wsComposing=true; });
+document.addEventListener('compositionend', (e)=>{ if(e.target.closest && e.target.closest('[data-memo-text],[data-check-text]')){ wsComposing=false; e.target.dispatchEvent(new Event('input',{bubbles:true})); } });
+document.addEventListener('focusout', (e)=>{
+  if(wsComposing) return;
+  const mt=e.target.closest && e.target.closest('[data-memo-text]');
+  if(mt && !mt.value.trim()){ const card=mt.closest('[data-memo-id]'); const id=card&&card.dataset.memoId; const a=wsMemoNotes().filter(n=>n.id!==id); wsSave(WS_MEMO_KEY,a); const root=mt.closest('.memo-panel'); if(card) card.remove(); if(!a.length && root){ const list=root.querySelector('[data-memo-list]'); if(list) list.innerHTML=wsMemoEmpty(); } wsMemoRenderExcept(root); return; }
+  const ct=e.target.closest && e.target.closest('[data-check-text]');
+  if(ct && !ct.value.trim()){ const items=wsCheckItems(); if(items.length>1){ const row=ct.closest('[data-check-id]'); const id=row&&row.dataset.checkId; const a=items.filter(i=>i.id!==id); wsSave(WS_CHECK_KEY,a); const root=ct.closest('.check-panel'); if(row) row.remove(); wsCheckProgress(root); wsCheckRenderExcept(root); } return; }
 });
 
 /* ---------- module HTML generation ---------- */
@@ -2630,6 +2679,7 @@ function moduleHTML(modId) {
   }
   if (modId === 'memo') {
     const notes = wsMemoNotes();
+    requestAnimationFrame(wsSizeMemos);
     return `
       <div class="ws-panel memo-panel">
         <div class="ws-head"><span class="ws-title">메모</span><button class="ws-add" data-memo-add>+ 새 메모</button></div>
@@ -2639,13 +2689,15 @@ function moduleHTML(modId) {
   if (modId === 'checklist') {
     const items = wsCheckItems();
     const done = items.filter(i => i.done).length;
+    const pct = items.length ? Math.round(done / items.length * 100) : 0;
     return `
       <div class="ws-panel check-panel">
         <div class="ws-head">
-          <span class="ws-title">체크리스트 <span class="ws-count">${done}/${items.length}</span></span>
+          <span class="ws-title">체크리스트 <span class="ws-count" aria-live="polite">${done}/${items.length}</span></span>
           <span class="ws-head-btns"><button class="ws-mini" data-check-reset title="모두 해제">초기화</button><button class="ws-add" data-check-add>+ 항목</button></span>
         </div>
-        <div class="ws-list" data-check-list>${items.map(wsCheckRowHTML).join('')}</div>
+        <div class="ws-progress"><div class="ws-progress-fill" style="width:${pct}%"></div></div>
+        <div class="ws-list" data-check-list>${items.length ? items.map(wsCheckRowHTML).join('') : wsCheckEmpty()}</div>
       </div>`;
   }
   const mod = MODULES.find(m => m.id === modId);
