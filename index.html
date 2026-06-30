@@ -1371,6 +1371,22 @@
   .fs-val{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .fs-val.pos{color:var(--green)}
   .fs-val.neg{color:var(--red)}
+  /* beginner layer: 지금 상태 pill + (?) info-dots + shared tooltip + bar legend */
+  .fund-now{display:flex;align-items:flex-start;background:var(--bg-2);border:1px solid var(--border-2);border-radius:6px;padding:8px 10px;font-size:11.5px;line-height:1.45;color:var(--text-2)}
+  .fn-tag{flex:none;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);border:1px solid var(--border-2);border-radius:3px;padding:1px 5px;margin-right:7px;margin-top:1px;white-space:nowrap}
+  .fn-txt{flex:1;min-width:0}
+  .fi{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;margin-left:4px;border-radius:50%;border:1px solid var(--border-2);background:transparent;color:var(--text-dim2);font-size:9px;line-height:1;cursor:help;padding:0;vertical-align:middle;font-family:inherit;flex-shrink:0}
+  .fi:hover,.fi:focus{color:var(--text-2);border-color:var(--text-dim);outline:none}
+  .fh-headlabel{display:inline-flex;align-items:center}
+  .fi-pop{position:fixed;max-width:240px;background:var(--bg-3);border:1px solid var(--border-2);border-radius:6px;padding:9px 11px;font-size:11px;line-height:1.5;color:var(--text-2);box-shadow:0 8px 24px rgba(0,0,0,.6);z-index:600;opacity:0;pointer-events:none;transition:opacity .12s}
+  .fi-pop.open{opacity:1;pointer-events:auto}
+  .fip-t{color:var(--text);font-weight:600;margin-bottom:3px}
+  .fip-b{color:var(--text-2)}
+  .fh-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;font-size:9px;color:var(--text-dim)}
+  .fh-legend .fhl{display:flex;align-items:center;gap:4px}
+  .fh-legend .sw{width:8px;height:8px;border-radius:2px;display:inline-block}
+  .fh-legend .sw.pos{background:var(--green)}
+  .fh-legend .sw.neg{background:var(--red)}
 
   /* FOOTER — V2: connection status + latency */
   .footer{background:var(--bg);flex-shrink:0;display:flex;align-items:center;gap:14px;padding:0 14px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);height:28px;overflow:hidden}
@@ -2354,11 +2370,37 @@ document.addEventListener('focusout', (e)=>{
 let _fundLastSym = '';
 let _fundHist = { sym:'', data:null, loading:false, ts:0 };
 function fundSym(){ return (typeof SYMBOL!=='undefined'?SYMBOL:'btcusdt').toUpperCase(); }
+// beginner help: per-term tooltips (?) + dynamic "지금 상태" one-liner — financially-accurate, no price-direction claims
+const FUND_TIPS = {
+  basis:{ t:'베이시스 = Mark − Index', b:'무기한 선물(퍼프)의 Mark 가격이 현물 기준가(Index)보다 얼마나 비싼지(+)·싼지(−)예요. Mark=거래소가 정한 선물 공정가(청산·펀딩 기준), Index=여러 현물 거래소 평균가. 어느 쪽 수요가 강한지를 보여줄 뿐, 가격 방향 신호는 아니에요.' },
+  bp:{ t:'bp (베이시스 포인트)', b:'아주 작은 % 단위예요. 1bp = 0.01%, 100bp = 1%. 예: 5.5bp = 0.055%. 작은 차이를 또렷하게 보려고 써요.' },
+  premdisc:{ t:'프리미엄 / 디스카운트', b:'프리미엄 = 선물이 현물보다 비쌈(롱 수요 우위), 디스카운트 = 선물이 더 쌈(숏 수요 우위). "우위"는 그쪽 수요가 더 강하다는 뜻이지, 인원수나 가격 방향을 뜻하지 않아요.' },
+  funding:{ t:'펀딩비 (8시간마다)', b:'롱·숏이 8시간마다 서로 주고받는 수수료로, 선물 가격을 현물에 붙들어둬요. +면 롱이 숏에게, −면 숏이 롱에게 냅니다. 정산 시각에 포지션을 들고 있는 사람만 주고받아요. 아래 막대=최근 30회 기록, 색=방향, 높이=금액 크기.' },
+  fcur:{ t:'현재(예상) 펀딩', b:'다음 정산에 적용될, 아직 확정 전인 펀딩률이에요. 정산 직전까지 계속 바뀔 수 있어요. +면 롱이, −면 숏이 낼 예정이에요.' },
+  favg:{ t:'평균 8h', b:'표시된 기록(최근 30회)의 펀딩비를 평균 낸 값이에요. 요즘 한 회차(8시간)에 평균 얼마가 오갔는지 보여줘요.' },
+  fann:{ t:'연환산(평균)', b:'평균 펀딩비에 1년치 정산 횟수(하루 3번 × 365일 = 1095, 8시간 펀딩 기준)를 곱한 값이에요. 복리는 뺀 단순 환산이라 실제 수익률 예측이 아니라 비용 크기를 코인끼리 비교하는 용도예요. 롱 기준 +는 내고 −는 받는 쪽(숏은 반대).' },
+  fcum:{ t:'누적', b:'표시 기간 동안 펀딩비를 모두 더한 값이에요(퍼센트). 그 기간 내내 들고 있었다면 포지션 크기 대비 대략 이만큼을 롱 기준 +는 내고 −는 받은 셈이에요(숏은 반대). 비율의 단순 합이라 실제 손익과는 달라요.' }
+};
+const FUND_NOW = {
+  'prem|pos':'지금 무기한 선물이 현물보다 비싸고(프리미엄), 펀딩도 플러스라 롱(매수)이 숏(매도)에게 수수료를 내고 있어요. 롱 쪽 수요가 강한 흔한 상태예요. 가격이 오른다는 뜻은 아니고, 롱을 들고 있으면 비용이 든다는 의미예요.',
+  'prem|zero':'무기한 선물이 현물보다 약간 비싸지만(프리미엄), 펀딩은 거의 0이라 롱·숏이 주고받는 수수료가 별로 없어요. 한쪽으로 크게 쏠리지 않은 상태예요.',
+  'prem|neg':'무기한 선물 가격은 현물보다 비싼데(프리미엄) 펀딩은 마이너스라 숏(매도)이 롱에게 수수료를 내고 있어요. 둘이 엇갈리는 드문 상태로, 방향을 알려주는 신호는 아니에요.',
+  'disc|pos':'무기한 선물 가격은 현물보다 싼데(디스카운트) 펀딩은 플러스라 롱(매수)이 숏에게 수수료를 내고 있어요. 둘이 엇갈리는 드문 상태로, 방향을 알려주는 신호는 아니에요.',
+  'disc|zero':'무기한 선물이 현물보다 약간 싸지만(디스카운트), 펀딩은 거의 0이라 주고받는 수수료가 별로 없어요. 한쪽으로 크게 쏠리지 않은 상태예요.',
+  'disc|neg':'지금 무기한 선물이 현물보다 싸고(디스카운트), 펀딩도 마이너스라 숏(매도)이 롱(매수)에게 수수료를 내고 있어요. 숏 쪽 수요가 강한 상태예요. 가격이 내린다는 뜻은 아니고, 숏을 들고 있으면 비용이 든다는 의미예요.',
+  'flat|pos':'무기한 선물과 현물 가격이 거의 같지만, 펀딩이 플러스라 롱(매수)이 숏에게 수수료를 내고 있어요. 가격 차이는 거의 없는 상태예요.',
+  'flat|neg':'무기한 선물과 현물 가격이 거의 같지만, 펀딩이 마이너스라 숏(매도)이 롱에게 수수료를 내고 있어요. 가격 차이는 거의 없는 상태예요.',
+  'flat|zero':'무기한 선물과 현물 가격이 거의 같고 펀딩도 거의 0이에요. 롱·숏이 균형을 이룬 잔잔한 상태예요.'
+};
 function renderFundingPanels(){
   const panels=document.querySelectorAll('.funding-panel'); if(!panels.length) return;
   const r=+currentFundingRate||0, mark=+lastMarkPrice||0, idx=+lastIndexPrice||0;
   const basis=(mark&&idx)?mark-idx:0, basisPct=idx?basis/idx*100:0, basisBp=basisPct*100;
-  const note=(!mark||!idx)?'—':basis>0?'퍼프 > 현물 · 프리미엄 (롱 우위)':basis<0?'퍼프 < 현물 · 디스카운트 (숏 우위)':'퍼프 ≈ 현물';
+  const B_DEAD=0.005, F_DEAD=0.000005; // |basisPct|<0.005%(≈0.5bp)=flat ; |r|<0.0005%=~0
+  const bSign=(!mark||!idx)?'na':(Math.abs(basisPct)<B_DEAD?'flat':(basis>0?'prem':'disc'));
+  const fSign=(!mark||!idx)?'na':(Math.abs(r)<F_DEAD?'zero':(r>0?'pos':'neg'));
+  const note=bSign==='na'?'—':bSign==='prem'?'퍼프 > 현물 · 프리미엄 (롱 수요 우위)':bSign==='disc'?'퍼프 < 현물 · 디스카운트 (숏 수요 우위)':'퍼프 ≈ 현물 (쏠림 적음)';
+  const nowTxt=bSign==='na'?'데이터를 불러오는 중이에요.':(FUND_NOW[bSign+'|'+fSign]||'데이터를 불러오는 중이에요.');
   const sym=fundSym().replace('USDT','-USDT');
   const fmtPx=v=>v.toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1});
   panels.forEach(p=>{
@@ -2367,9 +2409,11 @@ function renderFundingPanels(){
     sign('[data-fund-basis]', (mark&&idx)?((basis>=0?'+':'-')+'$'+Math.abs(basis).toFixed(2)):'—', basis);
     sign('[data-fund-basispct]', (mark&&idx)?((basisPct>=0?'+':'')+basisPct.toFixed(3)+'%'):'—', basis);
     sign('[data-fund-basisbp]', (mark&&idx)?((basisBp>=0?'+':'')+basisBp.toFixed(1)+' bp'):'—', basis);
+    if(bSign==='flat'){ ['[data-fund-basis]','[data-fund-basispct]','[data-fund-basisbp]'].forEach(s=>{ const el=p.querySelector(s); if(el) el.classList.remove('pos','neg'); }); }
     set('[data-fund-deriv]', (mark&&idx)?('Mark '+fmtPx(mark)+'  −  Index '+fmtPx(idx)):'—');
     set('[data-fund-note]', note);
     sign('[data-fund-cur]', (r>=0?'+':'')+(r*100).toFixed(4)+'%', r);
+    set('[data-fund-now-txt]', nowTxt);
     set('[data-fund-sym]', sym);
   });
 }
@@ -2405,6 +2449,28 @@ function renderFundingHist(){
     sset('[data-fund-cum]', cum===null?'—':((cum>=0?'+':'')+cum.toFixed(3)+'%'), cum);
   });
 }
+
+// shared floating tooltip for the (?) info-dots — one element, delegated hover + tap + Esc
+const fiPop=document.createElement('div'); fiPop.className='fi-pop'; document.body.appendChild(fiPop);
+let fiTimer=null, fiSticky=false;
+function showFiPop(dot){
+  const t=FUND_TIPS[dot.dataset.tip]; if(!t) return;
+  fiPop.innerHTML='<div class="fip-t">'+t.t+'</div><div class="fip-b">'+t.b+'</div>';
+  fiPop.classList.add('open');
+  const rc=dot.getBoundingClientRect(), pw=fiPop.offsetWidth, ph=fiPop.offsetHeight;
+  let left=Math.min(window.innerWidth-pw-8, Math.max(8, rc.left+rc.width/2-pw/2));
+  let top=rc.top-ph-8; if(top<8) top=rc.bottom+8;
+  fiPop.style.left=left+'px'; fiPop.style.top=top+'px';
+}
+function hideFiPop(){ fiSticky=false; fiPop.classList.remove('open'); }
+document.addEventListener('mouseover',e=>{ const d=e.target.closest&&e.target.closest('.fi'); if(d){ clearTimeout(fiTimer); showFiPop(d); }});
+document.addEventListener('mouseout',e=>{ const d=e.target.closest&&e.target.closest('.fi'); if(d&&!fiSticky){ fiTimer=setTimeout(hideFiPop,80); }});
+fiPop.addEventListener('mouseenter',()=>clearTimeout(fiTimer));
+fiPop.addEventListener('mouseleave',()=>{ if(!fiSticky) fiTimer=setTimeout(hideFiPop,80); });
+document.addEventListener('focusin',e=>{ const d=e.target.closest&&e.target.closest('.fi'); if(d) showFiPop(d); });
+document.addEventListener('focusout',e=>{ const d=e.target.closest&&e.target.closest('.fi'); if(d&&!fiSticky) hideFiPop(); });
+document.addEventListener('click',e=>{ const d=e.target.closest&&e.target.closest('.fi'); if(d){ e.stopPropagation(); fiSticky=true; showFiPop(d); } else if(!(e.target.closest&&e.target.closest('.fi-pop'))){ hideFiPop(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') hideFiPop(); });
 
 /* ---------- module HTML generation ---------- */
 function moduleHTML(modId) {
@@ -2793,22 +2859,24 @@ function moduleHTML(modId) {
       <div class="fund-panel funding-panel">
         <div class="fund-head"><span class="fund-title">BASIS &amp; FUNDING</span><span class="fund-sym" data-fund-sym>—</span></div>
         <div class="fund-body">
+          <div class="fund-now"><span class="fn-tag">지금 상태</span><span class="fn-txt" data-fund-now-txt>데이터를 불러오는 중이에요.</span></div>
           <div class="fund-basis-hero">
-            <div class="fbh-lbl">베이시스 · Mark − Index</div>
+            <div class="fbh-lbl">베이시스 · Mark − Index<button class="fi" data-tip="basis" aria-label="베이시스 설명" tabindex="0">?</button></div>
             <div class="fbh-val" data-fund-basis>—</div>
-            <div class="fbh-sub"><span data-fund-basispct>—</span><span class="fund-dot">·</span><span data-fund-basisbp>—</span></div>
+            <div class="fbh-sub"><span data-fund-basispct>—</span><span class="fund-dot">·</span><span data-fund-basisbp>—</span><button class="fi" data-tip="bp" aria-label="bp 설명" tabindex="0">?</button></div>
             <div class="fbh-deriv" data-fund-deriv>—</div>
-            <div class="fbh-note" data-fund-note>—</div>
+            <div class="fbh-note"><span data-fund-note>—</span><button class="fi" data-tip="premdisc" aria-label="프리미엄·디스카운트 설명" tabindex="0">?</button></div>
           </div>
           <div class="fund-hist">
-            <div class="fh-head"><span>펀딩 히스토리 · 8h</span><span class="fh-range" data-fund-hist-range></span></div>
+            <div class="fh-head"><span class="fh-headlabel">펀딩 히스토리 · 8h<button class="fi" data-tip="funding" aria-label="펀딩 설명" tabindex="0">?</button></span><span class="fh-range" data-fund-hist-range></span></div>
             <div class="fh-bars" data-fund-hist><span class="fh-empty">로딩…</span></div>
+            <div class="fh-legend"><span class="fhl"><i class="sw pos"></i>초록 = 펀딩 +, 롱이 숏에게 지급</span><span class="fhl"><i class="sw neg"></i>빨강 = 펀딩 −, 숏이 롱에게 지급</span><span class="fhl">막대 높이 = 금액 크기</span></div>
           </div>
           <div class="fund-stats">
-            <div class="fs-cell"><div class="fs-lbl">현재(예상)</div><div class="fs-val" data-fund-cur>—</div></div>
-            <div class="fs-cell"><div class="fs-lbl">평균 8h</div><div class="fs-val" data-fund-avg>—</div></div>
-            <div class="fs-cell"><div class="fs-lbl">연환산(평균)</div><div class="fs-val" data-fund-annavg>—</div></div>
-            <div class="fs-cell"><div class="fs-lbl">누적</div><div class="fs-val" data-fund-cum>—</div></div>
+            <div class="fs-cell"><div class="fs-lbl">현재(예상)<button class="fi" data-tip="fcur" aria-label="현재 펀딩 설명" tabindex="0">?</button></div><div class="fs-val" data-fund-cur>—</div></div>
+            <div class="fs-cell"><div class="fs-lbl">평균 8h<button class="fi" data-tip="favg" aria-label="평균 설명" tabindex="0">?</button></div><div class="fs-val" data-fund-avg>—</div></div>
+            <div class="fs-cell"><div class="fs-lbl">연환산(평균)<button class="fi" data-tip="fann" aria-label="연환산 설명" tabindex="0">?</button></div><div class="fs-val" data-fund-annavg>—</div></div>
+            <div class="fs-cell"><div class="fs-lbl">누적<button class="fi" data-tip="fcum" aria-label="누적 설명" tabindex="0">?</button></div><div class="fs-val" data-fund-cum>—</div></div>
           </div>
         </div>
       </div>`;
