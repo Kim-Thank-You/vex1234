@@ -2472,6 +2472,23 @@ function renderFundingPanels(){
     set('[data-fund-sym]', sym);
   });
 }
+let _basisSeed={ sym:'', loading:false };
+async function seedBasis(){
+  const sym=fundSym();
+  if(_basisSeed.sym===sym || _basisSeed.loading) return;
+  _basisSeed.loading=true;
+  try{
+    const [mr,ir]=await Promise.all([
+      fetch(`https://api.bybit.com/v5/market/mark-price-kline?category=linear&symbol=${sym}&interval=1&limit=200`).then(r=>r.json()),
+      fetch(`https://api.bybit.com/v5/market/index-price-kline?category=linear&symbol=${sym}&interval=1&limit=200`).then(r=>r.json())
+    ]);
+    const ml=(mr&&mr.result&&mr.result.list)||[], il=(ir&&ir.result&&ir.result.list)||[];
+    const im={}; il.forEach(k=>{ im[k[0]]=+k[4]; });
+    const seed=ml.slice().reverse().map(k=>{ const ic=im[k[0]]; return (ic!=null)?(+k[4]-ic):null; }).filter(v=>v!=null);
+    if(seed.length){ _basisBuf=seed.slice(-400); _basisSeed.sym=sym; renderFundingPanels(); }
+  }catch(e){}
+  _basisSeed.loading=false;
+}
 async function loadFundingHistory(){
   const sym=fundSym();
   if(_fundHist.sym===sym && _fundHist.data && (Date.now()-_fundHist.ts)<300000){ renderFundingHist(); return; }
@@ -2916,7 +2933,7 @@ function moduleHTML(modId) {
       </div>`;
   }
   if (modId === 'funding') {
-    requestAnimationFrame(() => { renderFundingPanels(); loadFundingHistory(); });
+    requestAnimationFrame(() => { renderFundingPanels(); loadFundingHistory(); seedBasis(); });
     return `
       <div class="fund-panel funding-panel" data-fund-mode="basis">
         <div class="fund-head">
@@ -6039,7 +6056,7 @@ setInterval(() => {
   }
   const blk = document.getElementById('block');
   blk.textContent = (parseInt(blk.textContent.replace(/,/g,'')) + 1).toLocaleString();
-  if (document.querySelector('.funding-panel')) { renderFundingPanels(); if (fundSym() !== _fundLastSym) { _fundLastSym = fundSym(); loadFundingHistory(); } }
+  if (document.querySelector('.funding-panel')) { renderFundingPanels(); if (fundSym() !== _fundLastSym) { _fundLastSym = fundSym(); loadFundingHistory(); _basisBuf=[]; _basisSeed.sym=''; seedBasis(); } }
 }, 1000);
 
 /* ---------- module picker menu (for adding new tabs) ---------- */
