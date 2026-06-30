@@ -1341,52 +1341,62 @@
   .ws-check-text:focus{border-bottom-color:var(--border-2)}
   .ws-check-row.done .ws-check-text{color:var(--text-2);opacity:.6;text-decoration:line-through}
   @media (prefers-reduced-motion: reduce){.ws-add,.ws-mini,.ws-del,.ws-card,.ws-check-box,.ws-check-box::after,.ws-progress-fill{transition:none}}
-  /* Basis & Funding panel */
+  /* Basis & Funding panel — Positioning Cockpit */
   .fund-panel{display:flex;flex-direction:column;height:100%;min-height:0;overflow:hidden}
-  .fund-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border-2);flex-shrink:0}
-  .fund-title{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--text);text-transform:uppercase}
-  .fund-sym{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim)}
-  .fund-body{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:14px;min-height:0}
-  .fund-dot{color:var(--text-dim2)}
-  .fund-basis-hero{text-align:center}
-  .fbh-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px}
-  .fbh-val{font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:600;line-height:1.05;color:var(--text)}
-  .fbh-val.pos{color:var(--green)}
-  .fbh-val.neg{color:var(--red)}
-  .fbh-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--text-2)}
-  .fbh-sub .pos{color:var(--green)}
-  .fbh-sub .neg{color:var(--red)}
-  .fbh-deriv{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim2);margin-top:8px}
-  .fbh-note{font-size:11px;color:var(--text-dim);margin-top:5px}
-  .fh-head{display:flex;align-items:center;justify-content:space-between;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px}
-  .fh-range{font-family:'IBM Plex Mono',monospace;color:var(--text-dim2)}
-  .fh-bars{display:flex;align-items:flex-end;justify-content:center;gap:2px;height:54px;background:var(--bg-2);border:1px solid var(--border-2);border-radius:6px;padding:4px}
-  .fh-bar{flex:1;min-width:2px;border-radius:1px 1px 0 0;align-self:flex-end;min-height:3px}
-  .fh-bar.pos{background:var(--green)}
-  .fh-bar.neg{background:var(--red)}
-  .fh-empty{align-self:center;font-size:10px;color:var(--text-dim2)}
-  .fund-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .fs-cell{background:var(--bg-2);border:1px solid var(--border-2);border-radius:6px;padding:8px 10px;min-width:0}
-  .fs-lbl{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px}
-  .fs-val{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .fs-val.pos{color:var(--green)}
-  .fs-val.neg{color:var(--red)}
-  /* beginner layer: 지금 상태 pill + (?) info-dots + shared tooltip + bar legend */
-  .fund-now{display:flex;align-items:flex-start;background:var(--bg-2);border:1px solid var(--border-2);border-radius:6px;padding:8px 10px;font-size:11.5px;line-height:1.45;color:var(--text-2)}
-  .fn-tag{flex:none;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);border:1px solid var(--border-2);border-radius:3px;padding:1px 5px;margin-right:7px;margin-top:1px;white-space:nowrap}
-  .fn-txt{flex:1;min-width:0}
+  .fund-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border-2);flex-shrink:0}
+  .fund-title{font-size:12px;font-weight:700;letter-spacing:.07em;color:var(--text);text-transform:uppercase;white-space:nowrap}
+  .fund-head-r{display:flex;align-items:center;gap:9px}
+  .fund-sym{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim)}
+  .fund-segs{display:inline-flex;background:var(--bg-2);border-radius:7px;padding:2px}
+  .fund-segs .fseg{background:transparent;border:none;color:var(--text-dim);font-size:11px;font-family:inherit;padding:3px 9px;border-radius:5px;cursor:pointer;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center}
+  .fund-segs .fseg.on{background:var(--teal-bg);color:var(--teal-2)}
+  .fund-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:12px;min-height:0}
+  .funding-panel[data-fund-detail="0"] .detail-only{display:none}
+  .fund-now{display:flex;align-items:center;gap:10px;background:var(--bg-2);border:1px solid var(--border-2);border-radius:10px;padding:10px 12px;flex-shrink:0}
+  .fn-dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .fn-dot.d-green{background:var(--green);box-shadow:0 0 0 4px rgba(38,209,127,.13)}
+  .fn-dot.d-red{background:var(--red);box-shadow:0 0 0 4px rgba(246,70,93,.13)}
+  .fn-dot.d-flat{background:var(--text-dim)}
+  .fn-txt{flex:1;min-width:0;font-size:12.5px;line-height:1.45;color:var(--text-2)}
+  .fund-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;flex-shrink:0}
+  .fkpi{background:var(--bg-2);border-radius:10px;padding:9px 10px;min-width:0}
+  .fk-l{font-size:11px;color:var(--text-dim);margin-bottom:4px;display:flex;align-items:center}
+  .fk-v{font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--text);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fk-v.fk-time{color:var(--teal-2)}
+  .fk-v.pos{color:var(--green)} .fk-v.neg{color:var(--red)}
+  .fk-s{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fk-s.pos{color:var(--green)} .fk-s.neg{color:var(--red)}
+  .fund-chartbox{flex:1 1 auto;min-height:142px;display:flex;flex-direction:column;background:var(--bg-2);border:1px solid var(--border-2);border-radius:10px;padding:9px}
+  .fcb-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;flex-shrink:0}
+  .fcb-r{display:flex;align-items:center;gap:2px}
+  .fcb-hint{font-size:11px;color:var(--text-dim)}
+  .fund-chart{flex:1;min-height:0;display:flex}
+  .fund-chart svg{width:100%;height:100%;display:block}
+  .fc-empty{margin:auto;font-size:11px;color:var(--text-dim2)}
+  .fc-legend{font-size:11px;color:var(--text-dim);margin-top:6px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fund-calc{background:var(--bg-2);border:1px solid var(--border-2);border-radius:10px;padding:10px 11px;flex-shrink:0}
+  .fc-title{font-size:11px;color:var(--text-dim);margin-bottom:8px;display:flex;align-items:center}
+  .fc-inputs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  .fc-in{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--text-dim);background:var(--bg);border:1px solid var(--border-2);border-radius:7px;padding:5px 8px}
+  .fc-in input{background:transparent;border:none;outline:none;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;width:52px;text-align:right;padding:0}
+  .fc-u{color:var(--text-dim2);font-size:11px}
+  .fc-outs{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:var(--text-dim)}
+  .fc-outs b{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:var(--text)}
+  .fc-outs b.pos{color:var(--green)} .fc-outs b.neg{color:var(--red)}
+  .fund-detail{background:var(--bg-2);border-radius:10px;padding:2px 11px;flex-shrink:0}
+  .fd-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border-2)}
+  .fd-row:last-child{border-bottom:none}
+  .fd-l{font-size:11px;color:var(--text-dim);display:flex;align-items:center}
+  .fd-v{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text)}
+  .fd-v.pos{color:var(--green)} .fd-v.neg{color:var(--red)}
+  .fund-guide{display:flex;gap:9px;background:var(--bg-2);border:1px solid var(--border-2);border-radius:10px;padding:10px 12px;font-size:11.5px;line-height:1.5;color:var(--text-dim);flex-shrink:0}
+  .fund-guide .ti{font-size:16px;color:var(--teal-2);flex:none;margin-top:1px}
   .fi{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;margin-left:4px;border-radius:50%;border:1px solid var(--border-2);background:transparent;color:var(--text-dim2);font-size:9px;line-height:1;cursor:help;padding:0;vertical-align:middle;font-family:inherit;flex-shrink:0}
   .fi:hover,.fi:focus{color:var(--text-2);border-color:var(--text-dim);outline:none}
-  .fh-headlabel{display:inline-flex;align-items:center}
   .fi-pop{position:fixed;max-width:240px;background:var(--bg-3);border:1px solid var(--border-2);border-radius:6px;padding:9px 11px;font-size:11px;line-height:1.5;color:var(--text-2);box-shadow:0 8px 24px rgba(0,0,0,.6);z-index:600;opacity:0;pointer-events:none;transition:opacity .12s}
   .fi-pop.open{opacity:1;pointer-events:auto}
   .fip-t{color:var(--text);font-weight:600;margin-bottom:3px}
   .fip-b{color:var(--text-2)}
-  .fh-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;font-size:9px;color:var(--text-dim)}
-  .fh-legend .fhl{display:flex;align-items:center;gap:4px}
-  .fh-legend .sw{width:8px;height:8px;border-radius:2px;display:inline-block}
-  .fh-legend .sw.pos{background:var(--green)}
-  .fh-legend .sw.neg{background:var(--red)}
 
   /* FOOTER — V2: connection status + latency */
   .footer{background:var(--bg);flex-shrink:0;display:flex;align-items:center;gap:14px;padding:0 14px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);height:28px;overflow:hidden}
@@ -2379,7 +2389,9 @@ const FUND_TIPS = {
   fcur:{ t:'현재(예상) 펀딩', b:'다음 정산에 적용될, 아직 확정 전인 펀딩률이에요. 정산 직전까지 계속 바뀔 수 있어요. +면 롱이, −면 숏이 낼 예정이에요.' },
   favg:{ t:'평균 8h', b:'표시된 기록(최근 30회)의 펀딩비를 평균 낸 값이에요. 요즘 한 회차(8시간)에 평균 얼마가 오갔는지 보여줘요.' },
   fann:{ t:'연환산(평균)', b:'평균 펀딩비에 1년치 정산 횟수(하루 3번 × 365일 = 1095, 8시간 펀딩 기준)를 곱한 값이에요. 복리는 뺀 단순 환산이라 실제 수익률 예측이 아니라 비용 크기를 코인끼리 비교하는 용도예요. 롱 기준 +는 내고 −는 받는 쪽(숏은 반대).' },
-  fcum:{ t:'누적', b:'표시 기간 동안 펀딩비를 모두 더한 값이에요(퍼센트). 그 기간 내내 들고 있었다면 포지션 크기 대비 대략 이만큼을 롱 기준 +는 내고 −는 받은 셈이에요(숏은 반대). 비율의 단순 합이라 실제 손익과는 달라요.' }
+  fcum:{ t:'누적', b:'표시 기간 동안 펀딩비를 모두 더한 값이에요(퍼센트). 그 기간 내내 들고 있었다면 포지션 크기 대비 대략 이만큼을 롱 기준 +는 내고 −는 받은 셈이에요(숏은 반대). 비율의 단순 합이라 실제 손익과는 달라요.' },
+  basischart:{ t:'베이시스 추이', b:'매 순간의 베이시스(Mark−Index)를 시간순으로 그린 거예요. 0선 위(초록)=선물이 더 비쌈, 아래(빨강)=더 쌈. 세션을 연 뒤부터 실시간으로 쌓여요.' },
+  calc:{ t:'펀딩 계산기', b:'증거금·레버리지·방향을 넣으면, 그 포지션을 들고 있을 때 펀딩으로 8시간/하루/1년에 ±얼마인지 보여줘요. 명목가치=증거금×레버리지에 현재 펀딩률을 적용한 값이에요. 가격이 움직여서 버는 손익은 빼고 펀딩만 계산해요.' }
 };
 const FUND_NOW = {
   'prem|pos':'지금 무기한 선물이 현물보다 비싸고(프리미엄), 펀딩도 플러스라 롱(매수)이 숏(매도)에게 수수료를 내고 있어요. 롱 쪽 수요가 강한 흔한 상태예요. 가격이 오른다는 뜻은 아니고, 롱을 들고 있으면 비용이 든다는 의미예요.',
@@ -2392,28 +2404,60 @@ const FUND_NOW = {
   'flat|neg':'무기한 선물과 현물 가격이 거의 같지만, 펀딩이 마이너스라 숏(매도)이 롱에게 수수료를 내고 있어요. 가격 차이는 거의 없는 상태예요.',
   'flat|zero':'무기한 선물과 현물 가격이 거의 같고 펀딩도 거의 0이에요. 롱·숏이 균형을 이룬 잔잔한 상태예요.'
 };
+let _basisBuf=[], _basisLastPush=0;
+function fundCD(){ if(!nextFundingTs) return '—'; const diff=Math.max(0,nextFundingTs-Date.now()); const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000); return h>0?`${h}h ${String(m).padStart(2,'0')}m`:`${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`; }
+function fundFmtMoney(v){ const a=Math.abs(v); const s=a>=1000?a.toLocaleString(undefined,{maximumFractionDigits:0}):a.toFixed(2); return (v>=0?'+$':'−$')+s; }
+function fundChartSVG(panel){
+  const mode=panel.dataset.fundMode||'basis', W=336,H=150;
+  if(mode==='funding'){
+    const d=_fundHist.data;
+    if(!d||!d.length) return '<div class="fc-empty">'+(_fundHist.loading?'로딩…':'데이터 없음')+'</div>';
+    const bl=H/2, max=Math.max.apply(null,d.map(x=>Math.abs(x.rate)).concat(1e-9)), bw=W/d.length;
+    const bars=d.map((x,i)=>{ const h=Math.max(2,Math.abs(x.rate)/max*(H/2-6)); const up=x.rate>=0, y=up?bl-h:bl, xx=i*bw+1; const dt=new Date(x.t); const tip=`${(x.rate>=0?'+':'')+(x.rate*100).toFixed(4)}%  ${dt.getMonth()+1}/${dt.getDate()} ${String(dt.getHours()).padStart(2,'0')}:00`; return `<rect x="${xx.toFixed(1)}" y="${y.toFixed(1)}" width="${Math.max(1,bw-2).toFixed(1)}" height="${h.toFixed(1)}" rx="1" fill="${up?'var(--green)':'var(--red)'}"><title>${tip}</title></rect>`; }).join('');
+    return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="none"><line x1="0" y1="${bl}" x2="${W}" y2="${bl}" stroke="var(--border-2)" stroke-width="1"/>${bars}</svg>`;
+  }
+  const buf=_basisBuf;
+  if(buf.length<2) return '<div class="fc-empty">세션 시작 후 베이시스를 쌓는 중…</div>';
+  const pad=8; let mn=Math.min.apply(null,buf), mx=Math.max.apply(null,buf); if(mn>0)mn=0; if(mx<0)mx=0; if(mn===mx){mn-=1;mx+=1;}
+  const yOf=v=>pad+(mx-v)/(mx-mn)*(H-2*pad), xOf=i=>i/(buf.length-1)*W, last=buf[buf.length-1], col=last>=0?'var(--green)':'var(--red)', bl=yOf(0);
+  const pts=buf.map((v,i)=>`${xOf(i).toFixed(1)},${yOf(v).toFixed(1)}`).join(' ');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="none">`
+    +`<polygon points="${xOf(0).toFixed(1)},${bl.toFixed(1)} ${pts} ${W},${bl.toFixed(1)}" fill="${col}" fill-opacity="0.12"/>`
+    +`<line x1="0" y1="${bl.toFixed(1)}" x2="${W}" y2="${bl.toFixed(1)}" stroke="var(--text-dim2)" stroke-width="1" stroke-dasharray="3 4"/>`
+    +`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2"/>`
+    +`<circle cx="${W-1}" cy="${yOf(last).toFixed(1)}" r="3" fill="${col}"/></svg>`;
+}
 function renderFundingPanels(){
   const panels=document.querySelectorAll('.funding-panel'); if(!panels.length) return;
   const r=+currentFundingRate||0, mark=+lastMarkPrice||0, idx=+lastIndexPrice||0;
   const basis=(mark&&idx)?mark-idx:0, basisPct=idx?basis/idx*100:0, basisBp=basisPct*100;
-  const B_DEAD=0.005, F_DEAD=0.000005; // |basisPct|<0.005%(≈0.5bp)=flat ; |r|<0.0005%=~0
+  const B_DEAD=0.005, F_DEAD=0.000005;
   const bSign=(!mark||!idx)?'na':(Math.abs(basisPct)<B_DEAD?'flat':(basis>0?'prem':'disc'));
   const fSign=(!mark||!idx)?'na':(Math.abs(r)<F_DEAD?'zero':(r>0?'pos':'neg'));
-  const note=bSign==='na'?'—':bSign==='prem'?'퍼프 > 현물 · 프리미엄 (롱 수요 우위)':bSign==='disc'?'퍼프 < 현물 · 디스카운트 (숏 수요 우위)':'퍼프 ≈ 현물 (쏠림 적음)';
   const nowTxt=bSign==='na'?'데이터를 불러오는 중이에요.':(FUND_NOW[bSign+'|'+fSign]||'데이터를 불러오는 중이에요.');
-  const sym=fundSym().replace('USDT','-USDT');
-  const fmtPx=v=>v.toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1});
+  const annNow=r*1095*100, sym=fundSym().replace('USDT','-USDT');
+  if(mark&&idx && Date.now()-_basisLastPush>1500){ _basisBuf.push(basis); if(_basisBuf.length>400) _basisBuf.shift(); _basisLastPush=Date.now(); }
+  const bv=bSign==='flat'?0:basis;
   panels.forEach(p=>{
+    if(!p.dataset.fundDetailInit){ const sd=localStorage.getItem('vex-fund-detail')||'0'; p.dataset.fundDetail=sd; p.dataset.fundDetailInit='1'; p.querySelectorAll('[data-fund-detail-toggle] .fseg').forEach(b=>b.classList.toggle('on',b.dataset.detail===sd)); }
     const set=(s,t)=>{ const el=p.querySelector(s); if(el) el.textContent=t; };
     const sign=(s,t,v)=>{ const el=p.querySelector(s); if(el){ el.textContent=t; el.classList.toggle('pos',v>0); el.classList.toggle('neg',v<0); } };
-    sign('[data-fund-basis]', (mark&&idx)?((basis>=0?'+':'-')+'$'+Math.abs(basis).toFixed(2)):'—', basis);
-    sign('[data-fund-basispct]', (mark&&idx)?((basisPct>=0?'+':'')+basisPct.toFixed(3)+'%'):'—', basis);
-    sign('[data-fund-basisbp]', (mark&&idx)?((basisBp>=0?'+':'')+basisBp.toFixed(1)+' bp'):'—', basis);
-    if(bSign==='flat'){ ['[data-fund-basis]','[data-fund-basispct]','[data-fund-basisbp]'].forEach(s=>{ const el=p.querySelector(s); if(el) el.classList.remove('pos','neg'); }); }
-    set('[data-fund-deriv]', (mark&&idx)?('Mark '+fmtPx(mark)+'  −  Index '+fmtPx(idx)):'—');
-    set('[data-fund-note]', note);
-    sign('[data-fund-cur]', (r>=0?'+':'')+(r*100).toFixed(4)+'%', r);
     set('[data-fund-now-txt]', nowTxt);
+    const dot=p.querySelector('[data-fund-now-dot]'); if(dot) dot.className='fn-dot '+(fSign==='pos'?'d-red':fSign==='neg'?'d-green':'d-flat');
+    sign('[data-fund-basis]', (mark&&idx)?((basis>=0?'+':'−')+'$'+Math.abs(basis).toFixed(2)):'—', bv);
+    sign('[data-fund-basisbp]', (mark&&idx)?((basisBp>=0?'+':'')+basisBp.toFixed(1)+' bp'):'—', bv);
+    sign('[data-fund-curann]', (mark&&idx)?((annNow>=0?'+':'')+annNow.toFixed(2)+'%'):'—', r);
+    set('[data-fund-payside]', fSign==='na'?'—':fSign==='pos'?'롱이 내는 쪽':fSign==='neg'?'롱이 받는 쪽':'거의 0');
+    set('[data-fund-cd]', fundCD());
+    sign('[data-fund-cur]', (r>=0?'+':'')+(r*100).toFixed(4)+'%', r);
+    const ch=p.querySelector('[data-fund-chart]'); if(ch) ch.innerHTML=fundChartSVG(p);
+    const hint=p.querySelector('[data-fund-chart-hint]'); if(hint) hint.textContent=(p.dataset.fundMode==='funding')?'최근 30회 · 8h마다':'실시간 · mark − index';
+    const mEl=p.querySelector('[data-calc-margin]');
+    if(mEl){ const margin=parseFloat((mEl.value||'').replace(/,/g,''))||0, lev=parseFloat(p.querySelector('[data-calc-lev]').value)||0, sideEl=p.querySelector('[data-calc-side]'), side=(sideEl&&sideEl.dataset.calcSide)||'long', notional=margin*lev, f8=(side==='long'?-1:1)*r*notional;
+      set('[data-calc-notional]', '$'+notional.toLocaleString(undefined,{maximumFractionDigits:0}));
+      const sc=(s,v)=>{ const el=p.querySelector(s); if(el){ el.textContent=fundFmtMoney(v); el.classList.toggle('pos',v>0); el.classList.toggle('neg',v<0); } };
+      sc('[data-calc-8h]', f8); sc('[data-calc-day]', f8*3); sc('[data-calc-year]', f8*1095);
+    }
     set('[data-fund-sym]', sym);
   });
 }
@@ -2436,12 +2480,7 @@ function renderFundingHist(){
   let avg=null, annAvg=null, cum=null;
   if(d&&d.length){ const sum=d.reduce((a,x)=>a+x.rate,0); avg=sum/d.length; annAvg=avg*1095*100; cum=sum*100; }
   panels.forEach(p=>{
-    const box=p.querySelector('[data-fund-hist]');
-    if(box){
-      if(!d||!d.length){ box.innerHTML='<span class="fh-empty">'+(_fundHist.loading?'로딩…':'데이터 없음')+'</span>'; }
-      else { const max=Math.max.apply(null, d.map(x=>Math.abs(x.rate)).concat(1e-9));
-        box.innerHTML=d.map(x=>{ const h=Math.max(3, Math.abs(x.rate)/max*100); const dt=new Date(x.t); const tip=`${(x.rate>=0?'+':'')+(x.rate*100).toFixed(4)}%  ${dt.getMonth()+1}/${dt.getDate()} ${String(dt.getHours()).padStart(2,'0')}:00`; return `<div class="fh-bar ${x.rate>=0?'pos':'neg'}" style="height:${h}%" title="${tip}"></div>`; }).join(''); }
-    }
+    const ch=p.querySelector('[data-fund-chart]'); if(ch && p.dataset.fundMode==='funding') ch.innerHTML=fundChartSVG(p);
     const rEl=p.querySelector('[data-fund-hist-range]'); if(rEl) rEl.textContent=(d?d.length:0)+'회';
     const sset=(s,t,v)=>{ const el=p.querySelector(s); if(el){ el.textContent=t; el.classList.toggle('pos',(v||0)>0); el.classList.toggle('neg',(v||0)<0); } };
     sset('[data-fund-avg]', avg===null?'—':((avg>=0?'+':'')+(avg*100).toFixed(4)+'%'), avg);
@@ -2471,6 +2510,17 @@ document.addEventListener('focusin',e=>{ const d=e.target.closest&&e.target.clos
 document.addEventListener('focusout',e=>{ const d=e.target.closest&&e.target.closest('.fi'); if(d&&!fiSticky) hideFiPop(); });
 document.addEventListener('click',e=>{ const d=e.target.closest&&e.target.closest('.fi'); if(d){ e.stopPropagation(); fiSticky=true; showFiPop(d); } else if(!(e.target.closest&&e.target.closest('.fi-pop'))){ hideFiPop(); } });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') hideFiPop(); });
+
+// funding panel: 간단/자세히 toggle, chart-mode toggle, calc side + inputs
+document.addEventListener('click', (e)=>{
+  const dt=e.target.closest&&e.target.closest('[data-fund-detail-toggle] [data-detail]');
+  if(dt){ const p=dt.closest('.funding-panel'); p.dataset.fundDetail=dt.dataset.detail; p.dataset.fundDetailInit='1'; p.querySelectorAll('[data-fund-detail-toggle] .fseg').forEach(b=>b.classList.toggle('on',b===dt)); try{localStorage.setItem('vex-fund-detail',dt.dataset.detail);}catch(_){} return; }
+  const mt=e.target.closest&&e.target.closest('[data-fund-mode-toggle] [data-mode]');
+  if(mt){ const p=mt.closest('.funding-panel'); p.dataset.fundMode=mt.dataset.mode; p.querySelectorAll('[data-fund-mode-toggle] .fseg').forEach(b=>b.classList.toggle('on',b===mt)); const ch=p.querySelector('[data-fund-chart]'); if(ch) ch.innerHTML=fundChartSVG(p); const leg=p.querySelector('[data-fund-legend]'); if(leg) leg.textContent=mt.dataset.mode==='funding'?'초록 = 펀딩 +(롱 지급) · 빨강 = −(숏 지급)':'0 위(초록) = 선물 비쌈 · 0 아래(빨강) = 쌈'; const hint=p.querySelector('[data-fund-chart-hint]'); if(hint) hint.textContent=mt.dataset.mode==='funding'?'최근 30회 · 8h마다':'실시간 · mark − index'; return; }
+  const cs=e.target.closest&&e.target.closest('[data-calc-side] [data-side]');
+  if(cs){ const wrap=cs.closest('[data-calc-side]'); wrap.dataset.calcSide=cs.dataset.side; wrap.querySelectorAll('.fseg').forEach(b=>b.classList.toggle('on',b===cs)); renderFundingPanels(); return; }
+});
+document.addEventListener('input', (e)=>{ if(e.target.closest&&e.target.closest('[data-calc-margin],[data-calc-lev]')) renderFundingPanels(); });
 
 /* ---------- module HTML generation ---------- */
 function moduleHTML(modId) {
@@ -2856,28 +2906,45 @@ function moduleHTML(modId) {
   if (modId === 'funding') {
     requestAnimationFrame(() => { renderFundingPanels(); loadFundingHistory(); });
     return `
-      <div class="fund-panel funding-panel">
-        <div class="fund-head"><span class="fund-title">BASIS &amp; FUNDING</span><span class="fund-sym" data-fund-sym>—</span></div>
+      <div class="fund-panel funding-panel" data-fund-mode="basis" data-fund-detail="0">
+        <div class="fund-head">
+          <span class="fund-title">BASIS &amp; FUNDING</span>
+          <span class="fund-head-r">
+            <span class="fund-sym" data-fund-sym>—</span>
+            <span class="fund-segs" data-fund-detail-toggle><button class="fseg on" data-detail="0">간단</button><button class="fseg" data-detail="1">자세히</button></span>
+          </span>
+        </div>
         <div class="fund-body">
-          <div class="fund-now"><span class="fn-tag">지금 상태</span><span class="fn-txt" data-fund-now-txt>데이터를 불러오는 중이에요.</span></div>
-          <div class="fund-basis-hero">
-            <div class="fbh-lbl">베이시스 · Mark − Index<button class="fi" data-tip="basis" aria-label="베이시스 설명" tabindex="0">?</button></div>
-            <div class="fbh-val" data-fund-basis>—</div>
-            <div class="fbh-sub"><span data-fund-basispct>—</span><span class="fund-dot">·</span><span data-fund-basisbp>—</span><button class="fi" data-tip="bp" aria-label="bp 설명" tabindex="0">?</button></div>
-            <div class="fbh-deriv" data-fund-deriv>—</div>
-            <div class="fbh-note"><span data-fund-note>—</span><button class="fi" data-tip="premdisc" aria-label="프리미엄·디스카운트 설명" tabindex="0">?</button></div>
+          <div class="fund-now"><span class="fn-dot d-flat" data-fund-now-dot></span><span class="fn-txt" data-fund-now-txt>데이터를 불러오는 중이에요.</span></div>
+          <div class="fund-kpis">
+            <div class="fkpi"><div class="fk-l">베이시스<button class="fi" data-tip="basis" aria-label="베이시스 설명" tabindex="0">?</button></div><div class="fk-v" data-fund-basis>—</div><div class="fk-s" data-fund-basisbp>—</div></div>
+            <div class="fkpi"><div class="fk-l">예상 펀딩 · 연<button class="fi" data-tip="fann" aria-label="연환산 설명" tabindex="0">?</button></div><div class="fk-v" data-fund-curann>—</div><div class="fk-s" data-fund-payside>—</div></div>
+            <div class="fkpi"><div class="fk-l">다음 정산</div><div class="fk-v fk-time" data-fund-cd>—</div><div class="fk-s">8h 주기</div></div>
           </div>
-          <div class="fund-hist">
-            <div class="fh-head"><span class="fh-headlabel">펀딩 히스토리 · 8h<button class="fi" data-tip="funding" aria-label="펀딩 설명" tabindex="0">?</button></span><span class="fh-range" data-fund-hist-range></span></div>
-            <div class="fh-bars" data-fund-hist><span class="fh-empty">로딩…</span></div>
-            <div class="fh-legend"><span class="fhl"><i class="sw pos"></i>초록 = 펀딩 +, 롱이 숏에게 지급</span><span class="fhl"><i class="sw neg"></i>빨강 = 펀딩 −, 숏이 롱에게 지급</span><span class="fhl">막대 높이 = 금액 크기</span></div>
+          <div class="fund-chartbox">
+            <div class="fcb-head">
+              <span class="fund-segs" data-fund-mode-toggle><button class="fseg on" data-mode="basis">베이시스 추이</button><button class="fseg" data-mode="funding">펀딩 8h</button></span>
+              <span class="fcb-r"><span class="fcb-hint" data-fund-chart-hint>실시간 · mark − index</span><button class="fi" data-tip="basischart" aria-label="차트 설명" tabindex="0">?</button></span>
+            </div>
+            <div class="fund-chart" data-fund-chart><div class="fc-empty">베이시스를 쌓는 중…</div></div>
+            <div class="fc-legend" data-fund-legend>0 위(초록) = 선물 비쌈 · 0 아래(빨강) = 쌈</div>
           </div>
-          <div class="fund-stats">
-            <div class="fs-cell"><div class="fs-lbl">현재(예상)<button class="fi" data-tip="fcur" aria-label="현재 펀딩 설명" tabindex="0">?</button></div><div class="fs-val" data-fund-cur>—</div></div>
-            <div class="fs-cell"><div class="fs-lbl">평균 8h<button class="fi" data-tip="favg" aria-label="평균 설명" tabindex="0">?</button></div><div class="fs-val" data-fund-avg>—</div></div>
-            <div class="fs-cell"><div class="fs-lbl">연환산(평균)<button class="fi" data-tip="fann" aria-label="연환산 설명" tabindex="0">?</button></div><div class="fs-val" data-fund-annavg>—</div></div>
-            <div class="fs-cell"><div class="fs-lbl">누적<button class="fi" data-tip="fcum" aria-label="누적 설명" tabindex="0">?</button></div><div class="fs-val" data-fund-cum>—</div></div>
+          <div class="fund-calc detail-only">
+            <div class="fc-title">펀딩 계산기<button class="fi" data-tip="calc" aria-label="펀딩 계산기 설명" tabindex="0">?</button></div>
+            <div class="fc-inputs">
+              <label class="fc-in">증거금<input type="text" inputmode="decimal" data-calc-margin value="1000"><span class="fc-u">USDT</span></label>
+              <label class="fc-in">레버리지<input type="text" inputmode="decimal" data-calc-lev value="10"><span class="fc-u">×</span></label>
+              <span class="fund-segs" data-calc-side="long"><button class="fseg on" data-side="long">롱</button><button class="fseg" data-side="short">숏</button></span>
+            </div>
+            <div class="fc-outs"><span>명목 <b data-calc-notional>—</b></span><span>8h <b data-calc-8h>—</b></span><span>하루 <b data-calc-day>—</b></span><span>연 <b data-calc-year>—</b></span></div>
           </div>
+          <div class="fund-detail detail-only">
+            <div class="fd-row"><span class="fd-l">현재(예상)<button class="fi" data-tip="fcur" aria-label="현재 펀딩 설명" tabindex="0">?</button></span><span class="fd-v" data-fund-cur>—</span></div>
+            <div class="fd-row"><span class="fd-l">평균 · 8h<button class="fi" data-tip="favg" aria-label="평균 설명" tabindex="0">?</button></span><span class="fd-v" data-fund-avg>—</span></div>
+            <div class="fd-row"><span class="fd-l">연환산 · 평균<button class="fi" data-tip="fann" aria-label="연환산 설명" tabindex="0">?</button></span><span class="fd-v" data-fund-annavg>—</span></div>
+            <div class="fd-row"><span class="fd-l">누적 · <span data-fund-hist-range>—</span><button class="fi" data-tip="fcum" aria-label="누적 설명" tabindex="0">?</button></span><span class="fd-v" data-fund-cum>—</span></div>
+          </div>
+          <div class="fund-guide detail-only"><i class="ti ti-bulb" aria-hidden="true"></i><span>베이시스가 0 아래면 선물이 현물보다 싸고, 펀딩이 −면 숏이 롱에게 비용을 냅니다. 가격 방향 예측이 아니라 "어느 쪽이 붐비고 비용을 내는가"예요.</span></div>
         </div>
       </div>`;
   }
