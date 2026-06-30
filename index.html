@@ -1380,6 +1380,23 @@
   .fc-ymax{top:3px;left:4px;color:var(--text-dim2)}
   .fc-ymin{bottom:3px;left:4px;color:var(--text-dim2)}
   .fc-legend{font-size:11px;color:var(--text-dim);margin-top:6px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fund-duo{display:grid;grid-template-columns:1fr 1fr;gap:9px;flex-shrink:0}
+  .fduo{background:var(--bg-2);border-radius:10px;padding:9px 11px;min-width:0}
+  .fduo-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:6px}
+  .fduo-l{font-size:11px;color:var(--text-dim);display:flex;align-items:center;min-width:0}
+  .fduo-dir{font-size:11px;color:var(--teal-2);white-space:nowrap;flex-shrink:0}
+  .fduo-dir.pos{color:var(--green)}
+  .fduo-dir.neg{color:var(--red)}
+  .fduo-v{font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fduo-s{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);margin-top:2px}
+  .fduo-s.pos{color:var(--green)}
+  .fduo-s.neg{color:var(--red)}
+  .ls-bar{display:flex;height:11px;border-radius:4px;overflow:hidden;margin-bottom:6px;background:var(--bg-3)}
+  .ls-long{background:var(--green)}
+  .ls-short{background:var(--red)}
+  .ls-legend{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:11px}
+  .ls-legend span:first-child{color:var(--green)}
+  .ls-legend span:last-child{color:var(--red)}
   .fund-calc{background:var(--bg-2);border:1px solid var(--border-2);border-radius:10px;padding:10px 11px;flex-shrink:0}
   .fc-title{font-size:11px;color:var(--text-dim);margin-bottom:8px;display:flex;align-items:center}
   .fc-inputs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
@@ -2398,7 +2415,9 @@ const FUND_TIPS = {
   fcum:{ t:'누적', b:'표시 기간 동안 펀딩비를 모두 더한 값이에요(퍼센트). 그 기간 내내 들고 있었다면 포지션 크기 대비 대략 이만큼을 롱 기준 +는 내고 −는 받은 셈이에요(숏은 반대). 비율의 단순 합이라 실제 손익과는 달라요.' },
   basischart:{ t:'베이시스 추이', b:'매 순간의 베이시스(Mark−Index)를 시간순으로 그린 거예요. 0선 위(초록)=선물이 더 비쌈, 아래(빨강)=더 쌈. 세션을 연 뒤부터 실시간으로 쌓여요.' },
   calc:{ t:'펀딩 계산기', b:'증거금·레버리지·방향을 넣으면, 그 포지션을 들고 있을 때 펀딩으로 8시간/하루/1년에 ±얼마인지 보여줘요. 명목가치=증거금×레버리지에 현재 펀딩률을 적용한 값이에요. 가격이 움직여서 버는 손익은 빼고 펀딩만 계산해요.' },
-  fpos:{ t:'+ 비율 (양수 비율)', b:'표시 기간 중 펀딩이 플러스였던 횟수의 비율이에요. 높을수록 그동안 롱이 펀딩을 낸 시간이 많았다는 뜻(숏은 받은 시간). 가격 방향과는 무관해요.' }
+  fpos:{ t:'+ 비율 (양수 비율)', b:'표시 기간 중 펀딩이 플러스였던 횟수의 비율이에요. 높을수록 그동안 롱이 펀딩을 낸 시간이 많았다는 뜻(숏은 받은 시간). 가격 방향과는 무관해요.' },
+  oi:{ t:'미결제약정 (OI)', b:'아직 안 닫힌(청산·반대매매 안 된) 선물 계약의 총량을 달러로 환산한 거예요. 늘면 새 돈이 들어와 포지션이 쌓이는 중, 줄면 정리되는 중. 가격 방향이 아니라 "판이 커지나 작아지나"를 봐요.' },
+  ls:{ t:'롱 / 숏 비율', b:'거래소 사용자 계좌 기준 롱·숏 비율이에요(자금 크기가 아니라 계좌 수). 한쪽이 크면 사람이 그쪽에 더 몰렸다는 뜻. 너무 쏠리면 역으로 청산당하기도 해요 — 확정 신호는 아니에요.' }
 };
 const FUND_NOW = {
   'prem|pos':'지금 무기한 선물이 현물보다 비싸고(프리미엄), 펀딩도 플러스라 롱(매수)이 숏(매도)에게 수수료를 내고 있어요. 롱 쪽 수요가 강한 흔한 상태예요. 가격이 오른다는 뜻은 아니고, 롱을 들고 있으면 비용이 든다는 의미예요.',
@@ -2471,6 +2490,7 @@ function renderFundingPanels(){
     }
     set('[data-fund-sym]', sym);
   });
+  renderFundExtras();
 }
 let _basisSeed={ sym:'', loading:false };
 async function seedBasis(){
@@ -2515,6 +2535,49 @@ function renderFundingHist(){
     sset('[data-fund-annavg]', annAvg===null?'—':((annAvg>=0?'+':'')+annAvg.toFixed(2)+'%'), annAvg);
     sset('[data-fund-cum]', cum===null?'—':((cum>=0?'+':'')+cum.toFixed(3)+'%'), cum);
     const pEl=p.querySelector('[data-fund-pospct]'); if(pEl) pEl.textContent=(posPct===null)?'—':Math.round(posPct)+'%';
+  });
+}
+// OI + Long/Short — keyless Bybit REST (the "positioning" substance)
+let _oiData={ sym:'', list:null, loading:false, ts:0 };
+let _lsData={ sym:'', buy:null, sell:null, loading:false, ts:0 };
+function fundAbbr(n){ const a=Math.abs(n); if(a>=1e9) return (n/1e9).toFixed(2)+'B'; if(a>=1e6) return (n/1e6).toFixed(1)+'M'; if(a>=1e3) return (n/1e3).toFixed(1)+'K'; return n.toFixed(0); }
+async function loadOI(){
+  const sym=fundSym();
+  if(_oiData.sym===sym && _oiData.list && Date.now()-_oiData.ts<120000){ renderFundExtras(); return; }
+  if(_oiData.loading) return; _oiData.loading=true;
+  try{
+    const r=await fetch(`https://api.bybit.com/v5/market/open-interest?category=linear&symbol=${sym}&intervalTime=1h&limit=24`).then(x=>x.json());
+    const list=(r&&r.result&&r.result.list)||[];
+    _oiData={ sym, list:list.slice().reverse().map(x=>({oi:+x.openInterest, t:+x.timestamp})), loading:false, ts:Date.now() };
+  }catch(e){ _oiData.loading=false; }
+  renderFundExtras();
+}
+async function loadLS(){
+  const sym=fundSym();
+  if(_lsData.sym===sym && _lsData.buy!=null && Date.now()-_lsData.ts<120000){ renderFundExtras(); return; }
+  if(_lsData.loading) return; _lsData.loading=true;
+  try{
+    const r=await fetch(`https://api.bybit.com/v5/market/account-ratio?category=linear&symbol=${sym}&period=1h&limit=1`).then(x=>x.json());
+    const x=r&&r.result&&r.result.list&&r.result.list[0];
+    if(x) _lsData={ sym, buy:+x.buyRatio, sell:+x.sellRatio, loading:false, ts:Date.now() };
+    else _lsData.loading=false;
+  }catch(e){ _lsData.loading=false; }
+  renderFundExtras();
+}
+function renderFundExtras(){
+  const panels=document.querySelectorAll('.funding-panel'); if(!panels.length) return;
+  const ol=_oiData.list; let oiNow=null,oiChg=null,oiDir=0;
+  if(ol&&ol.length){ oiNow=ol[ol.length-1].oi; const first=ol[0].oi; if(first) oiChg=(oiNow-first)/first*100; const prev=ol.length>1?ol[ol.length-2].oi:oiNow; oiDir=oiNow>prev?1:oiNow<prev?-1:0; }
+  const mark=+lastMarkPrice||0, buy=_lsData.buy, sell=_lsData.sell;
+  panels.forEach(p=>{
+    const oiV=p.querySelector('[data-fund-oi]'); if(oiV) oiV.textContent=(oiNow!=null&&mark)?('$'+fundAbbr(oiNow*mark)):(_oiData.loading?'…':'—');
+    const oiC=p.querySelector('[data-fund-oichg]'); if(oiC){ oiC.textContent=oiChg==null?'—':((oiChg>=0?'+':'')+oiChg.toFixed(1)+'% · 24h'); oiC.classList.toggle('pos',oiChg>0); oiC.classList.toggle('neg',oiChg<0); }
+    const oiD=p.querySelector('[data-fund-oidir]'); if(oiD){ oiD.textContent=oiDir>0?'증가':oiDir<0?'감소':'—'; oiD.classList.toggle('pos',oiDir>0); oiD.classList.toggle('neg',oiDir<0); }
+    const lb=p.querySelector('[data-fund-lsbar-long]'), lss=p.querySelector('[data-fund-lsbar-short]');
+    if(lb&&buy!=null){ lb.style.width=(buy*100).toFixed(1)+'%'; if(lss) lss.style.width=(sell*100).toFixed(1)+'%'; }
+    const ll=p.querySelector('[data-fund-lslong]'), lsh=p.querySelector('[data-fund-lsshort]');
+    if(ll&&buy!=null){ ll.textContent='롱 '+Math.round(buy*100)+'%'; if(lsh) lsh.textContent='숏 '+Math.round(sell*100)+'%'; }
+    const lv=p.querySelector('[data-fund-lsverdict]'); if(lv){ lv.textContent=(buy==null)?(_lsData.loading?'…':'—'):(buy>sell?'롱 우위':sell>buy?'숏 우위':'균형'); lv.classList.toggle('pos',buy!=null&&buy>sell); lv.classList.toggle('neg',buy!=null&&sell>buy); }
   });
 }
 
@@ -2933,7 +2996,7 @@ function moduleHTML(modId) {
       </div>`;
   }
   if (modId === 'funding') {
-    requestAnimationFrame(() => { renderFundingPanels(); loadFundingHistory(); seedBasis(); });
+    requestAnimationFrame(() => { renderFundingPanels(); loadFundingHistory(); seedBasis(); loadOI(); loadLS(); });
     return `
       <div class="fund-panel funding-panel" data-fund-mode="basis">
         <div class="fund-head">
@@ -2954,6 +3017,18 @@ function moduleHTML(modId) {
             </div>
             <div class="fund-chart" data-fund-chart><div class="fc-empty">베이시스를 쌓는 중…</div></div>
             <div class="fc-legend" data-fund-legend>0 위(초록) = 선물 비쌈 · 0 아래(빨강) = 쌈</div>
+          </div>
+          <div class="fund-duo">
+            <div class="fduo">
+              <div class="fduo-h"><span class="fduo-l">미결제약정<button class="fi" data-tip="oi" aria-label="OI 설명" tabindex="0">?</button></span><span class="fduo-dir" data-fund-oidir>—</span></div>
+              <div class="fduo-v" data-fund-oi>…</div>
+              <div class="fduo-s" data-fund-oichg>—</div>
+            </div>
+            <div class="fduo">
+              <div class="fduo-h"><span class="fduo-l">롱 / 숏 비율<button class="fi" data-tip="ls" aria-label="롱숏 설명" tabindex="0">?</button></span><span class="fduo-dir" data-fund-lsverdict>—</span></div>
+              <div class="ls-bar"><span class="ls-long" data-fund-lsbar-long style="width:50%"></span><span class="ls-short" data-fund-lsbar-short style="width:50%"></span></div>
+              <div class="ls-legend"><span data-fund-lslong>롱 —</span><span data-fund-lsshort>숏 —</span></div>
+            </div>
           </div>
           <div class="fund-calc">
             <div class="fc-title">펀딩 계산기<button class="fi" data-tip="calc" aria-label="펀딩 계산기 설명" tabindex="0">?</button></div>
@@ -6056,7 +6131,7 @@ setInterval(() => {
   }
   const blk = document.getElementById('block');
   blk.textContent = (parseInt(blk.textContent.replace(/,/g,'')) + 1).toLocaleString();
-  if (document.querySelector('.funding-panel')) { renderFundingPanels(); if (fundSym() !== _fundLastSym) { _fundLastSym = fundSym(); loadFundingHistory(); _basisBuf=[]; _basisSeed.sym=''; seedBasis(); } }
+  if (document.querySelector('.funding-panel')) { renderFundingPanels(); if (fundSym() !== _fundLastSym) { _fundLastSym = fundSym(); loadFundingHistory(); _basisBuf=[]; _basisSeed.sym=''; seedBasis(); loadOI(); loadLS(); } }
 }, 1000);
 
 /* ---------- module picker menu (for adding new tabs) ---------- */
