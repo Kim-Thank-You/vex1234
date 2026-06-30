@@ -1352,12 +1352,14 @@
   .fund-segs .fseg.on{background:var(--teal-bg);color:var(--teal-2)}
   .fund-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:12px;min-height:0}
   .funding-panel[data-fund-detail="0"] .detail-only{display:none}
-  .fund-now{display:flex;align-items:center;gap:10px;background:var(--bg-2);border:1px solid var(--border-2);border-radius:10px;padding:10px 12px;flex-shrink:0}
-  .fn-dot{width:10px;height:10px;border-radius:50%;flex:none}
-  .fn-dot.d-green{background:var(--green);box-shadow:0 0 0 4px rgba(38,209,127,.13)}
-  .fn-dot.d-red{background:var(--red);box-shadow:0 0 0 4px rgba(246,70,93,.13)}
+  .fund-now{display:flex;align-items:flex-start;gap:11px;background:var(--bg-2);border:1px solid var(--border-2);border-radius:10px;padding:12px 13px;flex-shrink:0}
+  .fn-dot{width:12px;height:12px;border-radius:50%;flex:none;margin-top:3px}
+  .fn-dot.d-green{background:var(--green);box-shadow:0 0 0 5px rgba(38,209,127,.14)}
+  .fn-dot.d-red{background:var(--red);box-shadow:0 0 0 5px rgba(246,70,93,.14)}
   .fn-dot.d-flat{background:var(--text-dim)}
-  .fn-txt{flex:1;min-width:0;font-size:12.5px;line-height:1.45;color:var(--text-2)}
+  .fn-body{flex:1;min-width:0}
+  .fn-head{font-size:15px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:3px}
+  .fn-txt{font-size:12px;line-height:1.5;color:var(--text-2)}
   .fund-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;flex-shrink:0}
   .fkpi{background:var(--bg-2);border-radius:10px;padding:9px 10px;min-width:0}
   .fk-l{font-size:11px;color:var(--text-dim);margin-bottom:4px;display:flex;align-items:center}
@@ -1370,9 +1372,13 @@
   .fcb-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;flex-shrink:0}
   .fcb-r{display:flex;align-items:center;gap:2px}
   .fcb-hint{font-size:11px;color:var(--text-dim)}
-  .fund-chart{flex:1;min-height:0;display:flex}
+  .fund-chart{flex:1;min-height:0;display:flex;position:relative}
   .fund-chart svg{width:100%;height:100%;display:block}
   .fc-empty{margin:auto;font-size:11px;color:var(--text-dim2)}
+  .fc-lab{position:absolute;font-family:'IBM Plex Mono',monospace;font-size:11px;pointer-events:none;background:rgba(10,14,15,.55);padding:0 3px;border-radius:3px}
+  .fc-cur{top:3px;right:4px;font-weight:500}
+  .fc-ymax{top:3px;left:4px;color:var(--text-dim2)}
+  .fc-ymin{bottom:3px;left:4px;color:var(--text-dim2)}
   .fc-legend{font-size:11px;color:var(--text-dim);margin-top:6px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .fund-calc{background:var(--bg-2);border:1px solid var(--border-2);border-radius:10px;padding:10px 11px;flex-shrink:0}
   .fc-title{font-size:11px;color:var(--text-dim);margin-bottom:8px;display:flex;align-items:center}
@@ -2391,7 +2397,8 @@ const FUND_TIPS = {
   fann:{ t:'연환산(평균)', b:'평균 펀딩비에 1년치 정산 횟수(하루 3번 × 365일 = 1095, 8시간 펀딩 기준)를 곱한 값이에요. 복리는 뺀 단순 환산이라 실제 수익률 예측이 아니라 비용 크기를 코인끼리 비교하는 용도예요. 롱 기준 +는 내고 −는 받는 쪽(숏은 반대).' },
   fcum:{ t:'누적', b:'표시 기간 동안 펀딩비를 모두 더한 값이에요(퍼센트). 그 기간 내내 들고 있었다면 포지션 크기 대비 대략 이만큼을 롱 기준 +는 내고 −는 받은 셈이에요(숏은 반대). 비율의 단순 합이라 실제 손익과는 달라요.' },
   basischart:{ t:'베이시스 추이', b:'매 순간의 베이시스(Mark−Index)를 시간순으로 그린 거예요. 0선 위(초록)=선물이 더 비쌈, 아래(빨강)=더 쌈. 세션을 연 뒤부터 실시간으로 쌓여요.' },
-  calc:{ t:'펀딩 계산기', b:'증거금·레버리지·방향을 넣으면, 그 포지션을 들고 있을 때 펀딩으로 8시간/하루/1년에 ±얼마인지 보여줘요. 명목가치=증거금×레버리지에 현재 펀딩률을 적용한 값이에요. 가격이 움직여서 버는 손익은 빼고 펀딩만 계산해요.' }
+  calc:{ t:'펀딩 계산기', b:'증거금·레버리지·방향을 넣으면, 그 포지션을 들고 있을 때 펀딩으로 8시간/하루/1년에 ±얼마인지 보여줘요. 명목가치=증거금×레버리지에 현재 펀딩률을 적용한 값이에요. 가격이 움직여서 버는 손익은 빼고 펀딩만 계산해요.' },
+  fpos:{ t:'+ 비율 (양수 비율)', b:'표시 기간 중 펀딩이 플러스였던 횟수의 비율이에요. 높을수록 그동안 롱이 펀딩을 낸 시간이 많았다는 뜻(숏은 받은 시간). 가격 방향과는 무관해요.' }
 };
 const FUND_NOW = {
   'prem|pos':'지금 무기한 선물이 현물보다 비싸고(프리미엄), 펀딩도 플러스라 롱(매수)이 숏(매도)에게 수수료를 내고 있어요. 롱 쪽 수요가 강한 흔한 상태예요. 가격이 오른다는 뜻은 아니고, 롱을 들고 있으면 비용이 든다는 의미예요.',
@@ -2404,6 +2411,7 @@ const FUND_NOW = {
   'flat|neg':'무기한 선물과 현물 가격이 거의 같지만, 펀딩이 마이너스라 숏(매도)이 롱에게 수수료를 내고 있어요. 가격 차이는 거의 없는 상태예요.',
   'flat|zero':'무기한 선물과 현물 가격이 거의 같고 펀딩도 거의 0이에요. 롱·숏이 균형을 이룬 잔잔한 상태예요.'
 };
+function fundHeadline(fSign){ return fSign==='na'?'데이터를 불러오는 중':fSign==='pos'?'롱이 펀딩 내는 중 · 롱 쏠림':fSign==='neg'?'숏이 펀딩 내는 중 · 숏 쏠림':'펀딩 거의 0 · 균형'; }
 let _basisBuf=[], _basisLastPush=0;
 function fundCD(){ if(!nextFundingTs) return '—'; const diff=Math.max(0,nextFundingTs-Date.now()); const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000); return h>0?`${h}h ${String(m).padStart(2,'0')}m`:`${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`; }
 function fundFmtMoney(v){ const a=Math.abs(v); const s=a>=1000?a.toLocaleString(undefined,{maximumFractionDigits:0}):a.toFixed(2); return (v>=0?'+$':'−$')+s; }
@@ -2421,7 +2429,9 @@ function fundChartSVG(panel){
   const pad=8; let mn=Math.min.apply(null,buf), mx=Math.max.apply(null,buf); if(mn>0)mn=0; if(mx<0)mx=0; if(mn===mx){mn-=1;mx+=1;}
   const yOf=v=>pad+(mx-v)/(mx-mn)*(H-2*pad), xOf=i=>i/(buf.length-1)*W, last=buf[buf.length-1], col=last>=0?'var(--green)':'var(--red)', bl=yOf(0);
   const pts=buf.map((v,i)=>`${xOf(i).toFixed(1)},${yOf(v).toFixed(1)}`).join(' ');
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="none">`
+  const fmtB=v=>(v>=0?'+$':'−$')+(Math.abs(v)>=100?Math.abs(v).toFixed(0):Math.abs(v).toFixed(2));
+  return `<div class="fc-lab fc-cur" style="color:${col}">${fmtB(last)}</div><div class="fc-lab fc-ymax">${fmtB(mx)}</div><div class="fc-lab fc-ymin">${fmtB(mn)}</div>`
+    +`<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="none">`
     +`<polygon points="${xOf(0).toFixed(1)},${bl.toFixed(1)} ${pts} ${W},${bl.toFixed(1)}" fill="${col}" fill-opacity="0.12"/>`
     +`<line x1="0" y1="${bl.toFixed(1)}" x2="${W}" y2="${bl.toFixed(1)}" stroke="var(--text-dim2)" stroke-width="1" stroke-dasharray="3 4"/>`
     +`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2"/>`
@@ -2443,6 +2453,7 @@ function renderFundingPanels(){
     const set=(s,t)=>{ const el=p.querySelector(s); if(el) el.textContent=t; };
     const sign=(s,t,v)=>{ const el=p.querySelector(s); if(el){ el.textContent=t; el.classList.toggle('pos',v>0); el.classList.toggle('neg',v<0); } };
     set('[data-fund-now-txt]', nowTxt);
+    set('[data-fund-headline]', fundHeadline(fSign));
     const dot=p.querySelector('[data-fund-now-dot]'); if(dot) dot.className='fn-dot '+(fSign==='pos'?'d-red':fSign==='neg'?'d-green':'d-flat');
     sign('[data-fund-basis]', (mark&&idx)?((basis>=0?'+':'−')+'$'+Math.abs(basis).toFixed(2)):'—', bv);
     sign('[data-fund-basisbp]', (mark&&idx)?((basisBp>=0?'+':'')+basisBp.toFixed(1)+' bp'):'—', bv);
@@ -2477,8 +2488,8 @@ async function loadFundingHistory(){
 function renderFundingHist(){
   const panels=document.querySelectorAll('.funding-panel'); if(!panels.length) return;
   const d=_fundHist.data;
-  let avg=null, annAvg=null, cum=null;
-  if(d&&d.length){ const sum=d.reduce((a,x)=>a+x.rate,0); avg=sum/d.length; annAvg=avg*1095*100; cum=sum*100; }
+  let avg=null, annAvg=null, cum=null, posPct=null;
+  if(d&&d.length){ const sum=d.reduce((a,x)=>a+x.rate,0); avg=sum/d.length; annAvg=avg*1095*100; cum=sum*100; posPct=d.filter(x=>x.rate>0).length/d.length*100; }
   panels.forEach(p=>{
     const ch=p.querySelector('[data-fund-chart]'); if(ch && p.dataset.fundMode==='funding') ch.innerHTML=fundChartSVG(p);
     const rEl=p.querySelector('[data-fund-hist-range]'); if(rEl) rEl.textContent=(d?d.length:0)+'회';
@@ -2486,6 +2497,7 @@ function renderFundingHist(){
     sset('[data-fund-avg]', avg===null?'—':((avg>=0?'+':'')+(avg*100).toFixed(4)+'%'), avg);
     sset('[data-fund-annavg]', annAvg===null?'—':((annAvg>=0?'+':'')+annAvg.toFixed(2)+'%'), annAvg);
     sset('[data-fund-cum]', cum===null?'—':((cum>=0?'+':'')+cum.toFixed(3)+'%'), cum);
+    const pEl=p.querySelector('[data-fund-pospct]'); if(pEl) pEl.textContent=(posPct===null)?'—':Math.round(posPct)+'%';
   });
 }
 
@@ -2906,16 +2918,13 @@ function moduleHTML(modId) {
   if (modId === 'funding') {
     requestAnimationFrame(() => { renderFundingPanels(); loadFundingHistory(); });
     return `
-      <div class="fund-panel funding-panel" data-fund-mode="basis" data-fund-detail="0">
+      <div class="fund-panel funding-panel" data-fund-mode="basis">
         <div class="fund-head">
           <span class="fund-title">BASIS &amp; FUNDING</span>
-          <span class="fund-head-r">
-            <span class="fund-sym" data-fund-sym>—</span>
-            <span class="fund-segs" data-fund-detail-toggle><button class="fseg on" data-detail="0">간단</button><button class="fseg" data-detail="1">자세히</button></span>
-          </span>
+          <span class="fund-head-r"><span class="fund-sym" data-fund-sym>—</span></span>
         </div>
         <div class="fund-body">
-          <div class="fund-now"><span class="fn-dot d-flat" data-fund-now-dot></span><span class="fn-txt" data-fund-now-txt>데이터를 불러오는 중이에요.</span></div>
+          <div class="fund-now"><span class="fn-dot d-flat" data-fund-now-dot></span><div class="fn-body"><div class="fn-head" data-fund-headline>—</div><div class="fn-txt" data-fund-now-txt>데이터를 불러오는 중이에요.</div></div></div>
           <div class="fund-kpis">
             <div class="fkpi"><div class="fk-l">베이시스<button class="fi" data-tip="basis" aria-label="베이시스 설명" tabindex="0">?</button></div><div class="fk-v" data-fund-basis>—</div><div class="fk-s" data-fund-basisbp>—</div></div>
             <div class="fkpi"><div class="fk-l">예상 펀딩 · 연<button class="fi" data-tip="fann" aria-label="연환산 설명" tabindex="0">?</button></div><div class="fk-v" data-fund-curann>—</div><div class="fk-s" data-fund-payside>—</div></div>
@@ -2929,7 +2938,7 @@ function moduleHTML(modId) {
             <div class="fund-chart" data-fund-chart><div class="fc-empty">베이시스를 쌓는 중…</div></div>
             <div class="fc-legend" data-fund-legend>0 위(초록) = 선물 비쌈 · 0 아래(빨강) = 쌈</div>
           </div>
-          <div class="fund-calc detail-only">
+          <div class="fund-calc">
             <div class="fc-title">펀딩 계산기<button class="fi" data-tip="calc" aria-label="펀딩 계산기 설명" tabindex="0">?</button></div>
             <div class="fc-inputs">
               <label class="fc-in">증거금<input type="text" inputmode="decimal" data-calc-margin value="1000"><span class="fc-u">USDT</span></label>
@@ -2938,13 +2947,14 @@ function moduleHTML(modId) {
             </div>
             <div class="fc-outs"><span>명목 <b data-calc-notional>—</b></span><span>8h <b data-calc-8h>—</b></span><span>하루 <b data-calc-day>—</b></span><span>연 <b data-calc-year>—</b></span></div>
           </div>
-          <div class="fund-detail detail-only">
+          <div class="fund-detail">
             <div class="fd-row"><span class="fd-l">현재(예상)<button class="fi" data-tip="fcur" aria-label="현재 펀딩 설명" tabindex="0">?</button></span><span class="fd-v" data-fund-cur>—</span></div>
             <div class="fd-row"><span class="fd-l">평균 · 8h<button class="fi" data-tip="favg" aria-label="평균 설명" tabindex="0">?</button></span><span class="fd-v" data-fund-avg>—</span></div>
             <div class="fd-row"><span class="fd-l">연환산 · 평균<button class="fi" data-tip="fann" aria-label="연환산 설명" tabindex="0">?</button></span><span class="fd-v" data-fund-annavg>—</span></div>
             <div class="fd-row"><span class="fd-l">누적 · <span data-fund-hist-range>—</span><button class="fi" data-tip="fcum" aria-label="누적 설명" tabindex="0">?</button></span><span class="fd-v" data-fund-cum>—</span></div>
+            <div class="fd-row"><span class="fd-l">+ 비율<button class="fi" data-tip="fpos" aria-label="양수 비율 설명" tabindex="0">?</button></span><span class="fd-v" data-fund-pospct>—</span></div>
           </div>
-          <div class="fund-guide detail-only"><i class="ti ti-bulb" aria-hidden="true"></i><span>베이시스가 0 아래면 선물이 현물보다 싸고, 펀딩이 −면 숏이 롱에게 비용을 냅니다. 가격 방향 예측이 아니라 "어느 쪽이 붐비고 비용을 내는가"예요.</span></div>
+          <div class="fund-guide"><i class="ti ti-bulb" aria-hidden="true"></i><span>베이시스가 0 아래면 선물이 현물보다 싸고, 펀딩이 −면 숏이 롱에게 비용을 냅니다. 가격 방향 예측이 아니라 "어느 쪽이 붐비고 비용을 내는가"예요.</span></div>
         </div>
       </div>`;
   }
